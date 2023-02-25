@@ -76,7 +76,6 @@ declare module '@vue/runtime-core' {
     IEpPlus: typeof import('~icons/ep/plus')['default']
     IEpSearch: typeof import('~icons/ep/search')['default']
     IEpUpload: typeof import('~icons/ep/upload')['default']
-    IEpView: typeof import('~icons/ep/view')['default']
     Links: typeof import('./../../src/components/Links.vue')['default']
     LoadMore: typeof import('./../../src/components/LoadMore.vue')['default']
     NavBar: typeof import('./../../src/components/NavBar.vue')['default']

@@ -52,6 +52,8 @@ enum errorCode {
 	'未知错误' = -1,
 }
 
+export type ApiKey = 'admin' | 'article' | 'category' | 'tag'
+
 const initConfig: AxiosRequestConfig = {
 	baseURL: import.meta.env.VITE_APP_BASE_URL,
 	timeout: 30000,
@@ -70,10 +72,19 @@ class Request {
 		defaultTime: 3,
 		defaultDelay: 300,
 	}
-	static cacheObj = new LRUCache<string, AxiosResponse>({
+	static cacheObj = new LRUCache<
+		string,
+		{ timestamp: number; data: AxiosResponse }
+	>({
 		max: 500,
 		ttl: 1000 * 60 * 5,
 	})
+	static cacheFlag: Record<ApiKey, number> = {
+		admin: 0,
+		article: 0,
+		category: 0,
+		tag: 0,
+	}
 
 	constructor(config?: AxiosRequestConfig) {
 		const axiosConfig = Object.assign(this.baseConfig, config)
@@ -86,11 +97,8 @@ class Request {
 				console.log(`request ${config.url} config:`, config)
 				const isToken = !config.headers.unToken ?? true
 				const token = encodeToken()
-				console.log('request isToken:', isToken)
-				console.log('request token:', token)
 				if (token && isToken) {
 					config.headers['Authorization'] = token
-					console.log('request header authorization setted:', token)
 				}
 				return reqCacheEnhancer(config)
 			},
@@ -124,7 +132,9 @@ class Request {
 				if (message === 'canceled') {
 					const reqKey = this.generateReqKey(config)
 					console.log(`${config.url} has been canceled, reqKey:`, reqKey)
-					const cacheRes = Request.cacheObj.get(reqKey)
+					const { data: cacheRes, timestamp } = Request.cacheObj.has(reqKey)
+						? Request.cacheObj.get(reqKey)
+						: { timestamp: 0, data: null }
 					console.log(`${config.url} has been canceled, cacheRes:`, cacheRes)
 					return Promise.resolve(cacheRes)
 				}
@@ -143,7 +153,6 @@ class Request {
 					type: 'error',
 					grouping: true,
 				})
-				// return Promise.reject(err)
 				return retryEnhancer(err)
 			}
 		)
@@ -157,17 +166,13 @@ class Request {
 			Object.prototype.toString.call(data) === '[object Object]'
 		if (res?.data?.data) {
 			if (isArray(res.data.data)) {
-				console.log(`res ${res.config.url}'s data is array`, res.data.data)
 				return res.data.data.length > 0
 			} else if (isObject(res.data.data)) {
-				console.log(`res ${res.config.url}'s data is object`, res.data.data)
 				return Object.keys(res.data.data).length > 0
 			} else {
-				console.log(`res ${res.config.url}'s data isn't empty`, res.data.data)
 				return true
 			}
 		}
-		console.log(`res ${res.config.url}'s data is empty`, res.data.data)
 		return false
 	}
 	private generateReqKey(config: CustomAxiosRequestConfig) {
@@ -187,22 +192,32 @@ class Request {
 					forceUpdate = enableForceUpdate,
 				} = config
 				const isGet = method === 'GET' || method === 'get'
-				// if (this.controller) {
-				// 	this.controller = new AbortController()
-				// 	config.signal = this.controller.signal
-				// }
+				const apiKey = config.url?.split('/')[1] as ApiKey
 				if (isGet && cache) {
 					const reqKey = this.generateReqKey(config)
-					const cacheRes = Request.cacheObj.get(reqKey)
-					console.log(`request ${config.url} reqKey:`, reqKey)
-					console.log(`request ${config.url} cacheRes:`, cacheRes)
+					const { data: cacheRes, timestamp } = Request.cacheObj.has(reqKey)
+						? Request.cacheObj.get(reqKey)
+						: { timestamp: 0, data: null }
+					const isEnableCache = this.isEnableCache(cacheRes)
+					const isLatestCache = Request.cacheFlag[apiKey] < timestamp
 					console.log(
-						`request ${config.url} isEnable:`,
-						this.isEnableCache(cacheRes)
+						`request cache ${config.url} isEnableCache, isLatestCache, notForceUpdate:`,
+						isEnableCache,
+						isLatestCache,
+						!forceUpdate
 					)
-					// 如果命中了缓存并且不需要强制刷新，就取消这个请求,注: 需要在返回的错误拦截器上对被取消的请求做处理
-					if (this.isEnableCache(cacheRes) && !forceUpdate) {
-						console.log(`request ${config.url} abort, cacheRes:`, cacheRes)
+					/**
+					 * 取消请求，需满足以下所有情况 (注: 需要在返回的错误拦截器上对被取消的请求做处理
+					 * 1. 命中了缓存
+					 * 2. 缓存是最新的响应
+					 * 3. 未配置强制更新
+					 */
+					if (
+						this.isEnableCache(cacheRes) &&
+						Request.cacheFlag[apiKey] < timestamp &&
+						!forceUpdate
+					) {
+						console.log(`request cache ${config.url} is aborted`)
 						this.controller = new AbortController()
 						config.signal = this.controller.signal
 						this.controller.abort()
@@ -219,14 +234,43 @@ class Request {
 					forceUpdate = enableForceUpdate,
 				} = config
 				const isGet = method === 'GET' || method === 'get'
+				const apiKey = config.url?.split('/')[1] as ApiKey
+				// 如果不是GET响应体(需要是成功的返回值)，此时数据已经被修改
+				if (!isGet && res.data.code === 200) {
+					if (!apiKey) return res
+					const timestamp = new Date().getTime()
+					Request.cacheFlag[apiKey] = timestamp
+					return res
+				}
 				if (isGet && cache) {
 					const reqKey = this.generateReqKey(config)
-					const cacheRes = Request.cacheObj.get(reqKey)
-					console.log(`response ${config.url} reqKey:`, reqKey)
-					//如果未命中缓存或者需要强制刷新，就更新缓存并且返回最新的返回值
-					if (!this.isEnableCache(cacheRes) || forceUpdate) {
-						console.log(`response ${config.url} cached:`, res)
-						Request.cacheObj.set(reqKey, cloneForce(res))
+					const { data: cacheRes, timestamp } = Request.cacheObj.has(reqKey)
+						? Request.cacheObj.get(reqKey)
+						: { timestamp: 0, data: null }
+					const isDisableCache = !this.isEnableCache(cacheRes)
+					const isOutdateCache = Request.cacheFlag[apiKey] > timestamp
+					console.log(
+						`response cache ${config.url} isDisableCache, isOutdateCache, forceUpdate:`,
+						isDisableCache,
+						isOutdateCache,
+						forceUpdate
+					)
+					/**
+					 * 更新缓存并返回最新的响应，有以下情况
+					 * 1. 缓存未命中，即缓存不存在或者失效
+					 * 2. 缓存不是最新的响应
+					 * 3. 配置了强制更新
+					 */
+					if (
+						!this.isEnableCache(cacheRes) ||
+						Request.cacheFlag[apiKey] > timestamp ||
+						forceUpdate
+					) {
+						console.log(`response cache ${config.url} is cached`)
+						Request.cacheObj.set(reqKey, {
+							timestamp: new Date().getTime(),
+							data: cloneForce(res),
+						})
 						return res
 					}
 					//否则返回缓存值
