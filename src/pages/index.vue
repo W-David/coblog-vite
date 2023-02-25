@@ -1,20 +1,65 @@
-<script setup lang="ts">
-const { isDark, toggleDark } = useDarks()
+<template>
+	<div class="home-page">
+		<div class="main-content-list">
+			<div
+				v-for="article in articlesRef"
+				:key="article.id"
+				class="main-article-container"
+			>
+				<article-card :article="article"></article-card>
+			</div>
+			<div class="main-pagination-container">
+				<pagination
+					v-show="totalRef > 0"
+					v-model:page="queryParams.pageNum"
+					v-model:limit="queryParams.pageSize"
+					:total="totalRef"
+					@pagination="getList"
+				/>
+			</div>
+		</div>
+	</div>
+</template>
 
-const { t, toggleLocale, language } = useLanguage()
+<script lang="ts" setup>
+definePage({
+	name: '/',
+	meta: {
+		transitionName: 'fade',
+	},
+})
+const articleStore = useArticle()
+const articlesRef = ref<Article[]>([])
+const totalRef = ref(0)
+const queryParams = reactive({
+	pageNum: 1,
+	pageSize: 10,
+})
 
-const theme = computed(() => (isDark.value ? 'dark' : 'light'))
+const getList = async () => {
+	const [articles, total] = await articleStore.GetArticles(queryParams)
+	articlesRef.value = articles || []
+	totalRef.value = total || 0
+}
+onMounted(() => {
+	articleStore.articleMap.clear()
+	Promise.all([getList()])
+})
 </script>
 
-<template>
-	<div class="m-6">Hello，This is the tov template！！</div>
-	<div class="cursor-pointer m-6" @click="toggleDark()">theme: {{ theme }}</div>
-
-	<div class="cursor-pointer mt-6 ml-6" @click="toggleLocale()">
-		<div>language: {{ language }}</div>
-		<div>base: {{ t('about') }}</div>
-		<div>nesting: {{ t('nesting.sir') }} {{ t('nesting.lady') }}</div>
-	</div>
-
-	<Counter />
-</template>
+<style lang="scss" scoped>
+.home-page {
+	@include layout(100%, auto, 0 0 $main-margin 0, 0);
+	z-index: 1000;
+	.main-content-list {
+		@include flex-box(column, flex-start, center);
+		.main-article-container {
+			@include layout(100%, auto, 0 0 $main-margin 0, 0);
+		}
+		.main-pagination-container {
+			@include layout(100%, auto, $main-margin, 0);
+			@include flex-box(row, center, center);
+		}
+	}
+}
+</style>

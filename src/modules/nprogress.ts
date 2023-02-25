@@ -1,14 +1,14 @@
-import { router } from './router'
 import { useNProgress } from '@vueuse/integrations/useNProgress'
+import type { RouterTyped } from 'vue-router/auto'
 
 // https://vueuse.org/integrations/useNProgress/
-export default () => {
+export default (router: RouterTyped) => {
 	const { isLoading } = useNProgress()
 
 	router.beforeEach(() => {
 		isLoading.value = true
 	})
-	router.afterEach(() => {
+	router.afterEach((to, from) => {
 		isLoading.value = false
 	})
 }

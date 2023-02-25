@@ -1,0 +1,221 @@
+@use 'element-plus/theme-chalk/src/dark/css-vars.scss' as *;
+@use './md.scss' as *; // css标准化
+html,
+body,
+#app {
+	@include scroll-bar-reset;
+	padding: 0 !important;
+	margin: 0 !important;
+	width: 100% !important;
+	height: 100% !important;
+	box-sizing: border-box !important;
+	overflow: auto;
+}
+
+#particles-js {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	z-index: -1;
+}
+
+/* 使用怪异盒模型 */
+* {
+	box-sizing: border-box !important;
+}
+
+svg {
+	display: inline-block !important;
+}
+
+/* 列表格式化 */
+ol,
+ul,
+li {
+	list-style: none;
+}
+
+a {
+	text-decoration: none;
+	color: var(--el-text-color-regular);
+	&:hover {
+		color: var(--el-text-color-primary);
+	}
+}
+
+/* html5元素 */
+footer,
+header,
+hgroup,
+nav,
+main,
+article,
+aside,
+details,
+menu,
+section,
+figure,
+figcaption {
+	display: block;
+}
+
+// 遮盖层样式
+body {
+	/* drawer 样式，组件有scope限制 */
+	.el-overlay {
+		z-index: 300000 !important;
+	}
+	.el-overlay > .el-drawer.side-drawer > .el-drawer__body {
+		@include layout(100%, 100%, 0, 28px 0 18px 0);
+		@include flex-box(column, space-between, center);
+
+		.collapse-top {
+			@include flex-box(column, space-between, center);
+			.drawer-icon {
+				--color: var(--el-color-primary) !important;
+				margin-bottom: 36px;
+			}
+			.drawer-user-info {
+				margin-bottom: 20px;
+			}
+			.drawer-menu {
+				border-right: none !important;
+			}
+		}
+		.collapse-bottom {
+			.drawer-logout {
+			}
+			.drawer-switch {
+				margin-top: 16px;
+			}
+		}
+	}
+	.el-popper {
+		z-index: 500000 !important;
+		.ac-content {
+			@include flex-box(row, space-between, center, nowrap);
+			.ac-type {
+				width: 36px;
+				.svg-article {
+					color: var(--el-color-danger);
+				}
+				.svg-tag {
+					color: var(--el-color-primary);
+				}
+				.svg-category {
+					color: var(--el-color-success);
+				}
+			}
+			.ac-val {
+				width: calc(100% - 42px);
+				text-align: start;
+				color: var(--el-color-info-light-3);
+				@include text-overflow;
+			}
+		}
+	}
+}
+
+//waline CSS变量
+:root {
+	/* 字体大小 */
+	--waline-font-size: 16px;
+
+	/* 常规颜色 */
+	--waline-white: #fff;
+	--waline-light-grey: #999;
+	--waline-dark-grey: #666;
+
+	/* 主题色 */
+	--waline-theme-color: #27ae60;
+	--waline-active-color: #2ecc71;
+
+	/* 布局颜色 */
+	--waline-color: var(--el-text-color-primary);
+	--waline-bgcolor: #fafafa;
+	--waline-bgcolor-light: #f8f8f8;
+	--waline-bgcolor-hover: #f0f0f0;
+	--waline-border-color: #ddd;
+	--waline-disable-bgcolor: #f8f8f8;
+	--waline-disable-color: #bbb;
+	--waline-code-bgcolor: #282c34;
+
+	/* 特殊颜色 */
+	--waline-bq-color: #f0f0f0;
+
+	/* 头像 */
+	--waline-avatar-size: 3.25rem;
+	--waline-m-avatar-size: calc(var(--waline-avatar-size) * 9 / 13);
+
+	/* 徽章 */
+	--waline-badge-color: #3498db;
+	--waline-badge-font-size: 0.775em;
+
+	/* 信息 */
+	--waline-info-bgcolor: #f8f8f8;
+	--waline-info-color: #999;
+	--waline-info-font-size: 0.625em;
+
+	/* 渲染选择 */
+	--waline-border: 1px solid var(--waline-border-color);
+	--waline-avatar-radius: 8px;
+	--waline-box-shadow: none;
+}
+
+html.dark {
+	color: #e5e7eb;
+	background: #121212;
+}
+
+.prose {
+	scroll-behavior: smooth;
+}
+
+#nprogress {
+	pointer-events: none;
+}
+
+#nprogress .bar {
+	@apply bg-blue-700 bg-opacity-75;
+
+	background: repeating-linear-gradient(90deg, #00dc82 0, #34cdfe 50%, #0047e1);
+	position: fixed;
+	z-index: 1031;
+	top: 0;
+	left: 0;
+
+	width: 100%;
+	height: 2px;
+}
+
+/*
+* 全局滚动条
+*/
+::-webkit-scrollbar {
+	width: 11px;
+	height: 11px;
+	background-color: rgb(246, 247, 248);
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: rgb(233, 236, 239);
+	border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+	background-color: rgb(246, 247, 248);
+	border-radius: 10px;
+}
+
+html.dark ::-webkit-scrollbar,
+html.dark ::-webkit-scrollbar-track {
+	background-color: #212529;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+	background-color: #343a40;
+}

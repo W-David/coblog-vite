@@ -1,4 +1,10 @@
 <script setup lang="ts">
+definePage({
+	name: 'notFound',
+	meta: {
+		layout: 'notFound',
+	},
+})
 const typedRef = useTyped(['is not found!'])
 
 const router = useRouter()
@@ -20,7 +26,7 @@ const back = () => router.push('/')
 			</button>
 		</div>
 
-		<img src="/notFound/32.svg" class="cover" alt="page not found" />
+		<img src="/notFound/6.svg" class="cover" alt="page not found" />
 	</div>
 </template>
 
@@ -56,8 +62,3 @@ const back = () => router.push('/')
 	box-shadow: 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--tw-shadow);
 }
 </style>
-
-<route lang="yaml">
-meta:
-  layout: notFound
-</route>

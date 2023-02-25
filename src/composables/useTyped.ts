@@ -4,7 +4,7 @@ export default (strings: string[]) => {
 	const typedRef = ref<Element>()
 
 	onMounted(() => {
-		init(typedRef.value!, {
+		init(typedRef.value ?? '404', {
 			strings,
 			showCursor: false,
 			disableBackTyping: true,

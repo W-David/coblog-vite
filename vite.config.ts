@@ -1,6 +1,6 @@
 import { resolve } from 'path'
-import Tov from './presets/tov'
 import { defineConfig } from 'vite'
+import generatePlugins from './presets/generatePlugins'
 
 export default defineConfig({
 	resolve: {
@@ -8,8 +8,18 @@ export default defineConfig({
 			'~/': `${resolve(__dirname, 'src')}/`,
 		},
 	},
+	css: {
+		preprocessorOptions: {
+			scss: {
+				additionalData: `
+					@use "~/styles/element/index.scss" as *;
+					@use "~/styles/index.scss" as *;
+				`,
+			},
+		},
+	},
 	define: {
 		__VUE_OPTIONS_API__: false, // 明确不使用 options api
 	},
-	plugins: [Tov()],
+	plugins: [generatePlugins()],
 })

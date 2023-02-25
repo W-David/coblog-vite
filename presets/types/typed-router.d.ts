@@ -36,8 +36,15 @@ import type {
 declare module 'vue-router/auto/routes' {
   export interface RouteNamedMap {
     '/': RouteRecordInfo<'/', '/', Record<never, never>, Record<never, never>>,
-    '/[...notFound]': RouteRecordInfo<'/[...notFound]', '/:notFound(.*)', { notFound: ParamValue<true> }, { notFound: ParamValue<false> }>,
-    '/about': RouteRecordInfo<'/about', '/about', Record<never, never>, Record<never, never>>,
+    'notFound': RouteRecordInfo<'notFound', '/:notFound(.*)', { notFound: ParamValue<true> }, { notFound: ParamValue<false> }>,
+    'about': RouteRecordInfo<'about', '/about', Record<never, never>, Record<never, never>>,
+    'archive': RouteRecordInfo<'archive', '/archive', Record<never, never>, Record<never, never>>,
+    'article': RouteRecordInfo<'article', '/article/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
+    'blog': RouteRecordInfo<'blog', '/blog/:id?', { id?: ParamValueZeroOrOne<true> }, { id?: ParamValueZeroOrOne<false> }>,
+    'category': RouteRecordInfo<'category', '/category/:id?', { id?: ParamValueZeroOrOne<true> }, { id?: ParamValueZeroOrOne<false> }>,
+    'default': RouteRecordInfo<'default', '/default', Record<never, never>, Record<never, never>>,
+    'login': RouteRecordInfo<'login', '/login', Record<never, never>, Record<never, never>>,
+    'tag': RouteRecordInfo<'tag', '/tag/:id?', { id?: ParamValueZeroOrOne<true> }, { id?: ParamValueZeroOrOne<false> }>,
   }
 }
 

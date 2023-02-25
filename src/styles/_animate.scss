@@ -1,0 +1,106 @@
+@mixin spinner-border-animation {
+  /** 边框环绕效果 */
+  @include define-animation(spinner-border) {
+    0%,
+    100% {
+      clip-path: inset(0 0 98% 0);
+      border-color: var(--el-color-primary);
+    }
+    25% {
+      clip-path: inset(0 98% 0 0);
+      border-color: var(--el-color-danger);
+    }
+    50% {
+      clip-path: inset(98% 0 0 0);
+      border-color: var(--el-color-warning);
+    }
+    75% {
+      clip-path: inset(0 0 0 98%);
+      border-color: var(--el-color-success);
+    }
+  }
+  &:before {
+    content: '';
+    @include position(absolute, -8px, -8px, -8px, -8px);
+    @include border(2px solid var(--el-color-primary), 8px);
+    @include use-animation(spinner-border 6s infinite linear);
+  }
+  &::after {
+    content: '';
+    @include position(absolute, -8px, -8px, -8px, -8px);
+    @include border(2px solid var(--el-color-primary), 8px);
+    @include use-animation(spinner-border 6s infinite -3s linear);
+  }
+}
+
+@mixin bg-fade-animation {
+  @include define-animation(bg-fade) {
+    0% {
+      opacity: 0;
+      transform: scale(1.25);
+      animation-timing-function: ease-out;
+    }
+    12.5% {
+      opacity: 1;
+      transform: scale(1);
+      animation-timing-function: ease-out;
+    }
+    19.25% {
+      transform: scale(1.05);
+      animation-timing-function: ease-in;
+    }
+    25% {
+      opacity: 1;
+      transform: scale(1);
+      animation-timing-function: ease-in;
+    }
+    37.5% {
+      opacity: 0;
+      transform: scale(1.25);
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  @include use-animation(bg-fade linear infinite);
+}
+
+@mixin svg-text-stroke-animation {
+  @include define-animation(svg-text-stroke) {
+    0% {
+      fill: rgba(72, 138, 20, 0);
+      stroke: currentColor;
+      stroke-dashoffset: 25%;
+      stroke-dasharray: 0 50%;
+      stroke-width: 0.8;
+    }
+    50% {
+      fill: rgba(72, 138, 20, 0);
+      stroke: currentColor;
+      stroke-width: 1.2;
+    }
+    70% {
+      fill: rgba(72, 138, 20, 0);
+      stroke: currentColor;
+      stroke-width: 1.5;
+    }
+    90%,
+    100% {
+      fill: currentColor;
+      stroke: rgba(54, 95, 160, 0);
+      stroke-dashoffset: -25%;
+      stroke-dasharray: 50% 0;
+      stroke-width: 0;
+    }
+  }
+  @include use-animation(svg-text-stroke 2500ms infinite alternate);
+}
+
+@mixin hue-rotate {
+  @include define-animation(hue-rotate) {
+    100% {
+      filter: hue-rotate(360deg);
+    }
+  }
+  @include use-animation(hue-rotate 20s infinite alternate);
+}

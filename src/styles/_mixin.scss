@@ -1,0 +1,396 @@
+/* 清除浮动 */
+@mixin clearfix {
+	&:after {
+		clear: both;
+		content: '';
+		height: 0;
+		display: block;
+		line-height: 0;
+		visibility: hidden;
+	}
+	zoom: 1;
+}
+
+/* pointer样式 */
+@mixin pointer {
+	cursor: pointer !important;
+	user-select: none !important;
+}
+
+/* 元素尺寸控制 */
+@mixin layout($width: 100%, $height: 100%, $margin: 0px, $padding: 0px) {
+	@if ($width!= '' and $width!=null) {
+		width: $width;
+	}
+	@if ($height!= '' and $height!=null) {
+		height: $height;
+	}
+	@if ($margin!= '' and $margin!=null) {
+		margin: $margin;
+	}
+	@if ($padding!= '' and $padding!=null) {
+		padding: $padding;
+	}
+}
+
+/* 文本超长显示省略号 */
+@mixin text-overflow($line: 1, $substract: 0px) {
+	overflow: hidden;
+	@if $line == 1 {
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		width: calc(100% - $substract);
+	} @else {
+		display: -webkit-box;
+		-webkit-line-clamp: $line;
+		-webkit-box-orient: vertical;
+	}
+}
+
+/*定位方式  参数顺序：左上右下*/
+@mixin position(
+	$position: null,
+	$left: null,
+	$top: null,
+	$right: null,
+	$bottom: null
+) {
+	@if ($position!= '' and $position!=null) {
+		position: $position;
+	}
+	@if ($left!= '' and $left!=null) {
+		left: $left;
+	}
+	@if ($right!= '' and $right!=null) {
+		right: $right;
+	}
+	@if ($top!= '' and $top!=null) {
+		top: $top;
+	}
+	@if ($bottom!= '' and $bottom!=null) {
+		bottom: $bottom;
+	}
+}
+
+/* flex布局 */
+@mixin flex-box(
+	$direction: row,
+	$justify: null,
+	$align: null,
+	$flex-wrap: null
+) {
+	display: flex;
+	@if ($direction!=null) {
+		flex-direction: $direction;
+	}
+	@if ($justify!=null) {
+		justify-content: $justify;
+	}
+	@if ($align!=null) {
+		align-items: $align;
+	}
+	@if ($flex-wrap!=null) {
+		flex-wrap: $flex-wrap;
+	}
+}
+
+/* 绝对布局居中 */
+@mixin center($direction: both) {
+	position: absolute;
+	@if $direction==both {
+		top: 50%;
+		left: 50%;
+		-webkit-transform: translate3d(-50%, -50%, 0);
+		transform: translate3d(-50%, -50%, 0);
+	} @else if $direction==horizontal {
+		left: 50%;
+		-webkit-transform: translate3d(-50%, 0, 0);
+		transform: translate3d(-50%, 0, 0);
+	} @else if $direction==vertical {
+		top: 50%;
+		-webkit-transform: translate3d(0, -50%, 0);
+		transform: translate3d(0, -50%, 0);
+	}
+}
+
+/* 左浮动 */
+@mixin float-left($margin-right: 1.2%) {
+	float: left;
+	@if ($margin-right!=null) {
+		margin-right: $margin-right;
+	}
+}
+
+/* 右浮动 */
+@mixin float-right($margin-left: 1.2%) {
+	float: right;
+	@if ($margin-left!=null) {
+		margin-left: $margin-left;
+	}
+}
+
+/* 边框控制 */
+@mixin border($border, $border-radius: 0, $position: all) {
+	@if ($border-radius != '' and $border-radius != null) {
+		border-radius: $border-radius;
+	}
+	@if ($position == all) {
+		border: $border;
+		html.dark & {
+			border: $border;
+			border-color: rgba(0, 0, 0, 0.2);
+		}
+	}
+	@if ($position == left) {
+		border-left: $border;
+		html.dark & {
+			border-left: $border;
+			border-left-color: rgba(0, 0, 0, 0.2);
+		}
+	}
+	@if ($position == top) {
+		border-top: $border;
+		html.dark & {
+			border-top: $border;
+			border-top-color: rgba(0, 0, 0, 0.2);
+		}
+	}
+	@if ($position == right) {
+		border-right: $border;
+		html.dark & {
+			border-right: $border;
+			border-right-color: rgba(0, 0, 0, 0.2);
+		}
+	}
+	@if ($position == bottom) {
+		border-bottom: $border;
+		html.dark & {
+			border-bottom: $border;
+			border-bottom-color: rgba(0, 0, 0, 0.2);
+		}
+	}
+}
+/* 阴影效果 */
+@mixin box-shadow($params1: 0 2px 12px 0 rgba(0, 0, 0, 0.1), $params2: null) {
+	@if ($params2 == '' or $params2 == null) {
+		box-shadow: #{$params1};
+	} @else {
+		box-shadow: #{$params1}, #{$params2};
+	}
+	html.dark & {
+		box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+	}
+}
+
+/*渐变(从上到下）*/
+@mixin linear-gradient(
+	$direction: bottom,
+	$color1: transparent,
+	$color2: #306eff,
+	$color3: transparent
+) {
+	background: linear-gradient(
+		to $direction,
+		$color1,
+		$color2,
+		$color3
+	); /* 标准的语法 */
+	background: -webkit-linear-gradient(
+		$direction,
+		$colorTop,
+		$colorCenter,
+		$colorBottom
+	); /* Safari 5.1 - 6.0 */
+	background: -o-linear-gradient(
+		$direction,
+		$color1,
+		$color2,
+		$color3
+	); /* Opera 11.1 - 12.0 */
+	background: -moz-linear-gradient(
+		$direction,
+		$color1,
+		$color2,
+		$color3
+	); /* Firefox 3.6 - 15 */
+}
+
+/* 行高 */
+@mixin line-height($height: 30px, $line-height: 30px) {
+	@if ($height != null) {
+		height: $height;
+	}
+	@if ($line-height!=null) {
+		line-height: $line-height;
+	}
+}
+
+@mixin bg-color($light-color: #fdfdfd, $dark-color: #1a1a1a) {
+	@if ($light-color != null) {
+		background-color: rgba($light-color, 1);
+		@include bg-glossy();
+	}
+	@if ($dark-color!= null) {
+		html.dark & {
+			background-color: rgba($dark-color, 1);
+			@include bg-glossy();
+		}
+	}
+}
+
+@mixin img-cover() {
+	@include position(absolute, 0, 0);
+	@include layout(100%, 100%, 0, 0);
+	object-fit: cover;
+	object-position: center;
+	overflow: hidden;
+}
+
+@mixin bg-cover() {
+	@include position(absolute, 0, 0);
+	@include layout(100%, 100%, 0, 0);
+	background-position: center;
+	background-repeat: none;
+	background-size: cover;
+	overflow: hidden;
+	z-index: -1;
+	// 解决高斯模糊的白边问题
+	// &:before {
+	//   content: '';
+	// 	@include position(absolute, 0, 0);
+	// 	@include layout(100%, 100%, 0, 0);
+	//   background: inherit;
+	//   filter: blur(5px);
+	// }
+}
+
+/* 定义滚动条样式 圆角和阴影不需要则传入null */
+@mixin scroll-bar-reset(
+	$width: 8px,
+	$height: 8px,
+	$outColor: transparent,
+	$innerColor: var(--el-border-color),
+	$radius: 5px,
+	$shadow: null
+) {
+	/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+	&::-webkit-scrollbar {
+		width: $width;
+		height: $height;
+		background-color: $outColor;
+	}
+
+	/*定义滚动条轨道 内阴影+圆角*/
+	&::-webkit-scrollbar-track {
+		@if ($shadow!=null) {
+			-webkit-box-shadow: $shadow;
+		}
+		@if ($radius!=null) {
+			border-radius: $radius;
+		}
+		background-color: $outColor;
+	}
+
+	/*定义滑块 内阴影+圆角*/
+	&::-webkit-scrollbar-thumb {
+		@if ($shadow!=null) {
+			-webkit-box-shadow: $shadow;
+		}
+		@if ($radius!=null) {
+			border-radius: $radius;
+		}
+		background-color: $innerColor;
+		border: 1px solid $innerColor;
+	}
+}
+
+/* 定义并使用动画 */
+@mixin animation($params) {
+	$name: nth($params, 1);
+	animation: $params;
+
+	@-webkit-keyframes #{$name} {
+		@content;
+	}
+
+	@-moz-keyframes #{$name} {
+		@content;
+	}
+
+	@-o-keyframes #{$name} {
+		@content;
+	}
+
+	@keyframes #{$name} {
+		@content;
+	}
+}
+
+/* 使用动画 */
+@mixin use-animation($params) {
+	animation: $params;
+}
+
+/* 定义动画 */
+@mixin define-animation($animation-name) {
+	@-webkit-keyframes #{$animation-name} {
+		@content;
+	}
+	@-moz-keyframes #{$animation-name} {
+		@content;
+	}
+	@-o-keyframes #{$animation-name} {
+		@content;
+	}
+	@keyframes #{$animation-name} {
+		@content;
+	}
+}
+
+@mixin bg-glossy($blur: 2px) {
+	backdrop-filter: blur($blur);
+}
+
+/* 过渡效果 */
+@mixin transition($params) {
+	transition: $params;
+	-webkit-transition: $params;
+	-moz-transition: $params;
+	-ms-transition: $params;
+	-o-transition: $params;
+}
+// 标签和分类panel样式
+@mixin panel-styl($mc, $bc) {
+	color: $mc;
+	display: inline-block;
+	line-height: 24px;
+	@include layout(auto, 24px, 6px, 0 12px);
+	@include border(1px solid $mc, 12px);
+	font-size: 12px;
+	white-space: wrap;
+	background-color: $bc;
+	@include transition(all 120ms ease-in-out);
+	@include pointer;
+	&:hover {
+		color: white;
+		background-color: $mc;
+	}
+	&.is-active {
+		color: white;
+		background-color: $mc;
+	}
+}
+
+@mixin widget-styl() {
+	.widget-list {
+		@include layout(100%, auto, 0 0 $main-margin 0, 0);
+		.widget-item {
+			margin-bottom: $main-margin;
+		}
+		// z-index: 1000;
+	}
+	.is-sticky {
+		position: sticky;
+		top: $header-height + $main-margin;
+	}
+}

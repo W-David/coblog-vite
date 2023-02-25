@@ -1,13 +1,13 @@
-import { router } from './router'
+import type { RouterTyped } from 'vue-router/auto'
 
-const title = useTitle(import.meta.env.VITE_APP_TITLE)
-
-router.beforeEach((r) => {
-	const originTitle = import.meta.env.VITE_APP_TITLE
-
-	if (r.path === '/') {
-		title.value = `${originTitle} · home`
-	} else {
-		title.value = originTitle + r.path.replaceAll('/', ' · ')
-	}
-})
+export default (router: RouterTyped) => {
+	router.beforeEach((r) => {
+		const originTitle = import.meta.env.VITE_APP_TITLE
+		const title = computed(() =>
+			r.path === '/'
+				? `${originTitle} · home`
+				: originTitle + r.path.replaceAll('/', ' · ')
+		)
+		useTitle(title)
+	})
+}
