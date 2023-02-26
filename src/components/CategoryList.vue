@@ -1,21 +1,32 @@
 <template>
-	<div v-if="categoryList?.length" class="category-list-container">
+	<div class="category-list-container">
 		<div class="category-list-title">
 			<i-custom-category class="title-icon" />
 			<span class="title-text">分类</span>
 		</div>
 		<div class="category-list">
-			<span v-if="isLogin" class="article-cate ctrl-btn" @click="handleAdd">
-				<el-icon><i-ep-plus /></el-icon>
-			</span>
-			<span
-				v-for="category in categoryList"
-				:key="category.id"
-				:class="['article-cate', isChecked(category.id) ? 'is-active' : '']"
-				@click="handleChecked(category)"
-			>
-				{{ category.name }}
-			</span>
+			<el-skeleton :loading="loading" animated :count="12">
+				<template #template>
+					<el-skeleton-item
+						variant="text"
+						class="skeleton-item"
+						:style="{ width: `${getRandomWidth()}px` }"
+					></el-skeleton-item>
+				</template>
+				<template #default>
+					<span v-if="isLogin" class="article-cate ctrl-btn" @click="handleAdd">
+						<el-icon><i-ep-plus /></el-icon>
+					</span>
+					<span
+						v-for="category in categoryList"
+						:key="category.id"
+						:class="['article-cate', isChecked(category.id) ? 'is-active' : '']"
+						@click="handleChecked(category)"
+					>
+						{{ category.name }}
+					</span>
+				</template>
+			</el-skeleton>
 		</div>
 	</div>
 </template>
@@ -26,6 +37,7 @@ const adminStore = useAdmin()
 const categoryList = computed(() => categoryStore.getCategoryList())
 const checkedIds = computed(() => categoryStore.checkedCateIds)
 const isChecked = (id: number) => checkedIds.value.includes(id)
+const loading = ref(true)
 
 const isLogin = computed(() => adminStore.isLogin)
 
@@ -51,9 +63,19 @@ const handleAdd = () => {
 		},
 	})
 }
-// 清空已选择的category
-categoryStore.checkedCateIds.splice(0, categoryStore.checkedCateIds.length)
-categoryStore.GetCategories()
+
+const getRandomWidth = () => {
+	const widthList = [48, 64]
+	return getRandomItem(widthList)
+}
+
+const init = async () => {
+	// 清空已选择的category
+	categoryStore.checkedCateIds.splice(0, categoryStore.checkedCateIds.length)
+	await categoryStore.GetCategories()
+	loading.value = false
+}
+init()
 </script>
 
 <style lang="scss" scoped>
@@ -85,6 +107,11 @@ categoryStore.GetCategories()
 	.category-list {
 		@include layout(auto, auto, 0, 4px 8px 12px);
 		@include flex-box(row, center, center, wrap);
+
+		.skeleton-item {
+			@include layout(auto, 22px, 6px, 0);
+			border-radius: 11px;
+		}
 
 		.article-cate {
 			@include panel-styl(

@@ -69,6 +69,8 @@
     "getCurrentScope": true,
     "getFile": true,
     "getOssClient": true,
+    "getRandomIntInclusive": true,
+    "getRandomItem": true,
     "getSTS": true,
     "getScrollHeight": true,
     "getScrollTop": true,

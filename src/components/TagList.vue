@@ -1,31 +1,45 @@
 <template>
-	<div v-if="tagList?.length" class="tag-list-container">
+	<div class="tag-list-container">
 		<div class="tag-list-title">
 			<i-custom-tag class="title-icon" />
 			<span class="title-text">标签</span>
 		</div>
 		<div class="tag-list">
-			<span v-if="isLogin" class="article-tag ctrl-btn" @click="handleAdd">
-				<el-icon><i-ep-plus /></el-icon>
-			</span>
-			<span
-				v-for="tag in tagList"
-				:key="tag.id"
-				:class="['article-tag', isChecked(tag.id) ? 'is-active' : '']"
-				@click="handleChecked(tag)"
-			>
-				{{ tag.name }}
-			</span>
+			<el-skeleton :loading="loading" animated :count="12">
+				<template #template>
+					<el-skeleton-item
+						variant="text"
+						class="skeleton-item"
+						:style="{ width: `${getRandomWidth()}px` }"
+					></el-skeleton-item>
+				</template>
+				<template #default>
+					<span v-if="isLogin" class="article-tag ctrl-btn" @click="handleAdd">
+						<el-icon><i-ep-plus /></el-icon>
+					</span>
+					<span
+						v-for="tag in tagList"
+						:key="tag.id"
+						:class="['article-tag', isChecked(tag.id) ? 'is-active' : '']"
+						@click="handleChecked(tag)"
+					>
+						{{ tag.name }}
+					</span>
+				</template>
+			</el-skeleton>
 		</div>
 	</div>
 </template>
 
 <script lang="ts" setup>
+import { getRandomItem } from '~/utils/format'
+
 const tagStore = useTag()
 const adminStore = useAdmin()
 const tagList = computed(() => tagStore.getTagList())
 const checkedIds = computed(() => tagStore.getCheckedTagIds)
 const isChecked = (id: number) => checkedIds.value.includes(id)
+const loading = ref(true)
 
 const isLogin = computed(() => adminStore.isLogin)
 
@@ -55,8 +69,16 @@ const handleDelete = (tag: Tag) => {
 	tagStore.DelTag(tag.id)
 }
 //清空已选择的 tag
-tagStore.checkedTagIds.splice(0, tagStore.checkedTagIds.length)
-tagStore.GetTags()
+const init = async () => {
+	tagStore.checkedTagIds.splice(0, tagStore.checkedTagIds.length)
+	await tagStore.GetTags()
+	loading.value = false
+}
+const getRandomWidth = () => {
+	const widthList = [48, 64]
+	return getRandomItem(widthList)
+}
+init()
 </script>
 
 <style lang="scss" scoped>
@@ -88,6 +110,10 @@ tagStore.GetTags()
 		@include layout(auto, auto, 0, 4px 8px 12px);
 		@include flex-box(row, center, center, wrap);
 
+		.skeleton-item {
+			@include layout(auto, 22px, 6px, 0);
+			border-radius: 11px;
+		}
 		.article-tag {
 			@include panel-styl(
 				var(--el-color-primary),

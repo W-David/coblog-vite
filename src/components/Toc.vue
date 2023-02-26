@@ -1,14 +1,32 @@
 <template>
-	<div v-if="tocArray?.length" class="toc-container">
+	<div class="toc-container">
 		<div class="toc-list-title">文章目录</div>
 		<div class="toc-list">
-			<toc-item
-				v-for="item in tocArray"
-				:key="item.anchor"
-				:item="item"
-				:is-actived="activedArr.includes(item.anchor)"
-				@on-checked="onChecked"
-			></toc-item>
+			<el-skeleton :loading="loading" animated :count="3">
+				<template #template>
+					<div class="skeleton-item">
+						<el-skeleton-item class="toc toc-1"></el-skeleton-item>
+						<el-skeleton-item class="toc toc-2"></el-skeleton-item>
+						<el-skeleton-item class="toc toc-3"></el-skeleton-item>
+						<el-skeleton-item class="toc toc-4"></el-skeleton-item>
+						<el-skeleton-item class="toc toc-5"></el-skeleton-item>
+					</div>
+				</template>
+				<template #default>
+					<div v-if="tocArray?.length">
+						<toc-item
+							v-for="item in tocArray"
+							:key="item.anchor"
+							:item="item"
+							:is-actived="activedArr.includes(item.anchor)"
+							@on-checked="onChecked"
+						></toc-item>
+					</div>
+					<div v-else>
+						<div class="no-toc"></div>
+					</div>
+				</template>
+			</el-skeleton>
 		</div>
 	</div>
 </template>
@@ -17,6 +35,7 @@
 const activedArr = ref<string[]>([])
 const articleStore = useArticle()
 const tocArray = computed(() => articleStore.cataLog ?? [])
+const loading = computed(() => articleStore.isTocLoading)
 const isActived = (anchor: string) => {
 	const element = document.getElementById(anchor)
 	if (!element) return false
@@ -61,6 +80,35 @@ onMounted(() => onScroll())
 		@include layout(auto, auto, 12px 8px 8px 8px, 0);
 		// @include border(1px solid var(--el-border-color), 8px);
 		// @include box-shadow;
+		.skeleton-item {
+			.toc {
+				height: 20px;
+				margin-bottom: 8px;
+				display: block;
+			}
+			.toc-1 {
+				width: 20%;
+				margin-left: 16px;
+			}
+			.toc-2 {
+				width: 30%;
+				margin-left: 16px;
+			}
+			.toc-3 {
+				width: 50%;
+				margin-left: 32px;
+			}
+			.toc-4 {
+				width: 70%;
+				margin-left: 32px;
+			}
+			.toc-5 {
+				width: 50%;
+				margin-left: 48px;
+			}
+		}
+		.no-toc {
+		}
 	}
 }
 </style>

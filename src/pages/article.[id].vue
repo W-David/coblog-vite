@@ -4,72 +4,113 @@
 			<div class="article-ctrl-area" @click="toBack">
 				<el-icon :size="20"><i-ep-caret-left /></el-icon>
 			</div>
-			<div v-if="article" class="article-main-area">
-				<div
-					v-if="article.banner && article.banner.path"
-					class="article-banner-container"
-				>
-					<img
-						v-LazyLoad="
-							`${article.banner.path}?x-oss-process=image/resize,p_50`
-						"
-						alt="noImg"
-					/>
-					<div class="article-info-content">
-						<span class="article-author">{{
-							article.admin?.nickname || '佚名'
-						}}</span>
-						<span class="article-sp">|</span>
-						<span class="article-date">{{ article.createdAt }}</span>
-					</div>
-				</div>
-				<div class="article-title-container">
-					<div class="row-container">
-						<div class="article-title-content">{{ article.title }}</div>
-						<div class="article-favorite-content">
-							<div class="favorite-icon" @click="handleFavorite">
-								<i-custom-favorite-full v-if="article.isFavorited" />
-								<i-custom-favorite v-else />
+			<el-skeleton :loading="loading" animated>
+				<template #template>
+					<div class="skeleton-item">
+						<el-skeleton-item variant="image" class="banner"></el-skeleton-item>
+						<div class="title-container">
+							<div class="row-container">
+								<el-skeleton-item variant="p" class="title"></el-skeleton-item>
+								<el-skeleton-item
+									variant="rect"
+									class="favorite"
+								></el-skeleton-item>
 							</div>
-							<div class="favorite-num">{{ article.favoritedNum }}</div>
+							<div class="ct-container">
+								<el-skeleton-item class="ct-1"></el-skeleton-item>
+								<el-skeleton-item class="ct-2"></el-skeleton-item>
+							</div>
+							<div class="desc-container">
+								<el-skeleton-item variant="p" class="desc"></el-skeleton-item>
+							</div>
+						</div>
+						<div class="content-container">
+							<el-skeleton-item
+								variant="rect"
+								class="content"
+							></el-skeleton-item>
+						</div>
+						<div class="editor-container">
+							<el-skeleton-item
+								variant="button"
+								class="btn-1"
+							></el-skeleton-item>
+							<el-skeleton-item
+								variant="button"
+								class="btn-2"
+							></el-skeleton-item>
 						</div>
 					</div>
-					<div class="article-panel-content">
-						<category-panel
-							v-for="category in article.categories"
-							:key="category.id"
-							:size="10"
-							:category="category"
-						></category-panel>
-						<tag-panel
-							v-for="tag in article.tags"
-							:key="tag.id"
-							:size="10"
-							:tag="tag"
-						></tag-panel>
+				</template>
+				<template #default>
+					<div v-if="article" class="article-main-area">
+						<div
+							v-if="article.banner && article.banner.path"
+							class="article-banner-container"
+						>
+							<img
+								v-LazyLoad="
+									`${article.banner.path}?x-oss-process=image/resize,p_50`
+								"
+								alt="noImg"
+							/>
+							<div class="article-info-content">
+								<span class="article-author">{{
+									article.admin?.nickname || '佚名'
+								}}</span>
+								<span class="article-sp">|</span>
+								<span class="article-date">{{ article.createdAt }}</span>
+							</div>
+						</div>
+						<div class="article-title-container">
+							<div class="row-container">
+								<div class="article-title-content">{{ article.title }}</div>
+								<div class="article-favorite-content">
+									<div class="favorite-icon" @click="handleFavorite">
+										<i-custom-favorite-full v-if="article.isFavorited" />
+										<i-custom-favorite v-else />
+									</div>
+									<div class="favorite-num">{{ article.favoritedNum }}</div>
+								</div>
+							</div>
+							<div class="article-panel-content">
+								<category-panel
+									v-for="category in article.categories"
+									:key="category.id"
+									:size="10"
+									:category="category"
+								></category-panel>
+								<tag-panel
+									v-for="tag in article.tags"
+									:key="tag.id"
+									:size="10"
+									:tag="tag"
+								></tag-panel>
+							</div>
+							<div class="article-desc-content">{{ article.description }}</div>
+						</div>
+						<div class="article-content-container">
+							<div id="article-content" class="article-content">
+								<md-editor
+									v-model="article.content"
+									:theme="isDark ? 'dark' : 'light'"
+									:preview-only="true"
+									preview-theme="cyanosis"
+									@get-catalog="getCatalog"
+								/>
+							</div>
+						</div>
+						<div v-if="isLogin && isCurAdmin" class="article-edit-container">
+							<el-button type="danger" round @click="handleDel"
+								>删除 • 需输入文章标题</el-button
+							>
+							<el-button type="success" round @click="handleEdit"
+								>修改文章</el-button
+							>
+						</div>
 					</div>
-					<div class="article-desc-content">{{ article.description }}</div>
-				</div>
-				<div class="article-content-container">
-					<div id="article-content" class="article-content">
-						<md-editor
-							v-model="article.content"
-							:theme="isDark ? 'dark' : 'light'"
-							:preview-only="true"
-							preview-theme="cyanosis"
-							@get-catalog="getCatalog"
-						/>
-					</div>
-				</div>
-				<div v-if="isLogin && isCurAdmin" class="article-edit-container">
-					<el-button type="danger" round @click="handleDel"
-						>删除 • 需输入文章标题</el-button
-					>
-					<el-button type="success" round @click="handleEdit"
-						>修改文章</el-button
-					>
-				</div>
-			</div>
+				</template>
+			</el-skeleton>
 		</div>
 		<el-backtop :bottom="25"> </el-backtop>
 	</div>
@@ -97,11 +138,17 @@ const router = useRouter()
 const loginInfo = computed(() => adminStore.adminInfo)
 const isLogin = computed(() => adminStore.isLogin)
 const article = computed(() => articleStore.getArticleById(articleId))
+const loading = ref(true)
+watch(loading, (val) => (articleStore.isTocLoading = val), { immediate: true })
 const isCurAdmin = computed(
 	() => article.value?.admin.id === loginInfo.value?.id
 )
 
-const getArticle = () => articleStore.GetArticle(articleId)
+const getArticle = async () => {
+	loading.value = true
+	await articleStore.GetArticle(articleId)
+	loading.value = false
+}
 const getCatalog = (catalog: HeadList[]) => {
 	articleStore.cataLog = catalog
 		.map(({ text, level }) => ({ content: text, anchor: text, level }))
@@ -145,6 +192,7 @@ const handleFavorite = async () => {
 }
 
 const initPage = () => {
+	articleStore.cataLog.splice(0, articleStore.cataLog.length)
 	getArticle()
 }
 
@@ -173,6 +221,80 @@ initPage()
 			cursor: pointer;
 			&:hover {
 				background-color: var(--el-color-primary-light-9);
+			}
+		}
+
+		.skeleton-item {
+			@include layout(100%, auto, 0, 16px);
+			@include border(none, 8px);
+			@include box-shadow(2px 4px 16px rgba(0, 0, 0, 0.1));
+			.banner {
+				@include layout(100%, 320px, 0 0 12px 0, 0);
+				@include border(none, 8px);
+				@include box-shadow;
+			}
+			.title-container {
+				@include layout(100%, auto, 0 0 12px 0, 8px);
+				@include border(none, 8px);
+				@include box-shadow;
+				.row-container {
+					@include layout(100%, auto, 4px 0, 4px 8px);
+					@include flex-box(row, space-between, flex-start, wrap);
+					.title {
+						height: 28px;
+						width: 60%;
+					}
+					.favorite {
+						width: 48px;
+						height: 48px;
+					}
+				}
+				.ct-container {
+					@include layout(100%, auto, 4px 0, 4px);
+					text-align: start;
+					.ct-1 {
+						@include layout(64px, 16px, 6px, 0);
+						border-radius: 8px;
+					}
+					.ct-2 {
+						@include layout(80px, 16px, 6px, 0);
+						border-radius: 8px;
+					}
+				}
+
+				.desc-container {
+					@include layout(100%, auto, 0, 8px);
+					text-align: start;
+					.desc {
+						width: 80%;
+						height: 16px;
+					}
+				}
+			}
+			.content-container {
+				@include layout(100%, auto, 0 0 12px 0, 32px);
+				@include border(none, 8px);
+				@include box-shadow;
+				.content {
+					width: 100%;
+					height: 880px;
+				}
+			}
+			.editor-container {
+				@include layout(100%, auto, 0, 8px 0);
+				@include flex-box(row, flex-end, center);
+				@include border(none, 8px);
+				.btn-1 {
+					width: 170px;
+					height: 32px;
+					border-radius: 16px;
+				}
+				.btn-2 {
+					width: 88px;
+					height: 32px;
+					border-radius: 16px;
+					margin-left: 12px;
+				}
 			}
 		}
 		.article-main-area {

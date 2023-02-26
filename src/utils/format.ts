@@ -1,4 +1,5 @@
 export function articles2Archive(archive: ArticleTime[]): ArticleArchive[] {
+	if (!archive?.length) return []
 	let curTime = ''
 	let curArticles: ArticleTime[] = []
 	const resList: ArticleArchive[] = []
@@ -33,6 +34,9 @@ export function concatArchive(
 	archive: ArticleArchive[]
 ): ArticleArchive[] {
 	const lastCachedArchive = cachedArchive[cachedArchive.length - 1]
+	if (!archive?.length) {
+		return cachedArchive.concat([])
+	}
 	const firstNewArchive = archive[0]
 	const needConcatArticle = lastCachedArchive.time === firstNewArchive.time
 	if (needConcatArticle) {
@@ -41,6 +45,24 @@ export function concatArchive(
 	} else {
 		return cachedArchive.concat(archive)
 	}
+}
+
+//不含最大值，含最小值（向上取整）的随机整数
+function getRandomInteger(min: number, max: number) {
+	min = Math.ceil(min)
+	max = Math.floor(max)
+	return Math.floor(Math.random() * (max - min)) + min
+}
+
+//含最大值，含最小值的随机整数
+export function getRandomIntInclusive(min: number, max: number) {
+	min = Math.ceil(min)
+	max = Math.floor(max)
+	return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+export function getRandomItem(arr: any[]) {
+	return arr[getRandomInteger(0, arr.length)]
 }
 
 // 解决JSON.stringify的undefined和函数丢失问题

@@ -8,6 +8,7 @@ definePage({
 const typedRef = useTyped(['is not found!'])
 
 const router = useRouter()
+const randomUrl = `/notFound/${getRandomIntInclusive(1, 33)}.svg`
 
 const back = () => router.push('/')
 </script>
@@ -26,7 +27,7 @@ const back = () => router.push('/')
 			</button>
 		</div>
 
-		<img src="/notFound/6.svg" class="cover" alt="page not found" />
+		<img :src="randomUrl" class="cover" alt="page not found" />
 	</div>
 </template>
 

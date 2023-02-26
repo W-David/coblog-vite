@@ -1,6 +1,8 @@
 <template>
 	<div class="pagination-container" @click="loadMore">
-		<span class="pagination-content">加载更多</span>
+		<div class="pagination-content">
+			<slot></slot>
+		</div>
 	</div>
 </template>
 
@@ -13,24 +15,49 @@ const loadMore = () => emit('on-load-more')
 
 <style lang="scss" scoped>
 .pagination-container {
-	$mc: var(--el-color-primary);
 	@include layout(auto, auto, 16px 0, 0);
+
 	.pagination-content {
-		@include layout(180px, auto, 0, 8px 16px);
-		@include border(2px solid $mc, 8px);
+		position: relative;
+		@include layout(100px, 28px, 0, 0);
 		@include flex-box(row, center, center, nowrap);
 		@include font-hei;
-		@include transition(all 300ms ease-in-out);
-		font-size: 18px;
+		font-size: 16px;
 		font-weight: bolder;
-		color: #fff;
-		border-color: $mc;
-		background-color: $mc;
+		color: var(--el-color-primary);
 		cursor: pointer;
+		@include transition(all 300ms ease-in-out);
+		&::before,
+		&::after {
+			content: '';
+			position: absolute;
+			width: 20px;
+			height: 20px;
+			@include transition(all 300ms ease-in-out);
+		}
+
+		&::before {
+			top: -4px;
+			left: -4px;
+			border-top: 2px solid var(--el-color-primary);
+			border-left: 2px solid var(--el-color-primary);
+		}
+
+		&::after {
+			bottom: -4px;
+			right: -4px;
+			border-bottom: 2px solid var(--el-color-primary);
+			border-right: 2px solid var(--el-color-primary);
+		}
+
+		&:hover::before,
+		&:hover::after {
+			width: calc(100% + 8px);
+			height: calc(100% + 8px);
+		}
 		&:hover {
-			transform: scale(1.05);
-			box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px,
-				rgba(17, 17, 26, 0.1) 0px 16px 56px, rgba(17, 17, 26, 0.1) 0px 24px 80px;
+			background-color: var(--el-color-primary);
+			color: #fff;
 		}
 	}
 }

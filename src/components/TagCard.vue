@@ -59,7 +59,7 @@ const toArticle = (id: number) => {
 .tag-card-container {
 	@include position(relative);
 	@include layout(100%, auto, 0, 16px);
-	@include border(1px solid #eee, 8px);
+	@include border(2px solid #eee, 8px);
 	@include pointer;
 	@include transition(all 120ms ease-in-out);
 	@include box-shadow(0 0 16px 0 rgba(0, 0, 0, 0.1));
@@ -151,7 +151,6 @@ const toArticle = (id: number) => {
 	}
 	&.is-active {
 		border-color: var(--el-color-primary);
-		border-width: 2px;
 		@include box-shadow;
 
 		html.dark & {

@@ -1,48 +1,68 @@
 <template>
-	<div v-if="articles?.length" class="article-hot-container">
+	<div class="article-hot-container">
 		<div class="article-hot-title">热门文章</div>
 		<div class="article-hot-list">
-			<div
-				v-for="article in articles"
-				:key="article.id"
-				class="article-hot-item"
-				@click="toArticle(article.id)"
-			>
-				<div class="article-cover">
-					<img
-						v-if="article.banner && article.banner.path"
-						v-LazyLoad="
-							`${article.banner.path}?x-oss-process=image/resize,m_fill,h_64,w_64`
-						"
-						alt="noImg"
-					/>
-					<img v-else src="/static/img/defaultCover.jpg" alt="noImg" />
-				</div>
-				<div class="article-content">
-					<div class="favorite-content">
-						<div class="favorite-num">{{ article.favoCount }}</div>
-						<i-custom-fire class="favorite-icon" />
+			<el-skeleton :loading="loading" animated :count="pageSize">
+				<template #template>
+					<div class="skeleton-item">
+						<el-skeleton-item variant="image" class="article-cover" />
+						<div class="article-content">
+							<el-skeleton-item variant="p" class="article-title" />
+							<el-skeleton-item variant="text" class="article-description" />
+							<el-skeleton-item variant="text" class="article-description" />
+						</div>
 					</div>
-					<div class="article-title">
-						{{ article.title }}
+				</template>
+				<template #default>
+					<div
+						v-for="article in articles"
+						:key="article.id"
+						class="article-hot-item"
+						@click="toArticle(article.id)"
+					>
+						<div class="article-cover">
+							<img
+								v-if="article.banner && article.banner.path"
+								v-LazyLoad="
+									`${article.banner.path}?x-oss-process=image/resize,m_fill,h_64,w_64`
+								"
+								alt="noImg"
+							/>
+							<img v-else src="/static/img/defaultCover.jpg" alt="noImg" />
+						</div>
+						<div class="article-content">
+							<div class="favorite-content">
+								<div class="favorite-num">{{ article.favoCount }}</div>
+								<i-custom-fire class="favorite-icon" />
+							</div>
+							<div class="article-title">
+								{{ article.title }}
+							</div>
+							<div class="article-description">
+								{{ article.description }}
+							</div>
+						</div>
 					</div>
-					<div class="article-description">
-						{{ article.description }}
-					</div>
-				</div>
-			</div>
+				</template>
+			</el-skeleton>
 		</div>
 	</div>
 </template>
 
 <script lang="ts" setup>
+const loading = ref(true)
 const router = useRouter()
 const articleStore = useArticle()
 const articles = computed(() => articleStore.getArticlesHot)
+const pageSize = 8
 const toArticle = (id: number) => {
 	router.push({ name: 'article', params: { id } })
 }
-articleStore.GetArticlesHot({ pageSize: 8 })
+const init = async () => {
+	await articleStore.GetArticlesHot({ pageSize })
+	loading.value = false
+}
+init()
 </script>
 
 <style lang="scss" scoped>
@@ -61,8 +81,10 @@ articleStore.GetArticlesHot({ pageSize: 8 })
 	z-index: 1000;
 
 	.article-hot-title {
-		@include layout(auto, auto, 2px 8px, 2px 8px);
+		@include layout(auto, auto, 4px, 4px 8px);
 		border-left: 4px solid var(--el-color-danger);
+		background-color: var(--el-color-danger-light-9);
+		border-radius: 4px;
 		font-size: 16px;
 		font-weight: bold;
 	}
@@ -70,6 +92,26 @@ articleStore.GetArticlesHot({ pageSize: 8 })
 	.article-hot-list {
 		@include layout(100%, auto, 8px 0 0 0, 0);
 		@include flex-box(column, flex-start, center, nowrap);
+
+		.skeleton-item {
+			@include layout(100%, auto, 0, 8px);
+			@include flex-box(row, space-between, center, nowrap);
+			.article-cover {
+				@include layout(64px, 64px, 0, 0);
+			}
+			.article-content {
+				@include layout(calc(100% - 76px), 68px, 0 0 0 8px, 0);
+				.article-title {
+					width: 65%;
+				}
+				.article-description {
+					width: 100%;
+					&:last-child {
+						width: 80%;
+					}
+				}
+			}
+		}
 		.article-hot-item {
 			@include layout(100%, auto, 0, 8px);
 			@include flex-box(row, space-between, center, nowrap);

@@ -36,7 +36,7 @@ export default (router: RouterTyped) => {
 		} else {
 			// 没有登录信息
 			if (!isWhiteList) {
-				ElMessage({ showClose: false, type: 'warning', message: `请先登录` })
+				// ElMessage({ showClose: false, type: 'warning', message: `请先登录` })
 				return { name: 'login' }
 			} else {
 				return

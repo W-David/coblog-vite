@@ -70,6 +70,8 @@ declare global {
   const getCurrentScope: typeof import('vue')['getCurrentScope']
   const getFile: typeof import('../../src/api/file')['getFile']
   const getOssClient: typeof import('../../src/utils/alioss')['getOssClient']
+  const getRandomIntInclusive: typeof import('../../src/utils/format')['getRandomIntInclusive']
+  const getRandomItem: typeof import('../../src/utils/format')['getRandomItem']
   const getSTS: typeof import('../../src/api/alioss')['getSTS']
   const getScrollHeight: typeof import('../../src/utils/screen')['getScrollHeight']
   const getScrollTop: typeof import('../../src/utils/screen')['getScrollTop']

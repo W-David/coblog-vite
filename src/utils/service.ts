@@ -148,11 +148,11 @@ class Request {
 					message = '未知错误'
 				}
 				console.log('response err:', message)
-				ElMessage({
-					message: message + ', 请求重试中...',
-					type: 'error',
-					grouping: true,
-				})
+				// ElMessage({
+				// 	message: message + ', 请求重试中...',
+				// 	type: 'error',
+				// 	grouping: true,
+				// })
 				return retryEnhancer(err)
 			}
 		)

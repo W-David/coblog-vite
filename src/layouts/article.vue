@@ -3,11 +3,11 @@
 		<div class="app-main-container">
 			<el-row justify="center" :gutter="16">
 				<el-col :sm="7" :md="6" :lg="5" :xl="5" class="hidden-xs-only">
-					<div class="widget-list">
+					<!-- <div class="widget-list">
 						<transition name="slide-fade-left" appear>
 							<admin-info class="widget-item"></admin-info>
 						</transition>
-					</div>
+					</div> -->
 					<div class="widget-list is-sticky">
 						<!-- toc -->
 						<transition name="slide-fade-left" appear>

@@ -31,55 +31,53 @@
 			</template>
 		</el-dropdown>
 	</div>
-	<teleport to="#rootAdminInfo">
-		<el-dialog
-			v-model="openAdminInfo"
-			center
-			:show-close="false"
-			:width="dialogWidth"
-		>
-			<div class="avatar-container">
-				<file-upload
-					:is-uploaded="!!avatar"
-					:img-url="avatar"
-					trig-hint="上传头像"
-					descrip-hint="头像"
-					@on-upload="handleUpload"
-					@on-delete="handleDelete"
-				>
-				</file-upload>
+	<el-dialog
+		v-model="openAdminInfo"
+		center
+		append-to-body
+		:show-close="false"
+		:width="dialogWidth"
+	>
+		<div class="avatar-container">
+			<file-upload
+				:is-uploaded="!!avatar"
+				:img-url="avatar"
+				trig-hint="上传头像"
+				descrip-hint="头像"
+				@on-upload="handleUpload"
+				@on-delete="handleDelete"
+			>
+			</file-upload>
+		</div>
+		<div class="info-container">
+			<div class="info-name">
+				<span class="info-hint">昵称 - </span>
+				<span v-if="!isEN" class="info-content" @click="isEN = true">
+					{{ adminForm.nickname || '暂无昵称' }}
+				</span>
+				<input v-else v-model="adminForm.nickname" @blur="isEN = false" />
 			</div>
-			<div class="info-container">
-				<div class="info-name">
-					<span class="info-hint">昵称 - </span>
-					<span v-if="!isEN" class="info-content" @click="isEN = true">
-						{{ adminForm.nickname || '暂无昵称' }}
-					</span>
-					<input v-else v-model="adminForm.nickname" @blur="isEN = false" />
-				</div>
-				<div class="info-email">
-					<span class="info-hint">邮箱 - </span>
-					<span v-if="!isEE" class="info-content" @click="isEE = true">
-						{{ adminForm.email }}
-					</span>
-					<input v-else v-model="adminForm.email" @blur="isEE = false" />
-				</div>
+			<div class="info-email">
+				<span class="info-hint">邮箱 - </span>
+				<span v-if="!isEE" class="info-content" @click="isEE = true">
+					{{ adminForm.email }}
+				</span>
+				<input v-else v-model="adminForm.email" @blur="isEE = false" />
 			</div>
-			<template #header>
-				<span class="admin-info-title">个人信息</span>
-			</template>
-			<template #footer>
-				<div class="admin-info-footer">
-					<el-button type="primary" plain @click="handleCancel">取消</el-button>
-					<el-button type="primary" @click="handleUpdate">修改</el-button>
-				</div>
-			</template>
-		</el-dialog>
-	</teleport>
+		</div>
+		<template #header>
+			<span class="admin-info-title">个人信息</span>
+		</template>
+		<template #footer>
+			<div class="admin-info-footer">
+				<el-button type="primary" plain @click="handleCancel">取消</el-button>
+				<el-button type="primary" @click="handleUpdate">修改</el-button>
+			</div>
+		</template>
+	</el-dialog>
 </template>
 
 <script lang="ts" setup>
-useDOMCreate('rootAdminInfo')
 const router = useRouter()
 const adminStore = useAdmin()
 const appStore = useApp()
