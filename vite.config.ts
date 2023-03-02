@@ -3,6 +3,10 @@ import { defineConfig } from 'vite'
 import generatePlugins from './presets/generatePlugins'
 
 export default defineConfig({
+	server: {
+		host: '0.0.0.0',
+		open: true,
+	},
 	resolve: {
 		alias: {
 			'~/': `${resolve(__dirname, 'src')}/`,

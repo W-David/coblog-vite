@@ -21,12 +21,6 @@ declare interface Window {
 	particlesJS: any
 }
 
-declare module 'vue-router' {
-	interface RouteMeta {
-		layout?: string,
-		transitionName?: string
-	}
-}
 
 declare module "device.js";
 declare module "@waline/client/component"

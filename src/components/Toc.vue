@@ -35,23 +35,26 @@
 const activedArr = ref<string[]>([])
 const articleStore = useArticle()
 const tocArray = computed(() => articleStore.cataLog ?? [])
-const loading = computed(() => articleStore.isTocLoading)
+const loading = computed(() => articleStore.isArticleLoading)
 const isActived = (anchor: string) => {
 	const element = document.getElementById(anchor)
+	console.log('Anchor element is: ', element)
 	if (!element) return false
 	const top = element.getBoundingClientRect().top
 	return top > 0 && top < 120
 }
 const onChecked = (anchor: string) => activedArr.value.push(anchor)
 const onScroll = () => {
+	console.log('scrolling...')
 	activedArr.value.splice(0, activedArr.value.length)
 	tocArray.value.forEach((toc) => {
 		if (isActived(toc.anchor)) {
+			console.log('add actived: ', toc.anchor)
 			activedArr.value.push(toc.anchor)
 		}
 	})
 }
-useScrollPage({ onScroll, delay: 100 })
+// useScrollPage({ onScroll, delay: 100 })
 onMounted(() => onScroll())
 </script>
 

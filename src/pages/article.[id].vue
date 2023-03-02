@@ -139,7 +139,9 @@ const loginInfo = computed(() => adminStore.adminInfo)
 const isLogin = computed(() => adminStore.isLogin)
 const article = computed(() => articleStore.getArticleById(articleId))
 const loading = ref(true)
-watch(loading, (val) => (articleStore.isTocLoading = val), { immediate: true })
+watch(loading, (val) => (articleStore.isArticleLoading = val), {
+	immediate: true,
+})
 const isCurAdmin = computed(
 	() => article.value?.admin.id === loginInfo.value?.id
 )
@@ -225,9 +227,7 @@ initPage()
 		}
 
 		.skeleton-item {
-			@include layout(100%, auto, 0, 16px);
-			@include border(none, 8px);
-			@include box-shadow(2px 4px 16px rgba(0, 0, 0, 0.1));
+			@include layout(100%, auto, 0, 0);
 			.banner {
 				@include layout(100%, 320px, 0 0 12px 0, 0);
 				@include border(none, 8px);
@@ -272,7 +272,7 @@ initPage()
 				}
 			}
 			.content-container {
-				@include layout(100%, auto, 0 0 12px 0, 32px);
+				@include layout(100%, auto, 0 0 12px 0, 16px);
 				@include border(none, 8px);
 				@include box-shadow;
 				.content {
@@ -298,13 +298,13 @@ initPage()
 			}
 		}
 		.article-main-area {
-			@include layout(100%, 100%, 0, 16px);
-			@include border(1px solid #eee, 8px);
-			@include box-shadow(2px 4px 16px rgba(0, 0, 0, 0.1));
-			@include bg-color(#fafafa, #2f2f2f);
+			@include layout(100%, 100%, 0, 0);
+			// @include border(1px solid #eee, 8px);
+			// @include box-shadow(2px 4px 16px rgba(0, 0, 0, 0.1));
+			// @include bg-color(#fafafa, #2f2f2f);
 			.article-banner-container {
 				@include layout(100%, 320px, 0 0 12px 0, 0);
-				@include border(none, 8px);
+				@include border(none, 6px);
 				@include box-shadow;
 				position: relative;
 
@@ -324,7 +324,7 @@ initPage()
 					object-fit: cover;
 					width: 100%;
 					height: 100%;
-					border-radius: 4px;
+					border-radius: 6px;
 				}
 				.article-info-content {
 					@include layout(auto, auto, 8px 0 0 0, 4px 8px);

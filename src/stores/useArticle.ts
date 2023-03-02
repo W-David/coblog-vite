@@ -8,14 +8,14 @@ export default defineStore('useArticle', {
 		articlesRecent: ArticleRecent[]
 		articlesHot: ArticleHot[]
 		cataLog: TocItem[]
-		isTocLoading: boolean
+		isArticleLoading: boolean
 	} => ({
 		articleMap: new Map(),
 		articleArchive: [],
 		articlesRecent: [],
 		articlesHot: [],
 		cataLog: [],
-		isTocLoading: true,
+		isArticleLoading: true,
 	}),
 	getters: {
 		getArticleMap: (state) => () => cloneLoop(state.articleMap),

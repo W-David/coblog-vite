@@ -1,7 +1,7 @@
 const useScrollPage = ({
-	onScrollUp,
-	onScrollDown,
-	onScroll,
+	onScrollUp = () => ({}),
+	onScrollDown = () => ({}),
+	onScroll = () => ({}),
 	delay = 200,
 }: {
 	onScrollUp?: (offset?: number) => any
@@ -14,11 +14,11 @@ const useScrollPage = ({
 		const scrollTop = getScrollTop()
 		const offset = scrollTop - scrollTopCache
 		scrollTopCache = scrollTop
-		onScroll && onScroll(offset)
+		onScroll(offset)
 		if (offset >= 0) {
-			onScrollDown && onScrollDown(offset)
+			onScrollDown(offset)
 		} else {
-			onScrollUp && onScrollUp(-offset)
+			onScrollUp(-offset)
 		}
 	}
 	const onThrottleScroll = throttle(onScrolling, delay)

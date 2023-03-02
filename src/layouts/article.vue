@@ -3,11 +3,15 @@
 		<div class="app-main-container">
 			<el-row justify="center" :gutter="16">
 				<el-col :sm="7" :md="6" :lg="5" :xl="5" class="hidden-xs-only">
-					<!-- <div class="widget-list">
+					<div class="widget-list">
 						<transition name="slide-fade-left" appear>
-							<admin-info class="widget-item"></admin-info>
+							<profile
+								:admin-info="adminInfo"
+								:loading="loading"
+								class="widget-item"
+							></profile>
 						</transition>
-					</div> -->
+					</div>
 					<div class="widget-list is-sticky">
 						<!-- toc -->
 						<transition name="slide-fade-left" appear>
@@ -78,6 +82,13 @@
 <script lang="ts" setup>
 import { RouteMeta } from 'vue-router'
 import DefaultLayout from './default.vue'
+
+const articleStore = useArticle()
+const route = useRoute<'article'>()
+const adminInfo = computed(
+	() => articleStore.getArticleById(+route.params.id)?.admin
+)
+const loading = computed(() => articleStore.isArticleLoading)
 </script>
 
 <style lang="scss" scoped>

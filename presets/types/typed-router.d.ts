@@ -42,7 +42,6 @@ declare module 'vue-router/auto/routes' {
     'article': RouteRecordInfo<'article', '/article/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     'blog': RouteRecordInfo<'blog', '/blog/:id?', { id?: ParamValueZeroOrOne<true> }, { id?: ParamValueZeroOrOne<false> }>,
     'category': RouteRecordInfo<'category', '/category/:id?', { id?: ParamValueZeroOrOne<true> }, { id?: ParamValueZeroOrOne<false> }>,
-    'default': RouteRecordInfo<'default', '/default', Record<never, never>, Record<never, never>>,
     'login': RouteRecordInfo<'login', '/login', Record<never, never>, Record<never, never>>,
     'tag': RouteRecordInfo<'tag', '/tag/:id?', { id?: ParamValueZeroOrOne<true> }, { id?: ParamValueZeroOrOne<false> }>,
   }

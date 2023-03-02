@@ -50,13 +50,19 @@ const pageSize = computed({
 const handleSizeChange = (val: number) => {
 	emit('pagination', { page: currentPage.value, limit: val })
 	if (autoScroll.value) {
-		scrollTo(0, 660)
+		console.log('pagination scroll')
+		nextTick(() => {
+			window.scrollTo({ top: 0, behavior: 'smooth' })
+		})
 	}
 }
 const handleCurrentChange = (val: number) => {
 	emit('pagination', { page: val, limit: pageSize.value })
 	if (autoScroll.value) {
-		scrollTo(0, 660)
+		console.log('pagination scroll')
+		nextTick(() => {
+			window.scrollTo({ top: 0, behavior: 'smooth' })
+		})
 	}
 }
 </script>
