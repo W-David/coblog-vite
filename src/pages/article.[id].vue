@@ -355,6 +355,7 @@ initPage()
 				@include layout(100%, auto, 0 0 12px 0, 8px);
 				@include border(none, 8px);
 				@include box-shadow;
+				background-color: var(--el-bg-color);
 				.row-container {
 					@include layout(100%, auto, 4px 0, 4px 8px);
 					@include flex-box(row, space-between, flex-start, wrap);

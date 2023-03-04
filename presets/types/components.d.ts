@@ -8,7 +8,6 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     Admin: typeof import('./../../src/components/Admin.vue')['default']
-    AdminInfo: typeof import('./../../src/components/AdminInfo.vue')['default']
     ArticleCard: typeof import('./../../src/components/ArticleCard.vue')['default']
     ArticleHot: typeof import('./../../src/components/ArticleHot.vue')['default']
     ArticleRecent: typeof import('./../../src/components/ArticleRecent.vue')['default']
