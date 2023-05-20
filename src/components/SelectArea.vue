@@ -1,6 +1,8 @@
 <template>
 	<div class="select-area-container">
-		<el-button :type="styl || 'primary'" @click="handleSelect">
+		<el-button
+			:type="styl || 'primary'"
+			@click="handleSelect">
 			{{ selectText }}
 		</el-button>
 		<span v-if="items && items.length">
@@ -10,8 +12,7 @@
 				:type="styl"
 				effect="dark"
 				closable
-				@close="handleClose(item)"
-			>
+				@close="handleClose(item)">
 				{{ item.name }}
 			</el-tag>
 		</span>
@@ -22,16 +23,13 @@
 			class="input-new-item"
 			size="small"
 			@keyup.enter="handleAdd"
-			@blur="handleCancel"
-		>
-		</el-input>
+			@blur="handleCancel"></el-input>
 		<el-button
 			v-else
 			plain
 			size="small"
 			class="btn-new-item"
-			@click="showInput"
-		>
+			@click="showInput">
 			{{ '+ ' + addText }}
 		</el-button>
 	</div>
@@ -48,7 +46,7 @@ const props = withDefaults(
 	{
 		styl: '',
 		selectText: '选择项',
-		addText: '添加项',
+		addText: '添加项'
 	}
 )
 const { items, styl, selectText, addText } = toRefs(props)

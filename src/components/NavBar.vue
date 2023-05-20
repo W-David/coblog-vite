@@ -4,13 +4,15 @@
 			<el-icon
 				:size="20"
 				class="hidden-md-and-up"
-				@click.stop.prevent="handleExpand"
-			>
+				@click.stop.prevent="handleExpand">
 				<i-ep-expand />
 			</el-icon>
-			<span data-text="Cody's Blog" class="icon-text" @click="toHome"
-				>Cody's Blog</span
-			>
+			<span
+				data-text="Cody's Blog"
+				class="icon-text"
+				@click="toHome">
+				Cody's Blog
+			</span>
 		</div>
 		<div class="nav-menu hidden-sm-and-down">
 			<el-menu
@@ -18,13 +20,11 @@
 				:default-active="activePage"
 				:router="true"
 				mode="horizontal"
-				:ellipsis="false"
-			>
+				:ellipsis="false">
 				<el-menu-item
 					v-for="menu in menuList"
 					:key="menu.id"
-					:index="menu.path"
-				>
+					:index="menu.path">
 					{{ menu.name }}
 				</el-menu-item>
 			</el-menu>
@@ -38,7 +38,9 @@
 			</div>
 			<div class="nav-user-info hidden-sm-and-down">
 				<admin v-if="isLogin"></admin>
-				<span v-else @click="toLogin">
+				<span
+					v-else
+					@click="toLogin">
 					<span class="to-login">登录</span>
 				</span>
 			</div>

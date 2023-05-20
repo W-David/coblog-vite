@@ -1,12 +1,22 @@
 <template>
 	<default-layout>
 		<div class="app-main-container">
-			<el-row justify="center" :gutter="16">
-				<el-col :xs="24" :sm="22" :md="20" :lg="16">
+			<el-row
+				justify="center"
+				:gutter="16">
+				<el-col
+					:xs="24"
+					:sm="22"
+					:md="20"
+					:lg="16">
 					<!-- main-content -->
-					<router-view v-slot="{ Component, route }" class="widget-list">
+					<router-view
+						v-slot="{ Component, route }"
+						class="widget-list">
 						<transition :name="(route.meta as RouteMeta).transitionName">
-							<component :is="Component" :key="route.path" />
+							<component
+								:is="Component"
+								:key="route.path" />
 						</transition>
 					</router-view>
 				</el-col>

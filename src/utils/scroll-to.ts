@@ -35,16 +35,14 @@ function position() {
 }
 
 export function getYPosition(element?: Element): number {
-	return element
-		? element.getBoundingClientRect().top + document.documentElement.scrollTop
-		: 80
+	return element ? element.getBoundingClientRect().top + document.documentElement.scrollTop : 80
 }
 
 export function scrollToByView(id: string) {
 	document.getElementById(id)?.scrollIntoView({
 		behavior: 'smooth', // 定义动画过渡效果, "auto"或 "smooth" 之一,默认为 "auto"
 		block: 'start', // 定义垂直方向的对齐, "start", "center", "end", 或 "nearest"之一,默认为 "start"
-		inline: 'nearest', // 定义水平方向的对齐, "start", "center", "end", 或 "nearest"之一, 默认为 "nearest"
+		inline: 'nearest' // 定义水平方向的对齐, "start", "center", "end", 或 "nearest"之一, 默认为 "nearest"
 	})
 }
 
@@ -74,10 +72,6 @@ export function scrollTo(to: number, duration: number, callback: () => any) {
 	animateScroll()
 }
 
-export function scrollToByEle(
-	element: Element,
-	duration: number,
-	callback: () => any
-) {
+export function scrollToByEle(element: Element, duration: number, callback: () => any) {
 	scrollTo(getYPosition(element) - 76, duration, callback)
 }

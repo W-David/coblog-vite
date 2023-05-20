@@ -1,21 +1,8 @@
-import type {
-	AxiosInstance,
-	AxiosRequestConfig,
-	AxiosResponse,
-	CancelTokenStatic,
-	InternalAxiosRequestConfig,
-} from 'axios'
+import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, CancelTokenStatic, InternalAxiosRequestConfig } from 'axios'
 
-export type NOMethodAxiosRequestConfig<D = any> = Omit<
-	AxiosRequestConfig<D>,
-	'method'
-> &
-	CustomRequestConfig
+export type NOMethodAxiosRequestConfig<D = any> = Omit<AxiosRequestConfig<D>, 'method'> & CustomRequestConfig
 
-export type UrlAxiosRequestConfig<D = any> = Omit<
-	NOMethodAxiosRequestConfig<D>,
-	'url'
-> & {
+export type UrlAxiosRequestConfig<D = any> = Omit<NOMethodAxiosRequestConfig<D>, 'url'> & {
 	url: string
 }
 
@@ -27,8 +14,7 @@ export interface CustomRequestConfig {
 	retryCount?: number
 }
 
-export type CustomAxiosRequestConfig<D = any> = InternalAxiosRequestConfig<D> &
-	CustomRequestConfig
+export type CustomAxiosRequestConfig<D = any> = InternalAxiosRequestConfig<D> & CustomRequestConfig
 
 export interface RawCacheOption {
 	enableCache: boolean
@@ -49,14 +35,14 @@ enum errorCode {
 	'权限不足' = 403,
 	'资源不存在' = 404,
 	'服务端错误' = 500,
-	'未知错误' = -1,
+	'未知错误' = -1
 }
 
 export type ApiKey = 'admin' | 'article' | 'category' | 'tag'
 
 const initConfig: AxiosRequestConfig = {
 	baseURL: import.meta.env.VITE_APP_BASE_URL,
-	timeout: 30000,
+	timeout: 30000
 }
 
 class Request {
@@ -66,24 +52,21 @@ class Request {
 	controller: AbortController | null = null
 	initCacheOption: RawCacheOption = {
 		enableCache: true,
-		enableForceUpdate: false,
+		enableForceUpdate: false
 	}
 	initRetryOption: RawRetryOption = {
 		defaultTime: 3,
-		defaultDelay: 300,
+		defaultDelay: 300
 	}
-	static cacheObj = new LRUCache<
-		string,
-		{ timestamp: number; data: AxiosResponse }
-	>({
+	static cacheObj = new LRUCache<string, { timestamp: number; data: AxiosResponse }>({
 		max: 500,
-		ttl: 1000 * 60 * 5,
+		ttl: 1000 * 60 * 5
 	})
 	static cacheFlag: Record<ApiKey, number> = {
 		admin: 0,
 		article: 0,
 		category: 0,
-		tag: 0,
+		tag: 0
 	}
 
 	constructor(config?: AxiosRequestConfig) {
@@ -113,10 +96,7 @@ class Request {
 				console.log(`response ${res.config.url} is:`, res)
 				const code = res.data.code || 200
 				const msg = errorCode[code] || res.data.msg || errorCode[-1]
-				if (
-					res.request.responseType === 'blob' ||
-					res.request.responseType === 'arraybuffer'
-				) {
+				if (res.request.responseType === 'blob' || res.request.responseType === 'arraybuffer') {
 					return res
 				}
 				if (code !== 200) {
@@ -132,9 +112,7 @@ class Request {
 				if (message === 'canceled') {
 					const reqKey = this.generateReqKey(config)
 					console.log(`${config.url} has been canceled, reqKey:`, reqKey)
-					const { data: cacheRes, timestamp } = Request.cacheObj.has(reqKey)
-						? Request.cacheObj.get(reqKey)
-						: { timestamp: 0, data: null }
+					const { data: cacheRes } = Request.cacheObj.has(reqKey) ? Request.cacheObj.get(reqKey) : { data: null }
 					console.log(`${config.url} has been canceled, cacheRes:`, cacheRes)
 					return Promise.resolve(cacheRes)
 				}
@@ -160,10 +138,8 @@ class Request {
 
 	private isEnableCache(res?: AxiosResponse<HResponseType>) {
 		if (!res) return false
-		const isArray = (data: any) =>
-			Object.prototype.toString.call(data) === '[object Array]'
-		const isObject = (data: object) =>
-			Object.prototype.toString.call(data) === '[object Object]'
+		const isArray = (data: any) => Object.prototype.toString.call(data) === '[object Array]'
+		const isObject = (data: object) => Object.prototype.toString.call(data) === '[object Object]'
 		if (res?.data?.data) {
 			if (isArray(res.data.data)) {
 				return res.data.data.length > 0
@@ -182,41 +158,25 @@ class Request {
 
 	private generateCacheEnhancer(options?: CacheOption) {
 		const enableCache = options?.enableCache ?? this.initCacheOption.enableCache
-		const enableForceUpdate =
-			options?.enableForceUpdate ?? this.initCacheOption.enableForceUpdate
+		const enableForceUpdate = options?.enableForceUpdate ?? this.initCacheOption.enableForceUpdate
 		return {
 			reqCacheEnhancer: (config: CustomAxiosRequestConfig) => {
-				const {
-					method,
-					cache = enableCache,
-					forceUpdate = enableForceUpdate,
-				} = config
+				const { method, cache = enableCache, forceUpdate = enableForceUpdate } = config
 				const isGet = method === 'GET' || method === 'get'
 				const apiKey = config.url?.split('/')[1] as ApiKey
 				if (isGet && cache) {
 					const reqKey = this.generateReqKey(config)
-					const { data: cacheRes, timestamp } = Request.cacheObj.has(reqKey)
-						? Request.cacheObj.get(reqKey)
-						: { timestamp: 0, data: null }
+					const { data: cacheRes, timestamp } = Request.cacheObj.has(reqKey) ? Request.cacheObj.get(reqKey) : { timestamp: 0, data: null }
 					const isEnableCache = this.isEnableCache(cacheRes)
 					const isLatestCache = Request.cacheFlag[apiKey] < timestamp
-					console.log(
-						`request cache ${config.url} isEnableCache, isLatestCache, notForceUpdate:`,
-						isEnableCache,
-						isLatestCache,
-						!forceUpdate
-					)
+					console.log(`request cache ${config.url} isEnableCache, isLatestCache, notForceUpdate:`, isEnableCache, isLatestCache, !forceUpdate)
 					/**
 					 * 取消请求，需满足以下所有情况 (注: 需要在返回的错误拦截器上对被取消的请求做处理
 					 * 1. 命中了缓存
 					 * 2. 缓存是最新的响应
 					 * 3. 未配置强制更新
 					 */
-					if (
-						this.isEnableCache(cacheRes) &&
-						Request.cacheFlag[apiKey] < timestamp &&
-						!forceUpdate
-					) {
+					if (this.isEnableCache(cacheRes) && Request.cacheFlag[apiKey] < timestamp && !forceUpdate) {
 						console.log(`request cache ${config.url} is aborted`)
 						this.controller = new AbortController()
 						config.signal = this.controller.signal
@@ -228,11 +188,7 @@ class Request {
 			},
 			resCacheEnhancer: (res: AxiosResponse) => {
 				const config: CustomAxiosRequestConfig = res.config
-				const {
-					method,
-					cache = enableCache,
-					forceUpdate = enableForceUpdate,
-				} = config
+				const { method, cache = enableCache, forceUpdate = enableForceUpdate } = config
 				const isGet = method === 'GET' || method === 'get'
 				const apiKey = config.url?.split('/')[1] as ApiKey
 				// 如果不是GET响应体(需要是成功的返回值)，此时数据已经被修改
@@ -244,32 +200,21 @@ class Request {
 				}
 				if (isGet && cache) {
 					const reqKey = this.generateReqKey(config)
-					const { data: cacheRes, timestamp } = Request.cacheObj.has(reqKey)
-						? Request.cacheObj.get(reqKey)
-						: { timestamp: 0, data: null }
+					const { data: cacheRes, timestamp } = Request.cacheObj.has(reqKey) ? Request.cacheObj.get(reqKey) : { timestamp: 0, data: null }
 					const isDisableCache = !this.isEnableCache(cacheRes)
 					const isOutdateCache = Request.cacheFlag[apiKey] > timestamp
-					console.log(
-						`response cache ${config.url} isDisableCache, isOutdateCache, forceUpdate:`,
-						isDisableCache,
-						isOutdateCache,
-						forceUpdate
-					)
+					console.log(`response cache ${config.url} isDisableCache, isOutdateCache, forceUpdate:`, isDisableCache, isOutdateCache, forceUpdate)
 					/**
 					 * 更新缓存并返回最新的响应，有以下情况
 					 * 1. 缓存未命中，即缓存不存在或者失效
 					 * 2. 缓存不是最新的响应
 					 * 3. 配置了强制更新
 					 */
-					if (
-						!this.isEnableCache(cacheRes) ||
-						Request.cacheFlag[apiKey] > timestamp ||
-						forceUpdate
-					) {
+					if (!this.isEnableCache(cacheRes) || Request.cacheFlag[apiKey] > timestamp || forceUpdate) {
 						console.log(`response cache ${config.url} is cached`)
 						Request.cacheObj.set(reqKey, {
 							timestamp: new Date().getTime(),
-							data: cloneForce(res),
+							data: cloneForce(res)
 						})
 						return res
 					}
@@ -277,32 +222,27 @@ class Request {
 					return cloneForce(cacheRes)
 				}
 				return res
-			},
+			}
 		}
 	}
 
 	private generateRetryEnhancer(options?: RetryOption) {
 		const defaultTime = options?.defaultTime ?? this.initRetryOption.defaultTime
-		const defaultDelay =
-			options?.defaultDelay ?? this.initRetryOption.defaultDelay
+		const defaultDelay = options?.defaultDelay ?? this.initRetryOption.defaultDelay
 		return async (err: any) => {
 			const config: CustomAxiosRequestConfig = err.config
 			if (!config) {
 				console.log('response retry err:', err)
 				return Promise.reject(err)
 			}
-			const {
-				retryTime = defaultTime,
-				retryDelay = defaultDelay,
-				retryCount = 0,
-			} = config
+			const { retryTime = defaultTime, retryDelay = defaultDelay, retryCount = 0 } = config
 			config.retryCount = retryCount
 			if (retryCount >= retryTime) {
 				console.log('response retry is end')
 				return Promise.reject(err)
 			}
 			config.retryCount++
-			const delay = new Promise<void>((res) => {
+			const delay = new Promise<void>(res => {
 				setTimeout(() => res(), retryDelay)
 			})
 			await delay
@@ -321,11 +261,7 @@ class Request {
 		return this.instance.post<HResponseType<T>>(config.url, config.data, config)
 	}
 	public patch<T = any, D = any>(config: UrlAxiosRequestConfig<D>) {
-		return this.instance.patch<HResponseType<T>>(
-			config.url,
-			config.data,
-			config
-		)
+		return this.instance.patch<HResponseType<T>>(config.url, config.data, config)
 	}
 	public put<T = any, D = any>(config: UrlAxiosRequestConfig<D>) {
 		return this.instance.put<HResponseType<T>>(config.url, config.data, config)

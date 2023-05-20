@@ -14,7 +14,9 @@
 				<span class="shadow" style="--i: 5"></span>
 			</div>
 		</div> -->
-		<div v-show="hasMore" class="load-more-area">
+		<div
+			v-show="hasMore"
+			class="load-more-area">
 			<load-more @on-load-more="handleLoadMore">
 				<span v-show="!isLoadingMore">加载更多</span>
 				<span v-show="isLoadingMore">加载中</span>
@@ -31,7 +33,7 @@ const props = withDefaults(
 	}>(),
 	{
 		isLoadingMore: false,
-		hasMore: true,
+		hasMore: true
 	}
 )
 const { isLoadingMore, hasMore } = toRefs(props)
@@ -43,14 +45,14 @@ const handleLoadMore = () => {
 		ElMessage({
 			type: 'info',
 			message: '没有更多了',
-			grouping: true,
+			grouping: true
 		})
 	} else {
 		if (isLoadingMore.value) {
 			ElMessage({
 				type: 'info',
 				message: '努力加载中',
-				grouping: true,
+				grouping: true
 			})
 		} else {
 			emit('on-load-more')

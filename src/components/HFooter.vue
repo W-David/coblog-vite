@@ -1,18 +1,23 @@
 <template>
 	<div class="h-footer-container">
 		<div class="beian-hint">
-			<el-link href="https://beian.miit.gov.cn" target="_blank"
-				>晋ICP备2023000379号-1</el-link
-			>
+			<el-link
+				href="https://beian.miit.gov.cn"
+				target="_blank">
+				晋ICP备2023000379号-1
+			</el-link>
 			<el-divider direction="vertical" />
-			<el-link href="https://coblog.fun" target="_blank">Cody's Blog</el-link>
+			<el-link
+				href="https://coblog.fun"
+				target="_blank">
+				Cody's Blog
+			</el-link>
 			<el-divider direction="vertical" />
 			<el-popover
 				placement="top-start"
 				title="联系方式"
 				:width="300"
-				trigger="hover"
-			>
+				trigger="hover">
 				<template #default>
 					<div class="contact-me-email">邮箱: 1776867536@qq.com</div>
 					<div class="contact-me-call">电话: 18406583710</div>
@@ -24,9 +29,11 @@
 		</div>
 		<div class="copyright-hint">
 			<span>Copyright © 2022 Cody. All rights reserved.</span>
-			<span id="busuanzi_container_site_uv"
-				>累计访客数 <span id="busuanzi_value_site_uv"></span> 人次</span
-			>
+			<span id="busuanzi_container_site_uv">
+				累计访客数
+				<span id="busuanzi_value_site_uv"></span>
+				人次
+			</span>
 		</div>
 	</div>
 </template>

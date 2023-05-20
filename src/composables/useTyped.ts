@@ -7,7 +7,7 @@ export default (strings: string[]) => {
 		init(typedRef.value ?? '404', {
 			strings,
 			showCursor: false,
-			disableBackTyping: true,
+			disableBackTyping: true
 		})
 	})
 	return typedRef

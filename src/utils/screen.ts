@@ -9,8 +9,7 @@ export function getScrollTop() {
 	if (document.documentElement) {
 		documentScrollTop = document.documentElement.scrollTop
 	}
-	scrollTop =
-		bodyScrollTop - documentScrollTop > 0 ? bodyScrollTop : documentScrollTop
+	scrollTop = bodyScrollTop - documentScrollTop > 0 ? bodyScrollTop : documentScrollTop
 	return scrollTop
 }
 
@@ -25,10 +24,7 @@ export function getScrollHeight() {
 	if (document.documentElement) {
 		documentScrollHeight = document.documentElement.scrollHeight
 	}
-	scrollHeight =
-		bodyScrollHeight - documentScrollHeight > 0
-			? bodyScrollHeight
-			: documentScrollHeight
+	scrollHeight = bodyScrollHeight - documentScrollHeight > 0 ? bodyScrollHeight : documentScrollHeight
 	return scrollHeight
 }
 

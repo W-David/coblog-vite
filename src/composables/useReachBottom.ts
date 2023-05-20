@@ -10,9 +10,7 @@ const useReachBottom = (callback: () => any) => {
 		if (callback) callback()
 	}
 	const onThrottleScroll = throttle(onScroll, 200)
-	onMounted(() =>
-		setTimeout(() => window.addEventListener('scroll', onThrottleScroll), 0)
-	)
+	onMounted(() => setTimeout(() => window.addEventListener('scroll', onThrottleScroll), 0))
 	onUnmounted(() => window.removeEventListener('scroll', onThrottleScroll))
 }
 

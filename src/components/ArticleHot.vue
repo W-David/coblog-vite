@@ -2,14 +2,25 @@
 	<div class="article-hot-container">
 		<div class="article-hot-title">热门文章</div>
 		<div class="article-hot-list">
-			<el-skeleton :loading="loading" animated :count="pageSize">
+			<el-skeleton
+				:loading="loading"
+				animated
+				:count="pageSize">
 				<template #template>
 					<div class="skeleton-item">
-						<el-skeleton-item variant="image" class="article-cover" />
+						<el-skeleton-item
+							variant="image"
+							class="article-cover" />
 						<div class="article-content">
-							<el-skeleton-item variant="p" class="article-title" />
-							<el-skeleton-item variant="text" class="article-description" />
-							<el-skeleton-item variant="text" class="article-description" />
+							<el-skeleton-item
+								variant="p"
+								class="article-title" />
+							<el-skeleton-item
+								variant="text"
+								class="article-description" />
+							<el-skeleton-item
+								variant="text"
+								class="article-description" />
 						</div>
 					</div>
 				</template>
@@ -18,17 +29,16 @@
 						v-for="article in articles"
 						:key="article.id"
 						class="article-hot-item"
-						@click="toArticle(article.id)"
-					>
+						@click="toArticle(article.id)">
 						<div class="article-cover">
 							<img
 								v-if="article.banner && article.banner.path"
-								v-LazyLoad="
-									`${article.banner.path}?x-oss-process=image/resize,m_fill,h_64,w_64`
-								"
-								alt="noImg"
-							/>
-							<img v-else src="/static/img/defaultCover.jpg" alt="noImg" />
+								v-LazyLoad="`${article.banner.path}?x-oss-process=image/resize,m_fill,h_64,w_64`"
+								alt="noImg" />
+							<img
+								v-else
+								src="/static/img/defaultCover.jpg"
+								alt="noImg" />
 						</div>
 						<div class="article-content">
 							<div class="favorite-content">
@@ -68,13 +78,7 @@ init()
 <style lang="scss" scoped>
 .article-hot-container {
 	@include layout(100%, auto, 0, 8px);
-	@include scroll-bar-reset(
-		6px,
-		auto,
-		transparent,
-		var(--el-border-color),
-		3px
-	);
+	@include scroll-bar-reset(6px, auto, transparent, var(--el-border-color), 3px);
 	@include border(none, 8px);
 	@include bg-color(#fff);
 	box-shadow: var(--el-box-shadow);

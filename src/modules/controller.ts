@@ -4,7 +4,7 @@ const whiteList = ['login', '/', 'article', 'tag', 'category', 'about']
 const redirectList = ['login']
 
 export default (router: RouterTyped) => {
-	router.beforeEach(async (to) => {
+	router.beforeEach(async to => {
 		const adminStore = useAdmin()
 		const token = getToken() || ''
 		const isLogin = adminStore.isLogin
@@ -26,7 +26,7 @@ export default (router: RouterTyped) => {
 					ElMessage({
 						type: 'success',
 						message: `欢迎回来，${res.data.data.nickname}`,
-						showClose: false,
+						showClose: false
 					})
 					return { name: '/' }
 				} else {

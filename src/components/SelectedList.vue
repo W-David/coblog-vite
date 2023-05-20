@@ -1,13 +1,15 @@
 <template>
 	<div class="selected-list-container">
-		<el-card v-loading="loading" shadow="never" class="checkbox-card">
+		<el-card
+			v-loading="loading"
+			shadow="never"
+			class="checkbox-card">
 			<div v-if="list && list.length">
 				<el-check-tag
 					v-for="item in list"
 					:key="item.id"
 					:checked="isChecked(item)"
-					@change="handleCheckChange(item)"
-				>
+					@change="handleCheckChange(item)">
 					{{ item.name }}
 				</el-check-tag>
 			</div>
@@ -27,7 +29,7 @@ const props = withDefaults(
 		checkedArr: Category[] | Tag[]
 	}>(),
 	{
-		loading: false,
+		loading: false
 	}
 )
 const { loading, isShow, list } = toRefs(props)
@@ -43,12 +45,11 @@ watch(isShow, (nv, ov) => {
 	}
 })
 
-const isChecked = (item: Category | Tag) =>
-	checkedList.value.some((it) => it.id === item.id)
+const isChecked = (item: Category | Tag) => checkedList.value.some(it => it.id === item.id)
 
 const handleCheckChange = (item: Category | Tag) => {
 	if (isChecked(item)) {
-		checkedList.value = checkedList.value.filter((it) => it.id !== item.id)
+		checkedList.value = checkedList.value.filter(it => it.id !== item.id)
 	} else {
 		checkedList.value.push(item)
 	}

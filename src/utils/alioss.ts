@@ -15,10 +15,10 @@ export function getOssClient(sts: Credentials) {
 			const stsObj = {
 				accessKeyId: sts.AccessKeyId,
 				accessKeySecret: sts.AccessKeySecret,
-				stsToken: sts.SecurityToken,
+				stsToken: sts.SecurityToken
 			}
 			return stsObj
 		},
-		refreshSTSTokenInterval: 300000,
+		refreshSTSTokenInterval: 300000
 	})
 }

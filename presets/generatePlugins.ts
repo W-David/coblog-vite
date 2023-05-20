@@ -35,7 +35,7 @@ import {
 	VarletUIResolver,
 	ViewUiResolver,
 	Vuetify3Resolver,
-	VueUseComponentsResolver,
+	VueUseComponentsResolver
 } from 'unplugin-vue-components/resolvers'
 import VueMarcos from 'unplugin-vue-macros/dist/vite'
 import { GenerateTitle } from './plugins/html'
@@ -46,53 +46,51 @@ export default () => {
 		// https://github.com/sxzz/unplugin-vue-macros/blob/main/README-zh-CN.md
 		VueMarcos({
 			hoistStatic: true,
-			defineOptions: true,
+			defineOptions: true
 		}),
 		// https://github.com/posva/unplugin-vue-router
 		VueRouter({
 			routesFolder: 'src/pages',
 			extensions: ['.md', '.vue', '.tsx'],
-			dts: 'presets/types/typed-router.d.ts',
+			dts: 'presets/types/typed-router.d.ts'
 		}),
 		// 生成 title
 		GenerateTitle(),
 		// vue 官方插件，用来解析 sfc
 		Vue({
-			include: [/\.vue$/, /\.md$/],
+			include: [/\.vue$/, /\.md$/]
 		}),
 		// markdown 编译插件
 		Markdown(),
 		// 布局系统
 		Layouts({
 			target: 'src/layouts',
-			defaultLayout: 'main',
+			defaultLayout: 'main'
 		}),
 		// 调试工具
 		Inspect({
-			enabled: env.VITE_APP_INSPECT,
+			enabled: env.VITE_APP_INSPECT
 		}),
 		// windicss 插件
 		Windicss({
-			safelist: markdownWrapperClasses,
+			safelist: markdownWrapperClasses
 		}),
 		// mock 服务
 		viteMockServe({
-			prodEnabled: env.VITE_APP_MOCK_IN_PRODUCTION,
+			prodEnabled: env.VITE_APP_MOCK_IN_PRODUCTION
 		}),
 		// https://icones.netlify.app/
 		Icons({
 			compiler: 'vue3',
 			customCollections: {
-				custom: FileSystemIconLoader('src/assets/icons', (svg) =>
-					svg.replace(/^<svg /, '<svg fill="currentColor" ')
-				),
+				custom: FileSystemIconLoader('src/assets/icons', svg => svg.replace(/^<svg /, '<svg fill="currentColor" '))
 			},
 			iconCustomizer(collection, icon, props) {
 				if (collection === 'custom') {
 					props.width = '20px'
 					props.height = '20px'
 				}
-			},
+			}
 		}),
 		// 组件自动按需引入
 		Components({
@@ -101,8 +99,8 @@ export default () => {
 			types: [
 				{
 					from: 'vue-router',
-					names: ['RouterLink', 'RouterView'],
-				},
+					names: ['RouterLink', 'RouterView']
+				}
 			],
 			resolvers: normalizeResolvers({
 				onlyExist: [
@@ -120,21 +118,21 @@ export default () => {
 					[InklineResolver(), '@inkline/inkline'],
 					[
 						ElementPlusResolver({
-							importStyle: 'sass',
+							importStyle: 'sass'
 						}),
-						'element-plus',
+						'element-plus'
 					],
 					[HeadlessUiResolver(), '@headlessui/vue'],
 					[ArcoResolver(), '@arco-design/web-vue'],
 					[AntDesignVueResolver(), 'ant-design-vue'],
-					[VueUseComponentsResolver(), '@vueuse/components'],
+					[VueUseComponentsResolver(), '@vueuse/components']
 				],
 				include: [
 					IconsResolver({
-						customCollections: ['custom'],
-					}),
-				],
-			}),
+						customCollections: ['custom']
+					})
+				]
+			})
 		}),
 		// api 自动按需引入
 		env.VITE_APP_API_AUTO_IMPORT &&
@@ -143,7 +141,7 @@ export default () => {
 					env.VITE_APP_API_AUTO_IMPORT && 'src/stores/**/*.ts',
 					env.VITE_APP_API_AUTO_IMPORT && 'src/composables/**/*.ts',
 					env.VITE_APP_API_AUTO_IMPORT && 'src/api/**/*.ts',
-					env.VITE_APP_API_AUTO_IMPORT && 'src/utils/**/*.ts',
+					env.VITE_APP_API_AUTO_IMPORT && 'src/utils/**/*.ts'
 				],
 				dts: './presets/types/auto-imports.d.ts',
 				imports: [
@@ -158,30 +156,30 @@ export default () => {
 						'@jsmini/clone': ['cloneLoop', 'cloneForce'],
 						'element-plus': ['ElMessage', 'ElMessageBox'],
 						'lru-cache': [['default', 'LRUCache']],
-						qs: [['default', 'QS']],
-					},
+						qs: [['default', 'QS']]
+					}
 				],
 				resolvers: AutoImportResolvers,
 				eslintrc: {
 					enabled: true,
 					globalsPropValue: true,
-					filepath: 'presets/eslint/.eslintrc-auto-import.json',
-				},
+					filepath: 'presets/eslint/.eslintrc-auto-import.json'
+				}
 			}),
 		// i18n 国际化支持
 		I18n({
 			runtimeOnly: false,
 			compositionOnly: true,
-			include: [resolve(__dirname, '../locales/**')],
+			include: [resolve(__dirname, '../locales/**')]
 		}),
 		// tsx 支持
 		vueJsx(),
 		// 生产环境资源压缩
 		viteCompression({
 			// @ts-ignore
-			algorithm: env.VITE_APP_COMPRESSINON_ALGORITHM,
+			algorithm: env.VITE_APP_COMPRESSINON_ALGORITHM
 		}),
 		// 生产环境下移除 console.log, console.warn, console.error
-		Removelog(),
+		Removelog()
 	]
 }

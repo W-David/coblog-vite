@@ -1,7 +1,9 @@
 <template>
 	<div class="toc-item-container">
 		<div :class="['toc-item', isActived ? 'is-actived' : '']">
-			<div class="item-content" :style="{ 'text-indent': itemIndent }">
+			<div
+				class="item-content"
+				:style="{ 'text-indent': itemIndent }">
 				<a @click="anchor(item.anchor)">{{ item.content }}</a>
 			</div>
 		</div>
@@ -17,16 +19,14 @@ const props = withDefaults(
 	}>(),
 	{
 		indent: 16,
-		isActived: false,
+		isActived: false
 	}
 )
 const emits = defineEmits<{
 	(e: 'on-checked', anchor: string): void
 }>()
 const { item, indent } = toRefs(props)
-const itemIndent = computed(
-	() => `${indent.value * Math.max(item.value.level - 1, 0)}px`
-)
+const itemIndent = computed(() => `${indent.value * Math.max(item.value.level - 1, 0)}px`)
 const anchor = (anchor: string) => {
 	emits('on-checked', anchor)
 	scrollToByView(anchor)

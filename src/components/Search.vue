@@ -9,8 +9,7 @@
 			:fit-input-width="true"
 			:teleported="true"
 			placeholder="标题 / 标签 / 类别"
-			@select="handleQuery"
-		>
+			@select="handleQuery">
 			<template #suffix>
 				<el-icon @click="handleQuery"><i-ep-search /></el-icon>
 			</template>
@@ -19,10 +18,13 @@
 					<div class="ac-type">
 						<i-custom-article
 							v-if="item.type === 'article'"
-							class="svg-article"
-						/>
-						<i-custom-tag v-else-if="item.type === 'tag'" class="svg-tag" />
-						<i-custom-category v-else class="svg-category" />
+							class="svg-article" />
+						<i-custom-tag
+							v-else-if="item.type === 'tag'"
+							class="svg-tag" />
+						<i-custom-category
+							v-else
+							class="svg-category" />
 					</div>
 					<div class="ac-val">{{ item.value }}</div>
 				</div>
@@ -38,10 +40,7 @@ const handleQuery = (data: Record<string, any>) => {
 	const { type, id } = data as SearchType
 	router.push({ name: `${type}`, params: { id } })
 }
-const querySearch = async (
-	qs: string,
-	callback: (results: Record<string, any>[]) => void
-) => {
+const querySearch = async (qs: string, callback: (results: Record<string, any>[]) => void) => {
 	if (!qs) {
 		return Promise.resolve([])
 	}

@@ -4,22 +4,18 @@
 			<div class="article-banner-img">
 				<img
 					v-if="article.banner && article.banner.path"
-					v-LazyLoad="
-						`${article.banner.path}?x-oss-process=image/resize,m_fill,h_280,w_780`
-					"
-					alt="noImg"
-				/>
-				<img v-else src="/static/img/defaultCover.jpg" alt="noImg" />
+					v-LazyLoad="`${article.banner.path}?x-oss-process=image/resize,m_fill,h_280,w_780`"
+					alt="noImg" />
+				<img
+					v-else
+					src="/static/img/defaultCover.jpg"
+					alt="noImg" />
 			</div>
 			<div
-				:class="[
-					'article-banner-description',
-					!isBannerHover ? 'spinner-border' : '',
-				]"
+				:class="['article-banner-description', !isBannerHover ? 'spinner-border' : '']"
 				@mouseenter="isBannerHover = true"
 				@mouseleave="isBannerHover = false"
-				@click="openDetail"
-			>
+				@click="openDetail">
 				阅读全文
 			</div>
 			<!-- <div class="article-no-banner" v-if="!article.banner">
@@ -28,28 +24,29 @@
       </div> -->
 		</div>
 		<div class="article-title-container">
-			<span class="title-content" @click="openDetail">
+			<span
+				class="title-content"
+				@click="openDetail">
 				{{ article.title }}
 			</span>
 		</div>
 		<div
 			v-if="article.categories?.length || article.tags?.length"
-			class="article-ct-container"
-		>
+			class="article-ct-container">
 			<category-panel
 				v-for="category in article.categories"
 				:key="category.id"
 				:size="12"
-				:category="category"
-			></category-panel>
+				:category="category"></category-panel>
 			<tag-panel
 				v-for="tag in article.tags"
 				:key="tag.id"
 				:size="12"
-				:tag="tag"
-			></tag-panel>
+				:tag="tag"></tag-panel>
 		</div>
-		<div v-if="article.description" class="article-content-container">
+		<div
+			v-if="article.description"
+			class="article-content-container">
 			{{ article.description }}
 		</div>
 		<div class="article-description-container">
@@ -58,7 +55,10 @@
 				{{ article.createdAt.split(' ')[0] }}
 			</div>
 			<div class="load-more">
-				<el-button text bg @click="openDetail">
+				<el-button
+					text
+					bg
+					@click="openDetail">
 					<span>详情</span>
 					<el-icon><i-ep-arrow-right /></el-icon>
 				</el-button>

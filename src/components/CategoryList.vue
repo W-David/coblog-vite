@@ -5,24 +5,28 @@
 			<span class="title-text">分类</span>
 		</div>
 		<div class="category-list">
-			<el-skeleton :loading="loading" animated :count="12">
+			<el-skeleton
+				:loading="loading"
+				animated
+				:count="12">
 				<template #template>
 					<el-skeleton-item
 						variant="text"
 						class="skeleton-item"
-						:style="{ width: `${getRandomWidth()}px` }"
-					></el-skeleton-item>
+						:style="{ width: `${getRandomWidth()}px` }"></el-skeleton-item>
 				</template>
 				<template #default>
-					<span v-if="isLogin" class="article-cate ctrl-btn" @click="handleAdd">
+					<span
+						v-if="isLogin"
+						class="article-cate ctrl-btn"
+						@click="handleAdd">
 						<el-icon><i-ep-plus /></el-icon>
 					</span>
 					<span
 						v-for="category in categoryList"
 						:key="category.id"
 						:class="['article-cate', isChecked(category.id) ? 'is-active' : '']"
-						@click="handleChecked(category)"
-					>
+						@click="handleChecked(category)">
 						{{ category.name }}
 					</span>
 				</template>
@@ -54,13 +58,13 @@ const handleAdd = () => {
 	usePrompt({
 		title: '请输入添加的种类名称',
 		content: '添加种类',
-		callback: async (value) => {
+		callback: async value => {
 			const category = await categoryStore.CreateCategory({ name: value })
 			return {
 				success: !!category,
-				msg: category ? `已添加${category.name}` : '添加失败',
+				msg: category ? `已添加${category.name}` : '添加失败'
 			}
-		},
+		}
 	})
 }
 
@@ -82,13 +86,7 @@ init()
 .category-list-container {
 	// @include box-shadow(12px 12px 24px 0 rgba(0, 0, 0, 0.05));
 	@include layout(100%, auto, 0, 4px);
-	@include scroll-bar-reset(
-		6px,
-		auto,
-		transparent,
-		var(--el-border-color),
-		3px
-	);
+	@include scroll-bar-reset(6px, auto, transparent, var(--el-border-color), 3px);
 	@include border(none, 8px);
 	@include bg-color(#fff);
 	box-shadow: var(--el-box-shadow);
@@ -114,10 +112,7 @@ init()
 		}
 
 		.article-cate {
-			@include panel-styl(
-				var(--el-color-success),
-				var(--el-color-success-light-7)
-			);
+			@include panel-styl(var(--el-color-success), var(--el-color-success-light-7));
 			&.ctrl-btn {
 				@include panel-styl(var(--el-color-info), var(--el-color-info-light-7));
 			}

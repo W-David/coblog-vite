@@ -4,40 +4,33 @@
 			<el-skeleton
 				:loading="isLoadingMore"
 				animated
-				:count="queryParams.pageSize"
-			>
+				:count="queryParams.pageSize">
 				<template #template>
 					<div class="skeleton-item">
 						<div class="name-container">
 							<el-skeleton-item
 								variant="text"
-								class="name-content"
-							></el-skeleton-item>
+								class="name-content"></el-skeleton-item>
 							<el-skeleton-item
 								variant="text"
-								class="info-content"
-							></el-skeleton-item>
+								class="info-content"></el-skeleton-item>
 						</div>
 						<div class="article-list">
 							<div class="article-card">
 								<el-skeleton-item
 									variant="text"
-									class="title-content-1"
-								></el-skeleton-item>
+									class="title-content-1"></el-skeleton-item>
 								<el-skeleton-item
 									variant="text"
-									class="time-content-1"
-								></el-skeleton-item>
+									class="time-content-1"></el-skeleton-item>
 							</div>
 							<div class="article-card">
 								<el-skeleton-item
 									variant="text"
-									class="title-content-2"
-								></el-skeleton-item>
+									class="title-content-2"></el-skeleton-item>
 								<el-skeleton-item
 									variant="text"
-									class="time-content-2"
-								></el-skeleton-item>
+									class="time-content-2"></el-skeleton-item>
 							</div>
 						</div>
 					</div>
@@ -46,12 +39,10 @@
 					<div
 						v-for="category in categoryArticles"
 						:key="category.id"
-						class="category-article-item"
-					>
+						class="category-article-item">
 						<category-card
 							:category="category"
-							:is-active="isChecked(category.id)"
-						></category-card>
+							:is-active="isChecked(category.id)"></category-card>
 					</div>
 				</template>
 			</el-skeleton>
@@ -60,8 +51,7 @@
 			v-show="categoryArticles?.length"
 			:is-loading-more="isLoadingMore"
 			:has-more="hasMore"
-			@on-load-more="onLoadMore"
-		></page-load>
+			@on-load-more="onLoadMore"></page-load>
 	</div>
 </template>
 
@@ -69,8 +59,8 @@
 definePage({
 	name: 'category',
 	meta: {
-		transitionName: 'fade',
-	},
+		transitionName: 'fade'
+	}
 })
 const categoryStore = useCategory()
 const route = useRoute<'category'>()
@@ -87,18 +77,13 @@ const getCategoryArticles = async (queryParams: any) => {
 	isLoadingMore.value = true
 	const [list, total] = await categoryStore.GetCategoryArticles(queryParams)
 	isLoadingMore.value = false
-	hasMore.value =
-		list &&
-		list.length > 0 &&
-		queryParams.pageNum * queryParams.pageSize < total
+	hasMore.value = list && list.length > 0 && queryParams.pageNum * queryParams.pageSize < total
 	return list
 }
 
 // useReachBottom(onLoadMore)
 const onLoadMore = async () => {
-	const list = await getCategoryArticles(
-		Object.assign(queryParams, { pageNum: queryParams.pageNum + 1 })
-	)
+	const list = await getCategoryArticles(Object.assign(queryParams, { pageNum: queryParams.pageNum + 1 }))
 	if (list?.length) {
 		queryParams.pageNum += 1
 	}

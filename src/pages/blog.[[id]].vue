@@ -8,12 +8,12 @@
 					trig-hint="上传头图"
 					descrip-hint="头图"
 					@on-upload="handleUpload"
-					@on-delete="handleDelete"
-				>
-				</file-upload>
+					@on-delete="handleDelete"></file-upload>
 			</div>
 			<div class="blog-title">
-				<input v-model="blogTitle" placeholder="取个标题吧(❁´◡`❁)" />
+				<input
+					v-model="blogTitle"
+					placeholder="取个标题吧(❁´◡`❁)" />
 			</div>
 			<div class="blog-tc">
 				<div class="tag-area">
@@ -22,8 +22,7 @@
 						add-text="添加标签"
 						:items="tags"
 						@on-select="handleTagSelect"
-						@on-add-item="handleTagAdd"
-					></select-area>
+						@on-add-item="handleTagAdd"></select-area>
 				</div>
 				<div class="cate-area">
 					<select-area
@@ -32,15 +31,13 @@
 						add-text="添加分类"
 						:items="cates"
 						@on-select="handleCateSelect"
-						@on-add-item="handleCateAdd"
-					></select-area>
+						@on-add-item="handleCateAdd"></select-area>
 				</div>
 			</div>
 			<div class="blog-desc">
 				<textarea
 					v-model="blogDesc"
-					placeholder="请输入文章描述(^///^)"
-				></textarea>
+					placeholder="请输入文章描述(^///^)"></textarea>
 			</div>
 			<div class="blog-text">
 				<md-editor
@@ -49,21 +46,24 @@
 					:preview="false"
 					preview-theme="cyanosis"
 					placeholder="开始你的创作吧<(￣︶￣)↗[GO!]"
-					@on-upload-img="onUploadImg"
-				/>
+					@on-upload-img="onUploadImg" />
 			</div>
 			<div class="blog-ctrl">
-				<el-button type="success" @click="submitBlog">提交博文</el-button>
+				<el-button
+					type="success"
+					@click="submitBlog">
+					提交博文
+				</el-button>
 			</div>
 		</div>
-		<el-dialog v-model="showAll" title="请选择">
+		<el-dialog
+			v-model="showAll"
+			title="请选择">
 			<selected-list
 				v-model:checkedArr="checkedArr"
 				:loading="isListLoading"
 				:is-show="showAll"
-				:list="list"
-			>
-			</selected-list>
+				:list="list"></selected-list>
 		</el-dialog>
 	</div>
 </template>
@@ -76,8 +76,8 @@ definePage({
 	name: 'blog',
 	meta: {
 		layout: 'blog',
-		transitionName: 'fade',
-	},
+		transitionName: 'fade'
+	}
 })
 
 const { isDark } = useDarks()
@@ -91,7 +91,7 @@ const categoryStore = useCategory()
 
 const title = reactive({
 	text: '选择分类',
-	type: 'cate',
+	type: 'cate'
 })
 const list = ref<Tag[] | Category[]>([])
 const showAll = ref(false)
@@ -107,12 +107,9 @@ const cates = ref<Category[]>([])
 
 const text = ref('')
 
-const onUploadImg = async (
-	files: File[],
-	callback: (urls: Array<string>) => void
-) => {
+const onUploadImg = async (files: File[], callback: (urls: Array<string>) => void) => {
 	try {
-		const promises = files.map((file) => uploadImg(file))
+		const promises = files.map(file => uploadImg(file))
 		const urls = await Promise.all(promises)
 		callback(urls ?? [])
 	} catch (err) {
@@ -141,8 +138,8 @@ const handleTagSelect = async () => {
 	isListLoading.value = true
 	const res = await listTag()
 	isListLoading.value = false
-	const inTags = (item: Tag) => tags.value.some((tag) => tag.id === item.id)
-	list.value = res.data.data?.rows.filter((item) => !inTags(item)) || []
+	const inTags = (item: Tag) => tags.value.some(tag => tag.id === item.id)
+	list.value = res.data.data?.rows.filter(item => !inTags(item)) || []
 }
 const handleCateSelect = async () => {
 	title.text = '选择分类'
@@ -151,9 +148,8 @@ const handleCateSelect = async () => {
 	isListLoading.value = true
 	const res = await listCategory()
 	isListLoading.value = false
-	const inCates = (item: Category) =>
-		cates.value.some((cate) => cate.id === item.id)
-	list.value = res.data.data?.rows.filter((item) => !inCates(item)) || []
+	const inCates = (item: Category) => cates.value.some(cate => cate.id === item.id)
+	list.value = res.data.data?.rows.filter(item => !inCates(item)) || []
 }
 const handleTagAdd = async (tagName: string) => {
 	const data = { name: tagName }
@@ -195,7 +191,7 @@ const handleUpload = async (file: File) => {
 			name,
 			size,
 			extension: type,
-			path: url,
+			path: url
 		}
 		const addRes = await addFile({ ...fileData })
 		blogBannerId.value = String(addRes.data.data.id) ?? ''
@@ -219,8 +215,8 @@ const handleDelete = async () => {
 const submitBlog = async () => {
 	const title = blogTitle.value
 	const content = text.value
-	const categoryIds = cates.value.map((cate) => cate.id)
-	const tagIds = tags.value.map((tag) => tag.id)
+	const categoryIds = cates.value.map(cate => cate.id)
+	const tagIds = tags.value.map(tag => tag.id)
 	const description = blogDesc.value || '默认描述内容'
 	const bannerId = blogBannerId.value || ''
 	const blog = {
@@ -229,11 +225,9 @@ const submitBlog = async () => {
 		description,
 		bannerId,
 		categoryIds,
-		tagIds,
+		tagIds
 	}
-	const res = articleId
-		? await updateArticle({ ...blog, id: articleId })
-		: await createArticle(blog)
+	const res = articleId ? await updateArticle({ ...blog, id: articleId }) : await createArticle(blog)
 	if (res.data.code === 200 && res.data.data) {
 		const article = res.data.data
 		articleStore.articleMap.set(article.id, article)
@@ -246,14 +240,7 @@ const initPage = () => {
 	if (articleId) {
 		const article = computed(() => articleStore.getArticleById(articleId))
 		if (article.value) {
-			const {
-				title,
-				content,
-				banner,
-				description,
-				categories,
-				tags: tgs,
-			} = article.value
+			const { title, content, banner, description, categories, tags: tgs } = article.value
 			blogTitle.value = title
 			blogBannerId.value = banner?.id.toString() ?? ''
 			blogBanner.value = banner?.path ?? ''
@@ -275,10 +262,7 @@ initPage()
 	.blog-edit-area {
 		@include layout(auto, auto, 0, $main-margin);
 		@include border(none);
-		@include box-shadow(
-			8px 8px 20px rgba(0, 0, 0, 0.05),
-			-4px -4px 20px rgba(0, 0, 0, 0.05)
-		);
+		@include box-shadow(8px 8px 20px rgba(0, 0, 0, 0.05), -4px -4px 20px rgba(0, 0, 0, 0.05));
 		@include bg-color(#fff, #1a1a1a);
 		.blog-img {
 			@include layout(100%, 300px, 0 0 8px 0, 0);

@@ -5,10 +5,9 @@
 			fontSize: `${size}px`,
 			height: `${size * 2}px`,
 			lineHeight: `${size * 2}px`,
-			borderRadius: `${size}px`,
+			borderRadius: `${size}px`
 		}"
-		@click.stop="toTag(tag.id)"
-	>
+		@click.stop="toTag(tag.id)">
 		<el-icon :size="size"><i-ep-collection-tag /></el-icon>
 		{{ tag.name }}
 	</div>
@@ -22,7 +21,7 @@ const props = withDefaults(
 		size?: number
 	}>(),
 	{
-		size: 16,
+		size: 16
 	}
 )
 const { tag, size } = toRefs(props)

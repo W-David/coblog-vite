@@ -9,6 +9,6 @@ export const GenerateTitle = (): Plugin => {
 		},
 		transformIndexHtml(html) {
 			return html.replace(/<title>(.*?)<\/title>/, `<title>${title}</title>`)
-		},
+		}
 	}
 }

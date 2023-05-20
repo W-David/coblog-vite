@@ -3,7 +3,7 @@ const usePrompt = async ({
 	title,
 	confirmText = '确认',
 	cancelText = '取消',
-	callback,
+	callback
 }: {
 	content: string
 	title: string
@@ -13,7 +13,7 @@ const usePrompt = async ({
 }) => {
 	const { value } = await ElMessageBox.prompt(content, title, {
 		confirmButtonText: confirmText,
-		cancelButtonText: cancelText,
+		cancelButtonText: cancelText
 	})
 	if (!value) {
 		ElMessage({ message: title + '不可为空', type: 'warning', grouping: true })
@@ -24,7 +24,7 @@ const usePrompt = async ({
 		type: success ? 'success' : 'error',
 		message: msg,
 		showClose: false,
-		grouping: true,
+		grouping: true
 	})
 }
 

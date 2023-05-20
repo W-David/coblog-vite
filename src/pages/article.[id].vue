@@ -1,63 +1,65 @@
 <template>
 	<div class="article-page">
 		<div class="article-area">
-			<div class="article-ctrl-area" @click="toBack">
+			<div
+				class="article-ctrl-area"
+				@click="toBack">
 				<el-icon :size="20"><i-ep-caret-left /></el-icon>
 			</div>
-			<el-skeleton :loading="loading" animated>
+			<el-skeleton
+				:loading="loading"
+				animated>
 				<template #template>
 					<div class="skeleton-item">
-						<el-skeleton-item variant="image" class="banner"></el-skeleton-item>
+						<el-skeleton-item
+							variant="image"
+							class="banner"></el-skeleton-item>
 						<div class="title-container">
 							<div class="row-container">
-								<el-skeleton-item variant="p" class="title"></el-skeleton-item>
+								<el-skeleton-item
+									variant="p"
+									class="title"></el-skeleton-item>
 								<el-skeleton-item
 									variant="rect"
-									class="favorite"
-								></el-skeleton-item>
+									class="favorite"></el-skeleton-item>
 							</div>
 							<div class="ct-container">
 								<el-skeleton-item class="ct-1"></el-skeleton-item>
 								<el-skeleton-item class="ct-2"></el-skeleton-item>
 							</div>
 							<div class="desc-container">
-								<el-skeleton-item variant="p" class="desc"></el-skeleton-item>
+								<el-skeleton-item
+									variant="p"
+									class="desc"></el-skeleton-item>
 							</div>
 						</div>
 						<div class="content-container">
 							<el-skeleton-item
 								variant="rect"
-								class="content"
-							></el-skeleton-item>
+								class="content"></el-skeleton-item>
 						</div>
 						<div class="editor-container">
 							<el-skeleton-item
 								variant="button"
-								class="btn-1"
-							></el-skeleton-item>
+								class="btn-1"></el-skeleton-item>
 							<el-skeleton-item
 								variant="button"
-								class="btn-2"
-							></el-skeleton-item>
+								class="btn-2"></el-skeleton-item>
 						</div>
 					</div>
 				</template>
 				<template #default>
-					<div v-if="article" class="article-main-area">
+					<div
+						v-if="article"
+						class="article-main-area">
 						<div
 							v-if="article.banner && article.banner.path"
-							class="article-banner-container"
-						>
+							class="article-banner-container">
 							<img
-								v-LazyLoad="
-									`${article.banner.path}?x-oss-process=image/resize,p_50`
-								"
-								alt="noImg"
-							/>
+								v-LazyLoad="`${article.banner.path}?x-oss-process=image/resize,p_50`"
+								alt="noImg" />
 							<div class="article-info-content">
-								<span class="article-author">{{
-									article.admin?.nickname || '佚名'
-								}}</span>
+								<span class="article-author">{{ article.admin?.nickname || '佚名' }}</span>
 								<span class="article-sp">|</span>
 								<span class="article-date">{{ article.createdAt }}</span>
 							</div>
@@ -66,7 +68,9 @@
 							<div class="row-container">
 								<div class="article-title-content">{{ article.title }}</div>
 								<div class="article-favorite-content">
-									<div class="favorite-icon" @click="handleFavorite">
+									<div
+										class="favorite-icon"
+										@click="handleFavorite">
 										<i-custom-favorite-full v-if="article.isFavorited" />
 										<i-custom-favorite v-else />
 									</div>
@@ -78,41 +82,48 @@
 									v-for="category in article.categories"
 									:key="category.id"
 									:size="10"
-									:category="category"
-								></category-panel>
+									:category="category"></category-panel>
 								<tag-panel
 									v-for="tag in article.tags"
 									:key="tag.id"
 									:size="10"
-									:tag="tag"
-								></tag-panel>
+									:tag="tag"></tag-panel>
 							</div>
 							<div class="article-desc-content">{{ article.description }}</div>
 						</div>
 						<div class="article-content-container">
-							<div id="article-content" class="article-content">
+							<div
+								id="article-content"
+								class="article-content">
 								<md-editor
 									v-model="article.content"
 									:theme="isDark ? 'dark' : 'light'"
 									:preview-only="true"
 									preview-theme="cyanosis"
-									@get-catalog="getCatalog"
-								/>
+									@get-catalog="getCatalog" />
 							</div>
 						</div>
-						<div v-if="isLogin && isCurAdmin" class="article-edit-container">
-							<el-button type="danger" round @click="handleDel"
-								>删除 • 需输入文章标题</el-button
-							>
-							<el-button type="success" round @click="handleEdit"
-								>修改文章</el-button
-							>
+						<div
+							v-if="isLogin && isCurAdmin"
+							class="article-edit-container">
+							<el-button
+								type="danger"
+								round
+								@click="handleDel">
+								删除 • 需输入文章标题
+							</el-button>
+							<el-button
+								type="success"
+								round
+								@click="handleEdit">
+								修改文章
+							</el-button>
 						</div>
 					</div>
 				</template>
 			</el-skeleton>
 		</div>
-		<el-backtop :bottom="25"> </el-backtop>
+		<el-backtop :bottom="25"></el-backtop>
 	</div>
 </template>
 
@@ -125,8 +136,8 @@ definePage({
 	name: 'article',
 	meta: {
 		layout: 'article',
-		transitionName: 'slide-fade-right',
-	},
+		transitionName: 'slide-fade-right'
+	}
 })
 
 const { isDark } = useDarks()
@@ -139,12 +150,10 @@ const loginInfo = computed(() => adminStore.adminInfo)
 const isLogin = computed(() => adminStore.isLogin)
 const article = computed(() => articleStore.getArticleById(articleId))
 const loading = ref(true)
-watch(loading, (val) => (articleStore.isArticleLoading = val), {
-	immediate: true,
+watch(loading, val => (articleStore.isArticleLoading = val), {
+	immediate: true
 })
-const isCurAdmin = computed(
-	() => article.value?.admin.id === loginInfo.value?.id
-)
+const isCurAdmin = computed(() => article.value?.admin.id === loginInfo.value?.id)
 
 const getArticle = async () => {
 	loading.value = true
@@ -152,9 +161,7 @@ const getArticle = async () => {
 	loading.value = false
 }
 const getCatalog = (catalog: HeadList[]) => {
-	articleStore.cataLog = catalog
-		.map(({ text, level }) => ({ content: text, anchor: text, level }))
-		.slice(0)
+	articleStore.cataLog = catalog.map(({ text, level }) => ({ content: text, anchor: text, level })).slice(0)
 }
 
 const handleDel = async () => {
@@ -163,20 +170,20 @@ const handleDel = async () => {
 		content: '删除确认',
 		confirmText: '删除此文章',
 		cancelText: '取消',
-		callback: async (value) => {
+		callback: async value => {
 			if (value && value === article.value?.title) {
 				return {
 					success: false,
-					msg: '文章标题输入有误',
+					msg: '文章标题输入有误'
 				}
 			}
 			const res = await articleStore.DelArticle(articleId)
 			router.push({ path: '/' })
 			return {
 				success: !!res,
-				msg: res ? `已删除${article.value?.title}` : '删除失败',
+				msg: res ? `已删除${article.value?.title}` : '删除失败'
 			}
-		},
+		}
 	})
 }
 const handleEdit = () => {

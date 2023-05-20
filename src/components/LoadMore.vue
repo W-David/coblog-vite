@@ -1,5 +1,7 @@
 <template>
-	<div class="pagination-container" @click="loadMore">
+	<div
+		class="pagination-container"
+		@click="loadMore">
 		<div class="pagination-content">
 			<slot></slot>
 		</div>

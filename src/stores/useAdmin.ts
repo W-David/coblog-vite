@@ -11,10 +11,10 @@ export default defineStore('useAdmin', {
 		adminInfo: {
 			id: 0,
 			nickname: '',
-			email: '',
+			email: ''
 		},
 		avatar: '',
-		isLogin: false,
+		isLogin: false
 	}),
 	getters: {},
 	actions: {
@@ -41,7 +41,7 @@ export default defineStore('useAdmin', {
 			this.adminInfo = { id, nickname, email }
 			const res = await updateAdmin({
 				...this.adminInfo,
-				avatar: this.avatar,
+				avatar: this.avatar
 			})
 			return res.data.data
 		},
@@ -55,7 +55,7 @@ export default defineStore('useAdmin', {
 				this.adminInfo = {
 					id,
 					nickname,
-					email,
+					email
 				}
 				appStore.sidebarOpen = false
 				setToken(token as string)
@@ -73,7 +73,7 @@ export default defineStore('useAdmin', {
 				this.adminInfo = {
 					id,
 					nickname,
-					email,
+					email
 				}
 				appStore.sidebarOpen = false
 				setToken(token as string)
@@ -92,7 +92,7 @@ export default defineStore('useAdmin', {
 				this.adminInfo = {
 					id,
 					nickname,
-					email,
+					email
 				}
 			} else {
 				this.Logout()
@@ -104,11 +104,11 @@ export default defineStore('useAdmin', {
 			this.adminInfo = {
 				id: 0,
 				nickname: '',
-				email: '',
+				email: ''
 			}
 			this.avatar = ''
 			removeToken()
 			appStore.sidebarOpen = false
-		},
-	},
+		}
+	}
 })

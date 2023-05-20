@@ -14,9 +14,7 @@ const stringToBoolean = (v: string) => {
 
 // 获取环境变量
 export const useEnv = () => {
-	const env = isProduction
-		? loadEnv('production', '.')
-		: loadEnv('development', '.')
+	const env = isProduction ? loadEnv('production', '.') : loadEnv('development', '.')
 
 	const {
 		VITE_APP_TITLE,
@@ -26,7 +24,7 @@ export const useEnv = () => {
 		VITE_APP_API_AUTO_IMPORT,
 		VITE_APP_MOCK_IN_PRODUCTION,
 		VITE_APP_DIR_API_AUTO_IMPORT,
-		VITE_APP_COMPRESSINON_ALGORITHM,
+		VITE_APP_COMPRESSINON_ALGORITHM
 	} = env
 
 	const newEnv = {
@@ -37,7 +35,7 @@ export const useEnv = () => {
 		VITE_APP_MARKDOWN: stringToBoolean(VITE_APP_MARKDOWN),
 		VITE_APP_API_AUTO_IMPORT: stringToBoolean(VITE_APP_API_AUTO_IMPORT),
 		VITE_APP_MOCK_IN_PRODUCTION: stringToBoolean(VITE_APP_MOCK_IN_PRODUCTION),
-		VITE_APP_DIR_API_AUTO_IMPORT: stringToBoolean(VITE_APP_DIR_API_AUTO_IMPORT),
+		VITE_APP_DIR_API_AUTO_IMPORT: stringToBoolean(VITE_APP_DIR_API_AUTO_IMPORT)
 	}
 	return newEnv
 }

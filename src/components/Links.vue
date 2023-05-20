@@ -5,10 +5,16 @@
 			<span class="title-text">友链</span>
 		</div>
 		<div class="links-list">
-			<div v-for="(link, index) in links" :key="index" class="links-item">
-				<el-link :type="link.type" :href="link.href" target="_blank">{{
-					link.text
-				}}</el-link>
+			<div
+				v-for="(link, index) in links"
+				:key="index"
+				class="links-item">
+				<el-link
+					:type="link.type"
+					:href="link.href"
+					target="_blank">
+					{{ link.text }}
+				</el-link>
 			</div>
 		</div>
 	</div>
@@ -19,26 +25,20 @@ const links = ref<LinkType[]>([
 	{
 		type: 'default',
 		href: 'http://coblog.fun:8088/',
-		text: 'Hexo博客 / Cody',
+		text: 'Hexo博客 / Cody'
 	},
 	{
 		type: 'default',
 		href: 'https://github.com/W-David',
-		text: 'Github / W-David',
-	},
+		text: 'Github / W-David'
+	}
 ])
 </script>
 
 <style lang="scss" scoped>
 .links-container {
 	@include layout(100%, auto, 0, 4px);
-	@include scroll-bar-reset(
-		6px,
-		auto,
-		transparent,
-		var(--el-border-color),
-		3px
-	);
+	@include scroll-bar-reset(6px, auto, transparent, var(--el-border-color), 3px);
 	@include border(none, 8px);
 	@include bg-color(#fff);
 	box-shadow: var(--el-box-shadow);

@@ -18,36 +18,41 @@
 			alt="noImg"
 			:style="{
 				animationDelay: (animationDuration / bgImgs.length) * index + 's',
-				animationDuration: animationDuration + 's',
-			}"
-		/>
-		<div class="bult-btn" @click="toggleDark()">
+				animationDuration: animationDuration + 's'
+			}" />
+		<div
+			class="bult-btn"
+			@click="toggleDark()">
 			<i-custom-sunny v-if="isDark" />
 			<i-custom-moon v-else />
 		</div>
-		<div class="no-auth-btn" @click="router.push({ path: '/' })">
+		<div
+			class="no-auth-btn"
+			@click="router.push({ path: '/' })">
 			<span>游客登入</span>
 		</div>
-		<el-row justify="center" class="login-row-container">
+		<el-row
+			justify="center"
+			class="login-row-container">
 			<el-col
 				class="login-col-container"
 				:xs="22"
 				:sm="12"
 				:md="8"
 				:lg="6"
-				:xl="6"
-			>
+				:xl="6">
 				<div class="login-card">
 					<div class="login-card-header">
 						<!-- <span :class="[needRegister ? 'regis-header-hint' : 'login-header-hint']">欢迎来到Coody's Blog</span> -->
 						<div
 							class="svg-header-text"
-							:class="[
-								needRegister ? 'regis-header-hint' : 'login-header-hint',
-							]"
-						>
+							:class="[needRegister ? 'regis-header-hint' : 'login-header-hint']">
 							<svg>
-								<text x="100" y="60">Coblog</text>
+								<text
+									x="100"
+									y="60">
+									Coblog
+								</text>
 							</svg>
 						</div>
 					</div>
@@ -58,54 +63,64 @@
 						label-position="right"
 						:rules="rules"
 						status-icon
-						inline-message
-					>
+						inline-message>
 						<el-form-item prop="email">
-							<el-input v-model="form.email" placeholder="邮箱"></el-input>
+							<el-input
+								v-model="form.email"
+								placeholder="邮箱"></el-input>
 						</el-form-item>
 						<el-form-item prop="password">
-							<el-input v-model="form.password" placeholder="密码"></el-input>
+							<el-input
+								v-model="form.password"
+								placeholder="密码"></el-input>
 						</el-form-item>
-						<el-form-item v-show="needRegister" prop="rPassword">
+						<el-form-item
+							v-show="needRegister"
+							prop="rPassword">
 							<el-input
 								v-model="form.rPassword"
-								placeholder="再次输入密码"
-							></el-input>
+								placeholder="再次输入密码"></el-input>
 						</el-form-item>
-						<el-form-item v-show="needRegister" prop="nickName">
-							<el-input v-model="form.nickName" placeholder="昵称"></el-input>
+						<el-form-item
+							v-show="needRegister"
+							prop="nickName">
+							<el-input
+								v-model="form.nickName"
+								placeholder="昵称"></el-input>
 						</el-form-item>
 						<el-form-item>
 							<div class="hint-area">
 								<div
 									class="register-hint"
 									:class="[needRegister ? 'regis-hint' : 'login-hint']"
-									@click="handleSwitch"
-								>
-									{{
-										!needRegister
-											? '还没有账号？注册一个吧'
-											: '已有账号，去登陆'
-									}}
+									@click="handleSwitch">
+									{{ !needRegister ? '还没有账号？注册一个吧' : '已有账号，去登陆' }}
 								</div>
 								<div class="remember-hint">
 									<el-checkbox
 										v-model="rememberMe"
 										label="保存密码"
 										size="small"
-										border
-									/>
+										border />
 								</div>
 							</div>
 						</el-form-item>
 						<el-form-item>
-							<div v-if="!needRegister" class="login-area">
-								<el-button type="primary" @click="handleLogin()">
+							<div
+								v-if="!needRegister"
+								class="login-area">
+								<el-button
+									type="primary"
+									@click="handleLogin()">
 									登录
 								</el-button>
 							</div>
-							<div v-else class="register-area">
-								<el-button type="success" @click="handleRegister()">
+							<div
+								v-else
+								class="register-area">
+								<el-button
+									type="success"
+									@click="handleRegister()">
 									注册
 								</el-button>
 							</div>
@@ -124,8 +139,8 @@
 definePage({
 	name: 'login',
 	meta: {
-		layout: 'login',
-	},
+		layout: 'login'
+	}
 })
 const adminStore = useAdmin()
 const router = useRouter()
@@ -136,7 +151,7 @@ const form = reactive({
 	email: '',
 	password: '',
 	rPassword: '',
-	nickName: '',
+	nickName: ''
 })
 const rememberMe = ref(false)
 watch(rememberMe, (nv, ov) => {
@@ -152,13 +167,13 @@ const rules = reactive({
 	email: [],
 	password: [],
 	rPassword: [],
-	nickName: [],
+	nickName: []
 })
 
 const handleLogin = async () => {
 	const submitForm = {
 		email: form.email,
-		password: form.password,
+		password: form.password
 	}
 
 	const res = await adminStore.Login(submitForm)
@@ -166,9 +181,7 @@ const handleLogin = async () => {
 	router.push({ path: '/' })
 	ElMessage({
 		type: 'success',
-		message: `${
-			res.data.data.nickname ?? res.data.data.email
-		}, 欢迎来到Cody's Blog`,
+		message: `${res.data.data.nickname ?? res.data.data.email}, 欢迎来到Cody's Blog`
 	})
 }
 const handleRegister = async () => {
@@ -176,7 +189,7 @@ const handleRegister = async () => {
 		email: form.email,
 		password: form.password,
 		rPassword: form.rPassword,
-		nickname: form.nickName,
+		nickname: form.nickName
 	}
 	const res = await adminStore.Register(submitForm)
 	router.push({ path: '/' })

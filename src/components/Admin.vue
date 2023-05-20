@@ -5,8 +5,7 @@
 			shape="circle"
 			:src="`${avatar}?x-oss-process=image/resize,m_fill,h_36,w_36`"
 			fit="cover"
-			@click.stop="tapAvatar"
-		>
+			@click.stop="tapAvatar">
 			<span>{{ adminInfo.nickname.substr(0, 1) }}</span>
 		</el-avatar>
 		<el-dropdown class="hidden-sm-and-down">
@@ -36,8 +35,7 @@
 		center
 		append-to-body
 		:show-close="false"
-		:width="dialogWidth"
-	>
+		:width="dialogWidth">
 		<div class="avatar-container">
 			<file-upload
 				:is-uploaded="!!avatar"
@@ -45,24 +43,34 @@
 				trig-hint="上传头像"
 				descrip-hint="头像"
 				@on-upload="handleUpload"
-				@on-delete="handleDelete"
-			>
-			</file-upload>
+				@on-delete="handleDelete"></file-upload>
 		</div>
 		<div class="info-container">
 			<div class="info-name">
-				<span class="info-hint">昵称 - </span>
-				<span v-if="!isEN" class="info-content" @click="isEN = true">
+				<span class="info-hint">昵称 -</span>
+				<span
+					v-if="!isEN"
+					class="info-content"
+					@click="isEN = true">
 					{{ adminForm.nickname || '暂无昵称' }}
 				</span>
-				<input v-else v-model="adminForm.nickname" @blur="isEN = false" />
+				<input
+					v-else
+					v-model="adminForm.nickname"
+					@blur="isEN = false" />
 			</div>
 			<div class="info-email">
-				<span class="info-hint">邮箱 - </span>
-				<span v-if="!isEE" class="info-content" @click="isEE = true">
+				<span class="info-hint">邮箱 -</span>
+				<span
+					v-if="!isEE"
+					class="info-content"
+					@click="isEE = true">
 					{{ adminForm.email }}
 				</span>
-				<input v-else v-model="adminForm.email" @blur="isEE = false" />
+				<input
+					v-else
+					v-model="adminForm.email"
+					@blur="isEE = false" />
 			</div>
 		</div>
 		<template #header>
@@ -70,8 +78,17 @@
 		</template>
 		<template #footer>
 			<div class="admin-info-footer">
-				<el-button type="primary" plain @click="handleCancel">取消</el-button>
-				<el-button type="primary" @click="handleUpdate">修改</el-button>
+				<el-button
+					type="primary"
+					plain
+					@click="handleCancel">
+					取消
+				</el-button>
+				<el-button
+					type="primary"
+					@click="handleUpdate">
+					修改
+				</el-button>
 			</div>
 		</template>
 	</el-dialog>
@@ -85,7 +102,7 @@ const avatar = computed(() => adminStore.avatar)
 const adminInfo = computed(() => adminStore.adminInfo)
 const adminForm = reactive({
 	nickname: adminInfo.value.nickname,
-	email: adminInfo.value.email,
+	email: adminInfo.value.email
 })
 const deviceSize = computed(() => appStore.deviceSize)
 const dialogWidth = computed(() => appStore.adminDialogWidth)
@@ -118,7 +135,7 @@ const handleUpdate = async () => {
 	ElMessage({
 		message: isSuccess ? '更新成功' : '更新失败',
 		type: isSuccess ? 'success' : 'error',
-		grouping: true,
+		grouping: true
 	})
 }
 const handleUpload = async (file: File) => {
@@ -126,7 +143,7 @@ const handleUpload = async (file: File) => {
 	ElMessage({
 		message: isSuccess ? '头像上传成功' : '上传失败',
 		type: isSuccess ? 'success' : 'error',
-		grouping: true,
+		grouping: true
 	})
 }
 const handleDelete = async () => {
@@ -134,7 +151,7 @@ const handleDelete = async () => {
 	ElMessage({
 		message: isSuccess ? '已删除' : '删除失败',
 		type: isSuccess ? 'success' : 'error',
-		grouping: true,
+		grouping: true
 	})
 }
 </script>
@@ -157,15 +174,9 @@ const handleDelete = async () => {
 	.info-name,
 	.info-email {
 		@include layout(100%, auto, 12px 0, 12px);
-		@include box-shadow(
-			inset 2px 2px 4px var(--el-color-info-light-7),
-			inset -1px -1px 2px var(--el-color-info-light-7)
-		);
+		@include box-shadow(inset 2px 2px 4px var(--el-color-info-light-7), inset -1px -1px 2px var(--el-color-info-light-7));
 		html.dark & {
-			@include box-shadow(
-				inset 2px 2px 4px rgba(0, 0, 0, 0.2),
-				inset -1px -1px 2px rgba(0, 0, 0, 0.2)
-			);
+			@include box-shadow(inset 2px 2px 4px rgba(0, 0, 0, 0.2), inset -1px -1px 2px rgba(0, 0, 0, 0.2));
 		}
 
 		@include border(1px solid transparent, 8px);

@@ -15,15 +15,15 @@ export default defineStore('useArticle', {
 		articlesRecent: [],
 		articlesHot: [],
 		cataLog: [],
-		isArticleLoading: true,
+		isArticleLoading: true
 	}),
 	getters: {
-		getArticleMap: (state) => () => cloneLoop(state.articleMap),
-		getArticleArchive: (state) => cloneLoop(state.articleArchive),
-		getArticleById: (state) => (id: number) => state.articleMap.get(id),
-		getArticleList: (state) => () => [...state.articleMap.values()],
-		getArticlesRecent: (state) => cloneLoop(state.articlesRecent),
-		getArticlesHot: (state) => cloneLoop(state.articlesHot),
+		getArticleMap: state => () => cloneLoop(state.articleMap),
+		getArticleArchive: state => cloneLoop(state.articleArchive),
+		getArticleById: state => (id: number) => state.articleMap.get(id),
+		getArticleList: state => () => [...state.articleMap.values()],
+		getArticlesRecent: state => cloneLoop(state.articlesRecent),
+		getArticlesHot: state => cloneLoop(state.articlesHot)
 	},
 	actions: {
 		async GetArticles(data: any): Promise<[Article[], number]> {
@@ -31,7 +31,7 @@ export default defineStore('useArticle', {
 			if (res.data.code === 200 && res.data.data) {
 				const articles = res.data.data.rows || []
 				const total = res.data.data.count || 0
-				articles.forEach((article) => {
+				articles.forEach(article => {
 					this.articleMap.set(article.id, cloneLoop(article))
 				})
 				return [articles, total]
@@ -69,10 +69,7 @@ export default defineStore('useArticle', {
 				const total = res.data.data.count || 0
 				const articleArchive = articles2Archive(rawArchive)
 				if (this.articleArchive.length) {
-					this.articleArchive = concatArchive(
-						this.articleArchive,
-						articleArchive
-					)
+					this.articleArchive = concatArchive(this.articleArchive, articleArchive)
 				} else {
 					this.articleArchive = ([] as ArticleArchive[]).concat(articleArchive)
 				}
@@ -83,9 +80,7 @@ export default defineStore('useArticle', {
 		},
 		async GetArticle(articleId: number) {
 			const isAdminLogin = adminStore.isLogin
-			const res = isAdminLogin
-				? await detailArticle(articleId)
-				: await noAuthDetailArticle(articleId)
+			const res = isAdminLogin ? await detailArticle(articleId) : await noAuthDetailArticle(articleId)
 			if (res.data.code === 200 && res.data.data) {
 				const article = res.data.data
 				this.articleMap.set(article.id, cloneLoop(article))
@@ -103,6 +98,6 @@ export default defineStore('useArticle', {
 			} else {
 				return null
 			}
-		},
-	},
+		}
+	}
 })

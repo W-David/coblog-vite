@@ -6,8 +6,8 @@ export default defineStore('useAlioss', {
 			AccessKeyId: '',
 			AccessKeySecret: '',
 			SecurityToken: '',
-			Expiration: '',
-		},
+			Expiration: ''
+		}
 	}),
 	getters: {},
 	actions: {
@@ -20,6 +20,6 @@ export default defineStore('useAlioss', {
 			} else {
 				return this.sts
 			}
-		},
-	},
+		}
+	}
 })

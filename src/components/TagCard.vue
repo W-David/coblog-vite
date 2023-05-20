@@ -1,8 +1,7 @@
 <template>
 	<div
 		:id="`tag-${tag.id}`"
-		:class="['tag-card-container', isActive ? 'is-active' : '']"
-	>
+		:class="['tag-card-container', isActive ? 'is-active' : '']">
 		<div class="tag-name">
 			<span class="name-content">
 				<i-custom-tag class="tag-icon" />
@@ -17,9 +16,10 @@
 				<div
 					v-for="article in tag.articles"
 					:key="article.id"
-					class="tag-article-card"
-				>
-					<div class="tag-article-title" @click="toArticle(article.id)">
+					class="tag-article-card">
+					<div
+						class="tag-article-title"
+						@click="toArticle(article.id)">
 						<span class="title-content">
 							{{ article.title }}
 						</span>
@@ -46,7 +46,7 @@ const props = withDefaults(
 		isActive?: boolean
 	}>(),
 	{
-		isActive: false,
+		isActive: false
 	}
 )
 const { tag, isActive } = toRefs(props)
@@ -97,13 +97,7 @@ const toArticle = (id: number) => {
 	}
 	.tag-article-list {
 		@include layout(100%, auto, 0, 0);
-		@include scroll-bar-reset(
-			4px,
-			auto,
-			transparent,
-			var(--el-color-primary-light-5),
-			2px
-		);
+		@include scroll-bar-reset(4px, auto, transparent, var(--el-color-primary-light-5), 2px);
 		min-height: 68px;
 
 		.tag-article-card {

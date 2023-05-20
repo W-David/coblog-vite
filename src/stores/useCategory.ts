@@ -6,16 +6,14 @@ export default defineStore('useCategory', {
 	} => ({
 		categoryMap: new Map(),
 		categoryArticlesMap: new Map(),
-		checkedCateIds: [],
+		checkedCateIds: []
 	}),
 	getters: {
-		getCategoryById: (state) => (id: number) => state.categoryMap.get(id),
-		getCategoryArticleById: (state) => (id: number) =>
-			state.categoryArticlesMap.get(id),
-		getCategoryList: (state) => () => [...state.categoryMap.values()],
-		getCategoryArticles: (state) => () =>
-			[...state.categoryArticlesMap.values()],
-		getCheckedCateIds: (state) => state.checkedCateIds,
+		getCategoryById: state => (id: number) => state.categoryMap.get(id),
+		getCategoryArticleById: state => (id: number) => state.categoryArticlesMap.get(id),
+		getCategoryList: state => () => [...state.categoryMap.values()],
+		getCategoryArticles: state => () => [...state.categoryArticlesMap.values()],
+		getCheckedCateIds: state => state.checkedCateIds
 	},
 	actions: {
 		async CreateCategory(params = {}) {
@@ -25,7 +23,7 @@ export default defineStore('useCategory', {
 				this.categoryMap.set(category.id, cloneLoop(category))
 				this.categoryArticlesMap.set(category.id, {
 					...cloneLoop(category),
-					articles: [],
+					articles: []
 				})
 				return category
 			} else {
@@ -37,7 +35,7 @@ export default defineStore('useCategory', {
 			if (res.data.code === 200 && res.data.data) {
 				const categories = res.data.data.rows || []
 				const total = res.data.data.count || 0
-				categories.forEach((item) => {
+				categories.forEach(item => {
 					this.categoryMap.set(item.id, cloneLoop(item))
 				})
 				return [categories, total]
@@ -50,7 +48,7 @@ export default defineStore('useCategory', {
 			if (res.data.code === 200 && res.data.data) {
 				const categories = res.data.data.rows || []
 				const total = res.data.data.count || 0
-				categories.forEach((item) => {
+				categories.forEach(item => {
 					this.categoryArticlesMap.set(item.id, cloneLoop(item))
 				})
 				return [categories, total]
@@ -82,6 +80,6 @@ export default defineStore('useCategory', {
 			} else {
 				return null
 			}
-		},
-	},
+		}
+	}
 })

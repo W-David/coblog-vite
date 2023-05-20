@@ -6,14 +6,14 @@ export default defineStore('useTag', {
 	} => ({
 		tagMap: new Map(),
 		tagArticlesMap: new Map(),
-		checkedTagIds: [],
+		checkedTagIds: []
 	}),
 	getters: {
-		getTagById: (state) => (id: number) => state.tagMap.get(id),
-		getTagArticleById: (state) => (id: number) => state.tagArticlesMap.get(id),
-		getTagList: (state) => () => [...state.tagMap.values()],
-		getTagArticles: (state) => () => [...state.tagArticlesMap.values()],
-		getCheckedTagIds: (state) => state.checkedTagIds,
+		getTagById: state => (id: number) => state.tagMap.get(id),
+		getTagArticleById: state => (id: number) => state.tagArticlesMap.get(id),
+		getTagList: state => () => [...state.tagMap.values()],
+		getTagArticles: state => () => [...state.tagArticlesMap.values()],
+		getCheckedTagIds: state => state.checkedTagIds
 	},
 	actions: {
 		async CreateTag(params = {}) {
@@ -32,7 +32,7 @@ export default defineStore('useTag', {
 			if (res.data.code === 200 && res.data.data) {
 				const tags = res.data.data.rows || []
 				const total = res.data.data.count || 0
-				tags.forEach((item) => {
+				tags.forEach(item => {
 					this.tagMap.set(item.id, cloneLoop(item))
 				})
 				return [tags, total]
@@ -45,7 +45,7 @@ export default defineStore('useTag', {
 			if (res.data.code === 200 && res.data.data) {
 				const tags = res.data.data.rows || []
 				const total = res.data.data.count || 0
-				tags.forEach((item) => {
+				tags.forEach(item => {
 					this.tagArticlesMap.set(item.id, cloneLoop(item))
 				})
 				return [tags, total]
@@ -77,6 +77,6 @@ export default defineStore('useTag', {
 			} else {
 				return null
 			}
-		},
-	},
+		}
+	}
 })

@@ -12,11 +12,7 @@ const router = createRouter({
 	scrollBehavior: async (to, from, savedPosition) => {
 		const toRouteName = to.name?.toString() as keyof RouteNamedMap
 		console.log(`running scrollBehavior...`)
-		console.log(
-			`to is ${toRouteName}, from is ${from.name?.toString()}, savedPosition is ${
-				savedPosition?.top
-			}`
-		)
+		console.log(`to is ${toRouteName}, from is ${from.name?.toString()}, savedPosition is ${savedPosition?.top}`)
 		//排除意外路由
 		if (!toRouteName) {
 			return false
@@ -36,7 +32,7 @@ const router = createRouter({
 				return { top: 0, behavior: 'smooth' }
 			}
 		}
-		await new Promise((res) => setTimeout(res, 500))
+		await new Promise(res => setTimeout(res, 500))
 		if (savedPosition) {
 			return { top: savedPosition.top, behavior: 'smooth' }
 		} else {
@@ -59,13 +55,11 @@ const router = createRouter({
 			// console.log(
 			// 	`current router:  ${toRouteName}, top is ${top}, exit scrollBehavior`
 			// )
-			console.log(
-				`current router:  ${toRouteName}, top is 0, exit scrollBehavior`
-			)
+			console.log(`current router:  ${toRouteName}, top is 0, exit scrollBehavior`)
 			return { top: 0, behavior: 'smooth' }
 		}
 	},
-	routes: setupLayouts(fileRoutes),
+	routes: setupLayouts(fileRoutes)
 }) as RouterTyped
 
 installNprogress(router)

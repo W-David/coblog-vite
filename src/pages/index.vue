@@ -4,34 +4,40 @@
 			<el-skeleton
 				:loading="loading"
 				animated
-				:count="queryParams.pageSize || 5"
-			>
+				:count="queryParams.pageSize || 5">
 				<template #template>
 					<div class="skeleton-item">
-						<el-skeleton-item variant="image" class="banner"></el-skeleton-item>
+						<el-skeleton-item
+							variant="image"
+							class="banner"></el-skeleton-item>
 						<div class="title-container">
-							<el-skeleton-item variant="h1" class="title"></el-skeleton-item>
+							<el-skeleton-item
+								variant="h1"
+								class="title"></el-skeleton-item>
 						</div>
 						<div class="ct-container">
-							<el-skeleton-item variant="text" class="ct-1"></el-skeleton-item>
-							<el-skeleton-item variant="text" class="ct-2"></el-skeleton-item>
+							<el-skeleton-item
+								variant="text"
+								class="ct-1"></el-skeleton-item>
+							<el-skeleton-item
+								variant="text"
+								class="ct-2"></el-skeleton-item>
 						</div>
 						<div class="content-container">
 							<el-skeleton-item
 								variant="p"
-								class="content-1"
-							></el-skeleton-item>
+								class="content-1"></el-skeleton-item>
 							<el-skeleton-item
 								variant="p"
-								class="content-2"
-							></el-skeleton-item>
+								class="content-2"></el-skeleton-item>
 						</div>
 						<div class="description-container">
-							<el-skeleton-item variant="text" class="time"></el-skeleton-item>
+							<el-skeleton-item
+								variant="text"
+								class="time"></el-skeleton-item>
 							<el-skeleton-item
 								variant="button"
-								class="more"
-							></el-skeleton-item>
+								class="more"></el-skeleton-item>
 						</div>
 					</div>
 				</template>
@@ -39,8 +45,7 @@
 					<div
 						v-for="article in articlesRef"
 						:key="article.id"
-						class="main-article-container"
-					>
+						class="main-article-container">
 						<article-card :article="article"></article-card>
 					</div>
 				</template>
@@ -51,8 +56,7 @@
 					v-model:page="queryParams.pageNum"
 					v-model:limit="queryParams.pageSize"
 					:total="totalRef"
-					@pagination="getList"
-				/>
+					@pagination="getList" />
 			</div>
 		</div>
 	</div>
@@ -62,15 +66,15 @@
 definePage({
 	name: '/',
 	meta: {
-		transitionName: 'fade',
-	},
+		transitionName: 'fade'
+	}
 })
 const articleStore = useArticle()
 const articlesRef = ref<Article[]>([])
 const totalRef = ref(0)
 const queryParams = reactive({
 	pageNum: 1,
-	pageSize: 5,
+	pageSize: 5
 })
 const loading = ref(true)
 

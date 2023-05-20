@@ -16,15 +16,15 @@
 				<span class="info-label">开源</span>
 				<a
 					style="color: var(--el-color-warning)"
-					href="https://github.com/W-David/coblog-frontend"
-					>Frontend</a
-				>
+					href="https://github.com/W-David/coblog-frontend">
+					Frontend
+				</a>
 				<el-divider direction="vertical" />
 				<a
 					style="color: var(--el-color-warning)"
-					href="https://github.com/W-David/coblog"
-					>Backend</a
-				>
+					href="https://github.com/W-David/coblog">
+					Backend
+				</a>
 			</div>
 			<div class="hint-line contact-me-email">
 				<i-custom-email class="info-svg" />
@@ -40,19 +40,21 @@
 				<span class="info-label">个人主页</span>
 				<a
 					style="color: var(--el-text-color-regular)"
-					href="https://github.com/W-David"
-					>Github</a
-				>
+					href="https://github.com/W-David">
+					Github
+				</a>
 				<el-divider direction="vertical" />
-				<a style="color: #fc8bab" href="https://space.bilibili.com/36009071"
-					>B站</a
-				>
+				<a
+					style="color: #fc8bab"
+					href="https://space.bilibili.com/36009071">
+					B站
+				</a>
 				<el-divider direction="vertical" />
 				<a
 					style="color: #d32d31"
-					href="https://music.163.com/#/user/home?id=318980527"
-					>网易云</a
-				>
+					href="https://music.163.com/#/user/home?id=318980527">
+					网易云
+				</a>
 			</div>
 		</div>
 	</div>
@@ -62,8 +64,8 @@
 definePage({
 	name: 'about',
 	meta: {
-		transitionName: 'fade',
-	},
+		transitionName: 'fade'
+	}
 })
 </script>
 

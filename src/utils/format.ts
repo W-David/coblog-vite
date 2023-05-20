@@ -3,11 +3,7 @@ export function articles2Archive(archive: ArticleTime[]): ArticleArchive[] {
 	let curTime = ''
 	let curArticles: ArticleTime[] = []
 	const resList: ArticleArchive[] = []
-	const format: 'month' | 'week' | 'day' = archive[0].month
-		? 'month'
-		: archive[0].week
-		? 'week'
-		: 'day'
+	const format: 'month' | 'week' | 'day' = archive[0].month ? 'month' : archive[0].week ? 'week' : 'day'
 	for (let i = 0, len = archive.length; i < len; i++) {
 		const year = archive[i][format]?.split('-')[0]
 		const time =
@@ -15,9 +11,7 @@ export function articles2Archive(archive: ArticleTime[]): ArticleArchive[] {
 				? `${year}年, ${archive[i][format]?.split('-')[1]}月`
 				: format === 'week'
 				? `${year}年, 第${archive[i][format]?.split('-')[1]}周`
-				: `${year}年, ${archive[i][format]?.split('-')[1]}月, ${
-						archive[i][format]?.split('-')[2]
-				  }日`
+				: `${year}年, ${archive[i][format]?.split('-')[1]}月, ${archive[i][format]?.split('-')[2]}日`
 		if (curTime !== time) {
 			const curArchive = { time, articles: [] }
 			resList.push(curArchive)
@@ -29,10 +23,7 @@ export function articles2Archive(archive: ArticleTime[]): ArticleArchive[] {
 	return resList
 }
 
-export function concatArchive(
-	cachedArchive: ArticleArchive[],
-	archive: ArticleArchive[]
-): ArticleArchive[] {
+export function concatArchive(cachedArchive: ArticleArchive[], archive: ArticleArchive[]): ArticleArchive[] {
 	const lastCachedArchive = cachedArchive[cachedArchive.length - 1]
 	if (!archive?.length) {
 		return cachedArchive.concat([])

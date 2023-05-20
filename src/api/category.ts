@@ -1,43 +1,39 @@
 export function createCategory<T = Category, D = any>(data: D) {
 	return POST<T, D>({
 		url: '/category/create',
-		data,
+		data
 	})
 }
 
-export function updateCategory<T = Category, D extends { id: number } = any>(
-	data: D
-) {
+export function updateCategory<T = Category, D extends { id: number } = any>(data: D) {
 	return PUT<T, D>({
 		url: `/category/update/${data.id}`,
-		data,
+		data
 	})
 }
 
 export function listCategory<T = CountRow<Category>>(params?: any) {
 	return GET<T>({
 		url: '/category/list',
-		params,
+		params
 	})
 }
 
-export function listCategoryArticles<T = CountRow<CategoryArticle>>(
-	params: any
-) {
+export function listCategoryArticles<T = CountRow<CategoryArticle>>(params: any) {
 	return GET<T>({
 		url: '/category/list/articles',
-		params,
+		params
 	})
 }
 
 export function detailCategory<T = Category>(id: number) {
 	return GET<T>({
-		url: `/category/detail/${id}`,
+		url: `/category/detail/${id}`
 	})
 }
 
 export function deleteCategory<T = any>(id: number) {
 	return DELETE<T>({
-		url: `/category/delete/${id}`,
+		url: `/category/delete/${id}`
 	})
 }

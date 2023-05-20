@@ -1,75 +1,115 @@
 <template>
 	<default-layout>
 		<div class="app-main-container">
-			<el-row justify="center" :gutter="16">
-				<el-col :sm="7" :md="6" :lg="5" :xl="5" class="hidden-xs-only">
+			<el-row
+				justify="center"
+				:gutter="16">
+				<el-col
+					:sm="7"
+					:md="6"
+					:lg="5"
+					:xl="5"
+					class="hidden-xs-only">
 					<div class="widget-list">
-						<transition name="slide-fade-left" appear>
+						<transition
+							name="slide-fade-left"
+							appear>
 							<profile
 								:admin-info="adminInfo"
 								:loading="loading"
-								class="widget-item"
-							></profile>
+								class="widget-item"></profile>
 						</transition>
 					</div>
 					<div class="widget-list is-sticky">
 						<!-- toc -->
-						<transition name="slide-fade-left" appear>
+						<transition
+							name="slide-fade-left"
+							appear>
 							<toc class="widget-item"></toc>
 						</transition>
 						<!-- article-recent -->
-						<transition name="slide-fade-left" appear>
+						<transition
+							name="slide-fade-left"
+							appear>
 							<article-recent class="widget-item"></article-recent>
 						</transition>
 						<!-- tag-list -->
-						<transition name="slide-fade-left" appear>
+						<transition
+							name="slide-fade-left"
+							appear>
 							<tag-list class="widget-item"></tag-list>
 						</transition>
 						<!-- category-list -->
-						<transition name="slide-fade-left" appear>
+						<transition
+							name="slide-fade-left"
+							appear>
 							<category-list class="widget-item"></category-list>
 						</transition>
 						<!-- article-hot -->
-						<transition name="slide-fade-left" appear>
+						<transition
+							name="slide-fade-left"
+							appear>
 							<article-hot class="widget-item"></article-hot>
 						</transition>
 						<!-- links -->
-						<transition name="slide-fade-left" appear>
+						<transition
+							name="slide-fade-left"
+							appear>
 							<links class="widget-item"></links>
 						</transition>
 					</div>
 				</el-col>
-				<el-col :xs="24" :sm="15" :md="16" :lg="16">
+				<el-col
+					:xs="24"
+					:sm="15"
+					:md="16"
+					:lg="16">
 					<!-- main-content -->
-					<router-view v-slot="{ Component, route }" class="widget-list">
+					<router-view
+						v-slot="{ Component }"
+						class="widget-list">
 						<transition :name="(route.meta as RouteMeta).transitionName">
-							<component :is="Component" :key="route.path" />
+							<component
+								:is="Component"
+								:key="route.path" />
 						</transition>
 					</router-view>
 					<div class="widget-list">
-						<transition name="fade" appear>
+						<transition
+							name="fade"
+							appear>
 							<waline></waline>
 						</transition>
 					</div>
 					<div class="widget-list hidden-sm-and-up">
 						<!-- article-recent -->
-						<transition name="fade" appear>
+						<transition
+							name="fade"
+							appear>
 							<article-recent class="widget-item"></article-recent>
 						</transition>
 						<!-- tag-list -->
-						<transition name="fade" appear>
+						<transition
+							name="fade"
+							appear>
 							<tag-list class="widget-item"></tag-list>
 						</transition>
 						<!-- category-list -->
-						<transition name="fade" appear>
+						<transition
+							name="fade"
+							appear>
 							<category-list class="widget-item"></category-list>
 						</transition>
 						<!-- article-hot -->
-						<transition name="fade" appear>
+						<transition
+							name="fade"
+							appear>
 							<article-hot class="widget-item"></article-hot>
 						</transition>
 						<!-- links -->
-						<transition name="fade" appear>
+						<transition
+							name="fade"
+							appear>
 							<links class="widget-item"></links>
 						</transition>
 					</div>
@@ -85,9 +125,7 @@ import DefaultLayout from './default.vue'
 
 const articleStore = useArticle()
 const route = useRoute<'article'>()
-const adminInfo = computed(
-	() => articleStore.getArticleById(+route.params.id)?.admin
-)
+const adminInfo = computed(() => articleStore.getArticleById(+route.params.id)?.admin)
 const loading = computed(() => articleStore.isArticleLoading)
 </script>
 

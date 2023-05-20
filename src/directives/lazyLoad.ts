@@ -11,11 +11,11 @@ const LazyLoad: Directive = {
 	},
 	unmounted(el: any) {
 		IntersectionObserver && el.$io.disconnect()
-	},
+	}
 }
 
 function ioEvent(el: any) {
-	const io = new IntersectionObserver((entries) => {
+	const io = new IntersectionObserver(entries => {
 		const realSrc = el.$data_src
 		entries[0].isIntersecting && realSrc && (el.src = realSrc)
 	})
@@ -43,11 +43,9 @@ function getClientHeight() {
 	const bodyClientHeight = document.body.clientHeight
 	let clientHeight = 0
 	if (bodyClientHeight && dClientHeight) {
-		clientHeight =
-			bodyClientHeight < dClientHeight ? bodyClientHeight : dClientHeight
+		clientHeight = bodyClientHeight < dClientHeight ? bodyClientHeight : dClientHeight
 	} else {
-		clientHeight =
-			bodyClientHeight > dClientHeight ? bodyClientHeight : dClientHeight
+		clientHeight = bodyClientHeight > dClientHeight ? bodyClientHeight : dClientHeight
 	}
 	return clientHeight
 }

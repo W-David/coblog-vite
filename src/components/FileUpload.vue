@@ -8,44 +8,47 @@
 			:multiple="false"
 			:limit="1"
 			:show-file-list="false"
-			:before-upload="beforeFileUpload"
-		>
+			:before-upload="beforeFileUpload">
 			<template #default>
-				<div id="trigger" class="trigger-area">
+				<div
+					id="trigger"
+					class="trigger-area">
 					<el-icon :size="18"><i-ep-plus /></el-icon>
-					<span> {{ trigHint }}</span>
+					<span>{{ trigHint }}</span>
 				</div>
 			</template>
 		</el-upload>
 		<transition name="fade">
-			<div v-if="isUploaded" class="file-img-container">
+			<div
+				v-if="isUploaded"
+				class="file-img-container">
 				<img
 					class="file-img"
 					:src="`${imgUrl}?x-oss-process=image/resize,p_25`"
 					alt="noImg"
 					width="100%"
-					height="100%"
-				/>
+					height="100%" />
 				<div class="file-cover">
 					<!-- <span class="file-ctrl" @click="handleView">
 						<el-icon><i-ep-view /></el-icon>
 						<span> 查看大图</span>
 					</span> -->
-					<span class="file-ctrl" @click="handleUpload">
+					<span
+						class="file-ctrl"
+						@click="handleUpload">
 						<el-icon><i-ep-upload /></el-icon>
-						<span> 重新上传</span>
+						<span>重新上传</span>
 					</span>
 					<el-popconfirm
 						confirm-button-text="是的"
 						cancel-button-text="按错了"
 						icon-color="red"
 						title="确定删除?"
-						@confirm="handleDelete"
-					>
+						@confirm="handleDelete">
 						<template #reference>
 							<span class="file-ctrl">
 								<el-icon><i-ep-delete /></el-icon>
-								<span> 删除{{ descripHint }}</span>
+								<span>删除{{ descripHint }}</span>
 							</span>
 						</template>
 					</el-popconfirm>
@@ -70,7 +73,7 @@ const props = withDefaults(
 		isUploaded: false,
 		imgUrl: '',
 		trigHint: '上传文件',
-		descripHint: '文件',
+		descripHint: '文件'
 	}
 )
 const emit = defineEmits<{
@@ -80,7 +83,6 @@ const emit = defineEmits<{
 const { isUploaded, imgUrl, trigHint, descripHint } = toRefs(props)
 const aliossStore = useAlioss()
 const uploadRef = ref(null)
-const isShow = ref(false)
 const beforeFileUpload = (file: File) => {
 	emit('on-upload', file)
 	return false
@@ -88,9 +90,7 @@ const beforeFileUpload = (file: File) => {
 // const handleView = () => (isShow.value = true)
 const handleDelete = () => emit('on-delete')
 const handleUpload = () => {
-	const inputFile = document.getElementsByClassName(
-		'el-upload__input'
-	)[0] as HTMLElement
+	const inputFile = document.getElementsByClassName('el-upload__input')[0] as HTMLElement
 	inputFile.click()
 }
 

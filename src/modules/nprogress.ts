@@ -8,7 +8,7 @@ export default (router: RouterTyped) => {
 	router.beforeEach(() => {
 		isLoading.value = true
 	})
-	router.afterEach((to, from) => {
+	router.afterEach(() => {
 		isLoading.value = false
 	})
 }

@@ -2,7 +2,10 @@
 	<div class="toc-container">
 		<div class="toc-list-title">文章目录</div>
 		<div class="toc-list">
-			<el-skeleton :loading="loading" animated :count="3">
+			<el-skeleton
+				:loading="loading"
+				animated
+				:count="3">
 				<template #template>
 					<div class="skeleton-item">
 						<el-skeleton-item class="toc toc-1"></el-skeleton-item>
@@ -19,8 +22,7 @@
 							:key="item.anchor"
 							:item="item"
 							:is-actived="activedArr.includes(item.anchor)"
-							@on-checked="onChecked"
-						></toc-item>
+							@on-checked="onChecked"></toc-item>
 					</div>
 					<div v-else>
 						<div class="no-toc"></div>
@@ -47,7 +49,7 @@ const onChecked = (anchor: string) => activedArr.value.push(anchor)
 const onScroll = () => {
 	console.log('scrolling...')
 	activedArr.value.splice(0, activedArr.value.length)
-	tocArray.value.forEach((toc) => {
+	tocArray.value.forEach(toc => {
 		if (isActived(toc.anchor)) {
 			console.log('add actived: ', toc.anchor)
 			activedArr.value.push(toc.anchor)
@@ -61,13 +63,7 @@ onMounted(() => onScroll())
 <style lang="scss" scoped>
 .toc-container {
 	@include layout(100%, auto, 0, 8px);
-	@include scroll-bar-reset(
-		6px,
-		auto,
-		transparent,
-		var(--el-border-color),
-		3px
-	);
+	@include scroll-bar-reset(6px, auto, transparent, var(--el-border-color), 3px);
 	@include border(none, 8px);
 	background-color: var(--el-bg-color);
 	box-shadow: var(--el-box-shadow);

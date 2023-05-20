@@ -6,8 +6,7 @@
 			:lang="lang"
 			:dark="dark"
 			:reaction="reaction"
-			:copyright="copyright"
-		/>
+			:copyright="copyright" />
 	</div>
 </template>
 

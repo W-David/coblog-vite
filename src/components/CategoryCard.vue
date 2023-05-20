@@ -1,8 +1,7 @@
 <template>
 	<div
 		:id="`cate-${category.id}`"
-		:class="['category-card-container', isActive ? 'is-active' : '']"
-	>
+		:class="['category-card-container', isActive ? 'is-active' : '']">
 		<div class="category-name">
 			<span class="name-content">
 				<i-custom-category class="category-icon" />
@@ -17,9 +16,10 @@
 				<div
 					v-for="article in category.articles"
 					:key="article.id"
-					class="category-article-card"
-				>
-					<div class="category-article-title" @click="toArticle(article.id)">
+					class="category-article-card">
+					<div
+						class="category-article-title"
+						@click="toArticle(article.id)">
 						<span class="title-content">
 							{{ article.title }}
 						</span>
@@ -46,7 +46,7 @@ const props = withDefaults(
 		isActive?: boolean
 	}>(),
 	{
-		isActive: false,
+		isActive: false
 	}
 )
 const { category, isActive } = toRefs(props)
@@ -96,13 +96,7 @@ const toArticle = (id: number) => {
 	}
 	.category-article-list {
 		@include layout(100%, auto, 0, 0);
-		@include scroll-bar-reset(
-			4px,
-			auto,
-			transparent,
-			var(--el-color-success-light-3),
-			2px
-		);
+		@include scroll-bar-reset(4px, auto, transparent, var(--el-color-success-light-3), 2px);
 		min-height: 68px;
 
 		.category-article-card {

@@ -4,8 +4,7 @@
 			:model-value="modelValue"
 			inline-prompt
 			style="--el-switch-on-color: #1d1d1d; --el-switch-off-color: #d1d1d1"
-			@change="change"
-		/>
+			@change="change" />
 	</div>
 </template>
 
@@ -16,7 +15,7 @@ const props = withDefaults(
 		modelValue: SwitchModelType
 	}>(),
 	{
-		modelValue: false,
+		modelValue: false
 	}
 )
 const { modelValue } = toRefs(props)

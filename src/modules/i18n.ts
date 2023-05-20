@@ -3,7 +3,7 @@ import { createI18n } from 'vue-i18n'
 const messages = Object.fromEntries(
 	Object.entries(
 		import.meta.glob('../../locales/*.y(a)?ml', {
-			eager: true,
+			eager: true
 		})
 	).map(([key, value]) => {
 		const yaml = key.endsWith('.yaml')
@@ -15,6 +15,6 @@ const messages = Object.fromEntries(
 const i18n = createI18n({
 	legacy: false,
 	locale: 'en',
-	messages,
+	messages
 })
 export default i18n

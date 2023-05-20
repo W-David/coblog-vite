@@ -3,13 +3,30 @@
 		<div class="archive-timeline-container">
 			<div class="timeline-container">
 				<div class="archive-timeline-ctrl">
-					<el-radio-group v-model="form.format" @change="reGetArchive()">
-						<el-radio label="month" border>月份</el-radio>
-						<el-radio label="week" border>每周</el-radio>
-						<el-radio label="day" border>日期</el-radio>
+					<el-radio-group
+						v-model="form.format"
+						@change="reGetArchive()">
+						<el-radio
+							label="month"
+							border>
+							月份
+						</el-radio>
+						<el-radio
+							label="week"
+							border>
+							每周
+						</el-radio>
+						<el-radio
+							label="day"
+							border>
+							日期
+						</el-radio>
 					</el-radio-group>
 				</div>
-				<el-skeleton :loading="isLoadingMore" animated :count="form.pageSize">
+				<el-skeleton
+					:loading="isLoadingMore"
+					animated
+					:count="form.pageSize">
 					<template #template>
 						<div class="skeleton-item">
 							<div class="timestamp-container">
@@ -44,19 +61,15 @@
 								:timestamp="a.time"
 								type="primary"
 								:hollow="true"
-								placement="top"
-							>
+								placement="top">
 								<el-collapse :model-value="[a.time]">
 									<el-collapse-item :name="a.time">
 										<template #title>
 											<div class="display-title-container">
 												<div
-													v-for="(title, index) in generateArchiveTitles(
-														a.articles
-													)"
+													v-for="(title, index) in generateArchiveTitles(a.articles)"
 													:key="index"
-													class="display-title"
-												>
+													class="display-title">
 													<div class="display-title-content">{{ title }}</div>
 												</div>
 											</div>
@@ -65,33 +78,24 @@
 											v-for="article in a.articles"
 											:key="article.id"
 											class="article-card"
-											@click="toArticle(article.id)"
-										>
+											@click="toArticle(article.id)">
 											<div class="article-title">
 												<span class="title-content">{{ article.title }}</span>
-												<span class="time-content hidden-sm-and-down">{{
-													article.createdAt
-												}}</span>
+												<span class="time-content hidden-sm-and-down">{{ article.createdAt }}</span>
 											</div>
 											<div
-												v-if="
-													(article.categories && article.categories.length) ||
-													(article.tags && article.tags.length)
-												"
-												class="article-info"
-											>
+												v-if="(article.categories && article.categories.length) || (article.tags && article.tags.length)"
+												class="article-info">
 												<category-panel
 													v-for="category in article.categories"
 													:key="category.id"
 													:size="12"
-													:category="category"
-												></category-panel>
+													:category="category"></category-panel>
 												<tag-panel
 													v-for="tag in article.tags"
 													:key="tag.id"
 													:size="12"
-													:tag="tag"
-												></tag-panel>
+													:tag="tag"></tag-panel>
 											</div>
 											<div class="m-article-time hidden-md-and-up">
 												<span class="time-content">
@@ -111,8 +115,7 @@
 			v-show="archive && archive.length"
 			:is-loading-more="isLoadingMore"
 			:has-more="hasMore"
-			@on-load-more="onLoadMore"
-		></page-load>
+			@on-load-more="onLoadMore"></page-load>
 	</div>
 </template>
 
@@ -122,13 +125,13 @@ const articleStore = useArticle()
 definePage({
 	name: 'archive',
 	meta: {
-		transitionName: 'fade',
-	},
+		transitionName: 'fade'
+	}
 })
 const form = reactive({
 	pageNum: 1,
 	pageSize: 5,
-	format: 'month',
+	format: 'month'
 })
 
 const archive = computed(() => articleStore.getArticleArchive)
@@ -139,14 +142,13 @@ const getArchive = async (data: any) => {
 	isLoadingMore.value = true
 	const [list, total] = await articleStore.GetArticleArchive(data)
 	isLoadingMore.value = false
-	hasMore.value =
-		list && list.length > 0 && form.pageNum * form.pageSize < total
+	hasMore.value = list && list.length > 0 && form.pageNum * form.pageSize < total
 	return list
 }
 const generateArchiveTitles = (articles: ArticleTime[]) => {
 	if (articles && articles.length) {
 		const len = Math.min(articles.length, 3)
-		return articles.slice(0, len).map((article) => article.title)
+		return articles.slice(0, len).map(article => article.title)
 	} else {
 		return ['暂无文章']
 	}
@@ -155,9 +157,7 @@ const toArticle = (id: number) => {
 	router.push({ name: 'article', params: { id } })
 }
 const onLoadMore = async () => {
-	const list = await getArchive(
-		Object.assign(form, { pageNum: form.pageNum + 1 })
-	)
+	const list = await getArchive(Object.assign(form, { pageNum: form.pageNum + 1 }))
 	if (list?.length) {
 		form.pageNum += 1
 	}
@@ -234,10 +234,7 @@ initPage()
 					}
 					.article-container {
 						@include layout(95%, 100%, 16px auto, 12px 16px);
-						@include box-shadow(
-							1px 1px 4px rgba(0, 0, 0, 0.05),
-							-1px -1px 4px rgba(0, 0, 0, 0.02)
-						);
+						@include box-shadow(1px 1px 4px rgba(0, 0, 0, 0.05), -1px -1px 4px rgba(0, 0, 0, 0.02));
 						border-radius: 4px;
 						.article-title {
 							@include layout(100%, auto, 0, 0);
@@ -312,10 +309,7 @@ initPage()
 					.article-card {
 						@include layout(95%, 100%, 16px auto, 12px 16px);
 						@include border(none, 4px);
-						@include box-shadow(
-							1px 1px 4px rgba(0, 0, 0, 0.05),
-							-1px -1px 4px rgba(0, 0, 0, 0.02)
-						);
+						@include box-shadow(1px 1px 4px rgba(0, 0, 0, 0.05), -1px -1px 4px rgba(0, 0, 0, 0.02));
 						@include transition(all 220ms ease-in-out);
 						@include border(none, 8px);
 						@include bg-color(#fff, #1d1d1d);

@@ -1,12 +1,20 @@
 <template>
 	<div class="admin-info-container">
-		<el-skeleton :loading="loading" animated>
+		<el-skeleton
+			:loading="loading"
+			animated>
 			<template #template>
 				<div class="skeleton-item">
-					<el-skeleton-item variant="image" class="avatar"></el-skeleton-item>
+					<el-skeleton-item
+						variant="image"
+						class="avatar"></el-skeleton-item>
 					<div class="hint">
-						<el-skeleton-item variant="text" class="name"></el-skeleton-item>
-						<el-skeleton-item variant="text" class="email"></el-skeleton-item>
+						<el-skeleton-item
+							variant="text"
+							class="name"></el-skeleton-item>
+						<el-skeleton-item
+							variant="text"
+							class="email"></el-skeleton-item>
 					</div>
 				</div>
 			</template>
@@ -17,30 +25,17 @@
 							:size="64"
 							shape="circle"
 							:src="`${adminInfo?.avatar}?x-oss-process=image/resize,m_fill,h_64,w_64`"
-							fit="cover"
-						>
+							fit="cover">
 							<span>{{ adminInfo?.nickname.substr(0, 1) ?? '匿' }}</span>
 						</el-avatar>
 					</div>
 					<div class="admin-hint">
 						<div class="admin-name">
-							<i-custom-profile
-								style="
-									color: var(--el-color-primary);
-									width: 16px;
-									height: 16px;
-								"
-							/>
+							<i-custom-profile style="color: var(--el-color-primary); width: 16px; height: 16px" />
 							{{ adminInfo?.nickname ?? '匿名用户' }}
 						</div>
 						<div class="admin-email">
-							<i-custom-email
-								style="
-									color: var(--el-color-success);
-									width: 16px;
-									height: 16px;
-								"
-							/>
+							<i-custom-email style="color: var(--el-color-success); width: 16px; height: 16px" />
 							{{ adminInfo?.email ?? '待完善' }}
 						</div>
 					</div>
@@ -51,15 +46,10 @@
 </template>
 
 <script lang="ts" setup>
-const props = withDefaults(
-	defineProps<{
-		adminInfo?: Admin
-		loading: boolean
-	}>(),
-	{
-		loading: true,
-	}
-)
+const props = defineProps<{
+	adminInfo?: Admin
+	loading: boolean
+}>()
 const { adminInfo, loading } = toRefs(props)
 </script>
 

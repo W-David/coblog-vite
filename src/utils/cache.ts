@@ -30,7 +30,7 @@ const session = {
 	},
 	remove(key: string) {
 		sessionStorage.removeItem(key)
-	},
+	}
 }
 
 const local = {
@@ -65,7 +65,7 @@ const local = {
 	},
 	remove(key: string) {
 		localStorage.removeItem(key)
-	},
+	}
 }
 
 class LRU<K = string, V = any> {

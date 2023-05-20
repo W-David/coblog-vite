@@ -2,8 +2,8 @@
 definePage({
 	name: 'notFound',
 	meta: {
-		layout: 'notFound',
-	},
+		layout: 'notFound'
+	}
 })
 const typedRef = useTyped(['is not found!'])
 
@@ -17,17 +17,23 @@ const back = () => router.push('/')
 	<div class="flex flex-wrap h-screen text-center justify-around items-center">
 		<div class="font-blod desc">
 			<div class="text-7xl code">404</div>
-			<div ref="typedRef" class="text-3xl content">The Page</div>
+			<div
+				ref="typedRef"
+				class="text-3xl content">
+				The Page
+			</div>
 			<button
 				active="scale-90 transform"
 				class="rounded-lg transition btn"
-				@click="back"
-			>
+				@click="back">
 				👉 Go Home
 			</button>
 		</div>
 
-		<img :src="randomUrl" class="cover" alt="page not found" />
+		<img
+			:src="randomUrl"
+			class="cover"
+			alt="page not found" />
 	</div>
 </template>
 
@@ -58,8 +64,7 @@ const back = () => router.push('/')
 	margin-top: 30px;
 	padding: 12px 20px;
 	--tw-shadow-color: 8, 145, 178;
-	--tw-shadow: 0 4px 6px -1px rgba(var(--tw-shadow-color), 0.1),
-		0 2px 4px -1px rgba(var(--tw-shadow-color), 0.06);
+	--tw-shadow: 0 4px 6px -1px rgba(var(--tw-shadow-color), 0.1), 0 2px 4px -1px rgba(var(--tw-shadow-color), 0.06);
 	box-shadow: 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--tw-shadow);
 }
 </style>

@@ -9,8 +9,7 @@
 			v-bind="$attrs"
 			:pager-count="5"
 			@size-change="handleSizeChange"
-			@current-change="handleCurrentChange"
-		/>
+			@current-change="handleCurrentChange" />
 	</div>
 </template>
 
@@ -30,7 +29,7 @@ const props = withDefaults(
 		limit: 10,
 		layout: 'prev, pager, next',
 		background: true,
-		autoScroll: true,
+		autoScroll: true
 	}
 )
 const { total, page, limit, layout, background, autoScroll } = toRefs(props)
@@ -41,11 +40,11 @@ const emit = defineEmits<{
 }>()
 const currentPage = computed({
 	get: () => page.value,
-	set: (val) => emit('update:page', val),
+	set: val => emit('update:page', val)
 })
 const pageSize = computed({
 	get: () => limit.value,
-	set: (val) => emit('update:limit', val),
+	set: val => emit('update:limit', val)
 })
 const handleSizeChange = (val: number) => {
 	emit('pagination', { page: currentPage.value, limit: val })
