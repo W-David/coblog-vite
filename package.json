@@ -125,6 +125,6 @@
 		}
 	},
 	"lint-staged": {
-		"*.{js,jsx,vue}": "eslint --cache --fix"
+		"*.{ts,js,jsx,vue}": "eslint --cache --fix"
 	}
 }

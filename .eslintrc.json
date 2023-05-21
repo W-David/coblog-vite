@@ -87,9 +87,7 @@
 		//允许使用any
 		"@typescript-eslint/no-explicit-any": "off",
 		// 允许使用 @ts-ignore
-		"@typescript-eslint/ban-ts-comment": "off",
-		"vue/first-attribute-linebreak": "off",
-		"vue/max-attributes-per-line": "off"
+		"@typescript-eslint/ban-ts-comment": "off"
 	},
 	"globals": {
 		"defineOptions": true
