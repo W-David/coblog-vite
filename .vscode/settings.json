@@ -76,7 +76,7 @@
 	"[yaml]": {
 		"editor.defaultFormatter": "redhat.vscode-yaml"
 	},
-	"explorer.fileNesting.enabled": true,
+	"explorer.fileNesting.enabled": false,
 	"explorer.fileNesting.expand": false,
 	"explorer.fileNesting.patterns": {
 		"*.component.ts": "$(capture).component.html, $(capture).component.spec.ts, $(capture).component.css, $(capture).component.scss, $(capture).component.sass, $(capture).component.less",

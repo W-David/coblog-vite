@@ -55,27 +55,6 @@
 		"vue/multi-word-component-names": "off",
 		//由于使用的自动导入，先暂时关闭未定义组件的检查
 		"vue/no-undef-components": "off",
-		// prettier 作为规则
-		"prettier/prettier": [
-			"error",
-			{
-				"singleQuote": true,
-				"semi": false,
-				"printWidth": 160,
-				"tabWidth": 2,
-				"quoteProps": "as-needed",
-				"trailingComma": "none",
-				"bracketSpacing": true,
-				"bracketSameLine": true,
-				"arrowParens": "avoid",
-				"vueIndentScriptAndStyle": false,
-				"proseWrap": "preserve",
-				"htmlWhitespaceSensitivity": "ignore",
-				"endOfLine": "auto",
-				"embeddedLanguageFormatting": "auto",
-				"singleAttributePerLine": true
-			}
-		],
 		// 禁止使用 var，而应该用 let 或 const
 		"no-var": "error",
 		// 使用typescript-eslint的未使用变量警告
