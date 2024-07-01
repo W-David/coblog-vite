@@ -16,7 +16,7 @@
 		"project": [
 			"./tsconfig.json"
 		], //解析器项目的相对路径
-		"tsconfigRootDir": "D:/Workspace/ppg/coblog-vite",
+		"tsconfigRootDir": "./",
 		"extraFileExtensions": [
 			".vue"
 		]
