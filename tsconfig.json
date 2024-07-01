@@ -8,13 +8,18 @@
 		"skipLibCheck": true,
 		"isolatedModules": true,
 		"esModuleInterop": true,
-		"lib": ["esnext", "dom"],
+		"lib": [
+			"esnext",
+			"dom"
+		],
 		"resolveJsonModule": true,
 		"moduleResolution": "node",
 		"useDefineForClassFields": true,
 		"baseUrl": ".",
 		"paths": {
-			"~/*": ["src/*"]
+			"~/*": [
+				"src/*"
+			]
 		}
 	},
 	"include": [
@@ -25,7 +30,13 @@
 		"src/**/*.tsx",
 		"src/**/*.vue",
 		"./vite.config.ts",
-		"./windi.config.ts"
+		"./windi.config.ts",
+		"./apollo.config.js"
 	],
-	"exclude": ["node_modules", "dist", "public", "mock"]
+	"exclude": [
+		"node_modules",
+		"dist",
+		"public",
+		"mock"
+	]
 }

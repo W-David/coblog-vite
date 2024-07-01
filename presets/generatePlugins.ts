@@ -156,7 +156,9 @@ export default () => {
 						'@jsmini/clone': ['cloneLoop', 'cloneForce'],
 						'element-plus': ['ElMessage', 'ElMessageBox'],
 						'lru-cache': [['default', 'LRUCache']],
-						qs: [['default', 'QS']]
+						qs: [['default', 'QS']],
+						'@vue/apollo-composable': ['DefaultApolloClient', 'useQuery', 'useMutation', 'useSubscription'],
+						'graphql-tag': [['default', 'gql']]
 					}
 				],
 				resolvers: AutoImportResolvers,

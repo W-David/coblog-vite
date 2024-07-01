@@ -29,11 +29,15 @@
 		"analysis:build": "npx windicss-analysis --html dist"
 	},
 	"dependencies": {
+		"@apollo/client": "^3.10.8",
 		"@kangc/v-md-editor": "^2.3.15",
+		"@vue/apollo-composable": "^4.0.2",
 		"@waline/client": "^2.14.7",
 		"axios": "^1.3.3",
 		"device.js": "^2.3.0",
 		"element-plus": "^2.2.30",
+		"graphql": "^16.9.0",
+		"graphql-tag": "^2.12.6",
 		"highlight.js": "^11.7.0",
 		"js-base64": "^3.7.5",
 		"js-cookie": "^3.0.1",
