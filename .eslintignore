@@ -4,3 +4,4 @@ node_modules
 presets/types
 public
 mock
+apollo.config.cjs

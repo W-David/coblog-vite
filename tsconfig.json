@@ -31,12 +31,11 @@
 		"src/**/*.vue",
 		"./vite.config.ts",
 		"./windi.config.ts",
-		"./apollo.config.js"
 	],
 	"exclude": [
 		"node_modules",
 		"dist",
 		"public",
-		"mock"
+		"mock",
 	]
 }
