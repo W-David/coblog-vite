@@ -1,7 +1,20 @@
 export const login = gql`
 	query Login($email: String!, $password: String!) {
-		auth(email: $email, password: $password) {
+		login(email: $email, password: $password) {
 			token
+		}
+	}
+`
+
+export const auth = gql`
+	query Auth {
+		auth {
+			id
+			email
+			nickName
+			createdAt
+			avatar
+			role
 		}
 	}
 `

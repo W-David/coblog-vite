@@ -60,7 +60,6 @@ export const deleteOnePost = gql`
 	mutation DeleteOnePost($where: PostWhereUniqueInput!) {
 		deleteOnePost(where: $where) {
 			id
-			name
 		}
 	}
 `
