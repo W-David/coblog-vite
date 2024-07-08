@@ -1,4 +1,4 @@
-export const login = gql`
+export const graphqlLogin = gql`
 	query Login($email: String!, $password: String!) {
 		login(email: $email, password: $password) {
 			token
@@ -6,7 +6,7 @@ export const login = gql`
 	}
 `
 
-export const auth = gql`
+export const graphqlAuth = gql`
 	query Auth {
 		auth {
 			id

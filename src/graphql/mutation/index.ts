@@ -1,4 +1,4 @@
-export const register = gql`
+export const graphqlRegister = gql`
 	mutation Register($email: String!, $password: String!, $role: String!) {
 		register(email: $email, password: $password, role: $role) {
 			token

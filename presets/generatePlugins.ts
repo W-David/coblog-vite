@@ -141,7 +141,8 @@ export default () => {
 					env.VITE_APP_API_AUTO_IMPORT && 'src/stores/**/*.ts',
 					env.VITE_APP_API_AUTO_IMPORT && 'src/composables/**/*.ts',
 					env.VITE_APP_API_AUTO_IMPORT && 'src/api/**/*.ts',
-					env.VITE_APP_API_AUTO_IMPORT && 'src/utils/**/*.ts'
+					env.VITE_APP_API_AUTO_IMPORT && 'src/utils/**/*.ts',
+					env.VITE_APP_API_AUTO_IMPORT && 'src/graphql/**/*.ts'
 				],
 				dts: './presets/types/auto-imports.d.ts',
 				imports: [
