@@ -26,7 +26,7 @@ export default defineStore('useAdmin', {
 				return
 			}
 			const url = res.url
-			const { mutate, onDone, onError } = useMutation(updateOneUser)
+			const { mutate, onDone } = useMutation(updateOneUser)
 			mutate({
 				data: {
 					avatar: {
@@ -41,12 +41,9 @@ export default defineStore('useAdmin', {
 				this.avatar = url
 				ElMessage({ message: '头像上传成功', type: 'success', grouping: true })
 			})
-			onError(() => {
-				ElMessage({ message: '上传失败', type: 'error', grouping: true })
-			})
 		},
 		DeleteAvatar() {
-			const { mutate, onDone, onError } = useMutation(updateOneUser)
+			const { mutate, onDone } = useMutation(updateOneUser)
 			mutate({
 				data: {
 					avatar: {
@@ -69,9 +66,6 @@ export default defineStore('useAdmin', {
 					ElMessage({ message: '删除失败', type: 'error', grouping: true })
 				}
 			})
-			onError(() => {
-				ElMessage({ message: '删除失败', type: 'error', grouping: true })
-			})
 		},
 		SetAdminInfo(adminInfo: AdminInfo) {
 			const { id, nickname, email } = adminInfo
@@ -93,7 +87,7 @@ export default defineStore('useAdmin', {
 				this.adminInfo = { id, nickname, email }
 			})
 		},
-		async Login(params = {}) {
+		async Login(params: { email: string; password: string }) {
 			const res = await login(params)
 			if (res.data.code === 200 && res.data.data) {
 				const admin = res.data.data
