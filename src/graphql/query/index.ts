@@ -1,12 +1,14 @@
-export const graphqlLogin = gql`
+import { graphql } from '../generated'
+
+export const graphqlLogin = graphql(`
 	query Login($email: String!, $password: String!) {
 		login(email: $email, password: $password) {
 			token
 		}
 	}
-`
+`)
 
-export const graphqlAuth = gql`
+export const graphqlAuth = graphql(`
 	query Auth {
 		auth {
 			id
@@ -17,9 +19,9 @@ export const graphqlAuth = gql`
 			role
 		}
 	}
-`
+`)
 
-export const users = gql`
+export const users = graphql(`
 	query Users {
 		users {
 			email
@@ -29,9 +31,9 @@ export const users = gql`
 			avatar
 		}
 	}
-`
+`)
 
-export const getUser = gql`
+export const getUser = graphql(`
 	query GetUser($where: UserWhereUniqueInput!) {
 		getUser(where: $where) {
 			id
@@ -42,9 +44,9 @@ export const getUser = gql`
 			createdAt
 		}
 	}
-`
+`)
 
-export const getPost = gql`
+export const getPost = graphql(`
 	query GetPost($where: PostWhereUniqueInput!) {
 		getPost(where: $where) {
 			title
@@ -65,9 +67,9 @@ export const getPost = gql`
 			id
 		}
 	}
-`
+`)
 
-export const posts = gql`
+export const posts = graphql(`
 	query Posts($orderBy: [PostOrderByWithRelationInput!]) {
 		posts(orderBy: $orderBy) {
 			id
@@ -82,18 +84,18 @@ export const posts = gql`
 			authorId
 		}
 	}
-`
+`)
 
-export const categories = gql`
+export const categories = graphql(`
 	query Categories($where: CategoryWhereInput) {
 		categories(where: $where) {
 			id
 			name
 		}
 	}
-`
+`)
 
-export const getCategory = gql`
+export const getCategory = graphql(`
 	query GetCategory($where: CategoryWhereUniqueInput!) {
 		getCategory(where: $where) {
 			name
@@ -114,18 +116,18 @@ export const getCategory = gql`
 			}
 		}
 	}
-`
+`)
 
-export const tags = gql`
+export const tags = graphql(`
 	query Tags {
 		tags {
 			id
 			name
 		}
 	}
-`
+`)
 
-export const getTag = gql`
+export const getTag = graphql(`
 	query GetTag($where: TagWhereUniqueInput!) {
 		getTag(where: $where) {
 			name
@@ -146,4 +148,4 @@ export const getTag = gql`
 			}
 		}
 	}
-`
+`)

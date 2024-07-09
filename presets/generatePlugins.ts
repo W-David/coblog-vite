@@ -142,7 +142,8 @@ export default () => {
 					env.VITE_APP_API_AUTO_IMPORT && 'src/composables/**/*.ts',
 					env.VITE_APP_API_AUTO_IMPORT && 'src/api/**/*.ts',
 					env.VITE_APP_API_AUTO_IMPORT && 'src/utils/**/*.ts',
-					env.VITE_APP_API_AUTO_IMPORT && 'src/graphql/**/*.ts'
+					env.VITE_APP_API_AUTO_IMPORT && 'src/graphql/mutation/**/*.ts',
+					env.VITE_APP_API_AUTO_IMPORT && 'src/graphql/query/**/*.ts'
 				],
 				dts: './presets/types/auto-imports.d.ts',
 				imports: [
@@ -158,8 +159,7 @@ export default () => {
 						'element-plus': ['ElMessage', 'ElMessageBox'],
 						'lru-cache': [['default', 'LRUCache']],
 						qs: [['default', 'QS']],
-						'@vue/apollo-composable': ['DefaultApolloClient', 'useQuery', 'useMutation', 'useSubscription'],
-						'graphql-tag': [['default', 'gql']]
+						'@vue/apollo-composable': ['DefaultApolloClient', 'useQuery', 'useMutation', 'useSubscription']
 					}
 				],
 				resolvers: AutoImportResolvers,

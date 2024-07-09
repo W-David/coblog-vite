@@ -1,12 +1,14 @@
-export const graphqlRegister = gql`
+import { graphql } from '../generated'
+
+export const graphqlRegister = graphql(`
 	mutation Register($email: String!, $password: String!, $role: String!) {
 		register(email: $email, password: $password, role: $role) {
 			token
 		}
 	}
-`
+`)
 
-export const deleteOneUser = gql`
+export const deleteOneUser = graphql(`
 	mutation DeleteOneUser($where: UserWhereUniqueInput!) {
 		deleteOneUser(where: $where) {
 			id
@@ -15,9 +17,9 @@ export const deleteOneUser = gql`
 			avatar
 		}
 	}
-`
+`)
 
-export const updateOneUser = gql`
+export const updateOneUser = graphql(`
 	mutation UpdateOneUser($data: UserUpdateInput!, $where: UserWhereUniqueInput!) {
 		updateOneUser(data: $data, where: $where) {
 			id
@@ -27,9 +29,9 @@ export const updateOneUser = gql`
 			role
 		}
 	}
-`
+`)
 
-export const createOnePost = gql`
+export const createOnePost = graphql(`
 	mutation CreateOnePost($data: PostCreateInput!) {
 		createOnePost(data: $data) {
 			id
@@ -37,61 +39,61 @@ export const createOnePost = gql`
 			authorId
 		}
 	}
-`
+`)
 
-export const updateOnePost = gql`
+export const updateOnePost = graphql(`
 	mutation UpdateOnePost($data: PostUpdateInput!, $where: PostWhereUniqueInput!) {
 		updateOnePost(data: $data, where: $where) {
 			id
 		}
 	}
-`
+`)
 
-export const createOneCategory = gql`
+export const createOneCategory = graphql(`
 	mutation CreateOneCategory($data: CategoryCreateInput!) {
 		createOneCategory(data: $data) {
 			id
 			name
 		}
 	}
-`
+`)
 
-export const deleteOnePost = gql`
+export const deleteOnePost = graphql(`
 	mutation DeleteOnePost($where: PostWhereUniqueInput!) {
 		deleteOnePost(where: $where) {
 			id
 		}
 	}
-`
+`)
 
-export const deleteOneCategory = gql`
+export const deleteOneCategory = graphql(`
 	mutation DeleteOneCategory($where: CategoryWhereUniqueInput!) {
 		deleteOneCategory(where: $where) {
 			id
 			name
 		}
 	}
-`
+`)
 
-export const updateOneTag = gql`
+export const updateOneTag = graphql(`
 	mutation UpdateOneTag($data: TagUpdateInput!, $where: TagWhereUniqueInput!) {
 		updateOneTag(data: $data, where: $where) {
 			id
 			name
 		}
 	}
-`
+`)
 
-export const deleteOneTag = gql`
+export const deleteOneTag = graphql(`
 	mutation DeleteOneTag($where: TagWhereUniqueInput!) {
 		deleteOneTag(where: $where) {
 			id
 			name
 		}
 	}
-`
+`)
 
-export const search = gql`
+export const search = graphql(`
 	query Search($where: PostWhereInput, $categoriesWhere: CategoryWhereInput, $tagsWhere: TagWhereInput) {
 		posts(where: $where) {
 			title
@@ -103,4 +105,4 @@ export const search = gql`
 			name
 		}
 	}
-`
+`)

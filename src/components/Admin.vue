@@ -129,31 +129,9 @@ const logout = async () => {
 const handleCancel = () => {
 	openAdminInfo.value = false
 }
-const handleUpdate = async () => {
-	const isSuccess = await adminStore.SetAdminInfo(adminInfo.value)
-	openAdminInfo.value = false
-	ElMessage({
-		message: isSuccess ? '更新成功' : '更新失败',
-		type: isSuccess ? 'success' : 'error',
-		grouping: true
-	})
-}
-const handleUpload = async (file: File) => {
-	const isSuccess = await adminStore.SetAvatar(file)
-	ElMessage({
-		message: isSuccess ? '头像上传成功' : '上传失败',
-		type: isSuccess ? 'success' : 'error',
-		grouping: true
-	})
-}
-const handleDelete = async () => {
-	const isSuccess = await adminStore.DeleteAvatar()
-	ElMessage({
-		message: isSuccess ? '已删除' : '删除失败',
-		type: isSuccess ? 'success' : 'error',
-		grouping: true
-	})
-}
+const handleUpdate = () => adminStore.SetAdminInfo(adminInfo.value)
+const handleUpload = (file: File) => adminStore.SetAvatar(file)
+const handleDelete = () => adminStore.DeleteAvatar()
 </script>
 
 <style lang="scss" scoped>

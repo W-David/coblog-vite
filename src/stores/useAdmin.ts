@@ -21,29 +21,77 @@ export default defineStore('useAdmin', {
 		async SetAvatar(file: File) {
 			const sts = aliossStore.sts
 			const client = getOssClient(sts)
-			const res = await client.put(file.name, file)
-			if (res.res.status === 200) {
-				const url = res.url
-				this.avatar = url
-				await updateAdmin({ ...this.adminInfo, avatar: url })
-				return url
-			} else {
-				return ''
+			const res = await client.put(this.adminInfo.email + '-avatar', file)
+			if (res.res.status !== 200) {
+				return
 			}
-		},
-		async DeleteAvatar() {
-			this.avatar = ''
-			const deleteRes = await updateAdmin({ ...this.adminInfo, avatar: '' })
-			return deleteRes.data.code === 200
-		},
-		async SetAdminInfo(adminInfo: AdminInfo) {
-			const { id, nickname, email } = adminInfo
-			this.adminInfo = { id, nickname, email }
-			const res = await updateAdmin({
-				...this.adminInfo,
-				avatar: this.avatar
+			const url = res.url
+			const { mutate, onDone, onError } = useMutation(updateOneUser)
+			mutate({
+				data: {
+					avatar: {
+						set: url
+					}
+				},
+				where: {
+					id: this.adminInfo.id
+				}
 			})
-			return res.data.data
+			onDone(() => {
+				this.avatar = url
+				ElMessage({ message: '头像上传成功', type: 'success', grouping: true })
+			})
+			onError(() => {
+				ElMessage({ message: '上传失败', type: 'error', grouping: true })
+			})
+		},
+		DeleteAvatar() {
+			const { mutate, onDone, onError } = useMutation(updateOneUser)
+			mutate({
+				data: {
+					avatar: {
+						set: ''
+					}
+				},
+				where: {
+					id: this.adminInfo.id
+				}
+			})
+			onDone(async () => {
+				const sts = aliossStore.sts
+				const client = getOssClient(sts)
+				try {
+					await client.delete(this.adminInfo.email + '-avatar')
+					this.avatar = ''
+					ElMessage({ message: '已删除', type: 'success', grouping: true })
+				} catch (error) {
+					console.error(error)
+					ElMessage({ message: '删除失败', type: 'error', grouping: true })
+				}
+			})
+			onError(() => {
+				ElMessage({ message: '删除失败', type: 'error', grouping: true })
+			})
+		},
+		SetAdminInfo(adminInfo: AdminInfo) {
+			const { id, nickname, email } = adminInfo
+			const { mutate, onDone } = useMutation(updateOneUser)
+			mutate({
+				data: {
+					nickName: {
+						set: nickname
+					},
+					email: {
+						set: email
+					}
+				},
+				where: {
+					id: adminInfo.id
+				}
+			})
+			onDone(() => {
+				this.adminInfo = { id, nickname, email }
+			})
 		},
 		async Login(params = {}) {
 			const res = await login(params)
