@@ -170,18 +170,10 @@ const rules = reactive({
 	nickName: []
 })
 
-const handleLogin = async () => {
-	const submitForm = {
+const handleLogin = () => {
+	adminStore.Login({
 		email: form.email,
 		password: form.password
-	}
-
-	const res = await adminStore.Login(submitForm)
-	if (res.data.code !== 200 || !res.data.data) return
-	router.push({ path: '/' })
-	ElMessage({
-		type: 'success',
-		message: `${res.data.data.nickname ?? res.data.data.email}, 欢迎来到Cody's Blog`
 	})
 }
 const handleRegister = async () => {

@@ -87,24 +87,34 @@ export default defineStore('useAdmin', {
 				this.adminInfo = { id, nickname, email }
 			})
 		},
-		async Login(params: { email: string; password: string }) {
-			const res = await login(params)
-			if (res.data.code === 200 && res.data.data) {
-				const admin = res.data.data
-				const { id, nickname, email, token, avatar } = admin
+		Login(params: { email: string; password: string }) {
+			const router = useRouter()
+			const { onResult, onError } = useQuery(graphqlLogin, {
+				email: params.email,
+				password: params.password
+			})
+			onResult(result => {
+				const token = result.data.login?.token
+				if (!token) return
 				this.isLogin = true
-				this.avatar = avatar || ''
-				this.adminInfo = {
-					id,
-					nickname,
-					email
-				}
 				appStore.sidebarOpen = false
-				setToken(token as string)
-			} else {
+				setToken(token)
+				const { onResult } = useQuery(graphqlAuth)
+				onResult(result => {
+					if (!result.data.auth) return
+					const { id, nickName, email, avatar } = result.data.auth
+					this.avatar = avatar || ''
+					this.adminInfo = { id, nickname: nickName || '', email }
+					router.push({ path: '/' })
+					ElMessage({
+						type: 'success',
+						message: `${this.adminInfo.nickname || this.adminInfo.email}, 欢迎来到Cody's Blog`
+					})
+				})
+			})
+			onError(() => {
 				this.Logout()
-			}
-			return res
+			})
 		},
 		async Register(params = {}) {
 			const res = await register(params)
