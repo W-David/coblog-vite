@@ -1,3 +1,4 @@
+import { Role } from '~/graphql/generated/graphql'
 import pinia from '~/modules/pinia'
 const aliossStore = useAlioss(pinia)
 const appStore = useApp(pinia)
@@ -116,23 +117,37 @@ export default defineStore('useAdmin', {
 				this.Logout()
 			})
 		},
-		async Register(params = {}) {
-			const res = await register(params)
-			if (res.data.code === 200 && res.data.data) {
-				const admin = res.data.data
-				const { id, nickname, email, token } = admin
+		Register(params: { email: string; password: string; role: Role.Admin }) {
+			const router = useRouter()
+			const { mutate, onDone, onError } = useMutation(graphqlRegister)
+			mutate({
+				email: params.email,
+				password: params.password,
+				role: params.role
+			})
+
+			onDone(result => {
+				const token = result.data?.register.token
+				if (!token) return
 				this.isLogin = true
-				this.adminInfo = {
-					id,
-					nickname,
-					email
-				}
 				appStore.sidebarOpen = false
-				setToken(token as string)
-			} else {
+				setToken(token)
+				const { onResult } = useQuery(graphqlAuth)
+				onResult(result => {
+					if (!result.data.auth) return
+					const { id, nickName, email, avatar } = result.data.auth
+					this.avatar = avatar || ''
+					this.adminInfo = { id, nickname: nickName || '', email }
+					router.push({ path: '/' })
+					ElMessage({
+						type: 'success',
+						message: `${this.adminInfo.nickname || this.adminInfo.email}, 欢迎来到Cody's Blog`
+					})
+				})
+			})
+			onError(() => {
 				this.Logout()
-			}
-			return res
+			})
 		},
 		async GetInfo() {
 			const res = await auth()

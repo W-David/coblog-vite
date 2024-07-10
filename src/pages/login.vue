@@ -136,6 +136,8 @@
 </template>
 
 <script lang="ts" setup>
+import { Role } from '~/graphql/generated/graphql'
+
 definePage({
 	name: 'login',
 	meta: {
@@ -176,16 +178,12 @@ const handleLogin = () => {
 		password: form.password
 	})
 }
-const handleRegister = async () => {
-	const submitForm = {
+const handleRegister = () => {
+	adminStore.Register({
 		email: form.email,
 		password: form.password,
-		rPassword: form.rPassword,
-		nickname: form.nickName
-	}
-	const res = await adminStore.Register(submitForm)
-	router.push({ path: '/' })
-	ElMessage({ type: 'success', message: res.data.msg })
+		role: Role.Admin
+	})
 }
 const handleSwitch = () => {
 	form.email = ''
