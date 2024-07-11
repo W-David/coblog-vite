@@ -10,6 +10,9 @@ export default defineStore('useArticle', {
 		cataLog: TocItem[]
 		isArticleCurListLoading: boolean
 		isArticleDetailLoading: boolean
+		isArticleRecentLoading: boolean
+		isArticleHotLoading: boolean
+		isArticleArchiveLoading: boolean
 	} => ({
 		articleMap: new Map(),
 		articleArchive: [],
@@ -18,7 +21,10 @@ export default defineStore('useArticle', {
 		articleCurList: [],
 		cataLog: [],
 		isArticleCurListLoading: false,
-		isArticleDetailLoading: true
+		isArticleDetailLoading: false,
+		isArticleRecentLoading: false,
+		isArticleHotLoading: false,
+		isArticleArchiveLoading: false
 	}),
 	getters: {
 		getArticleCurList: state => cloneLoop(state.articleCurList),
@@ -54,9 +60,10 @@ export default defineStore('useArticle', {
 				this.isArticleCurListLoading = false
 			})
 		},
-		async GetArticlesRecent(data: { take: number }) {
+		GetArticlesRecent(data: { take: number }) {
+			const { take } = data
 			const { onResult } = useQuery(posts, {
-				take: 5,
+				take,
 				orderBy: [
 					{
 						updatedAt: SortOrder.Desc
@@ -67,14 +74,6 @@ export default defineStore('useArticle', {
 				const posts = result.data.posts
 				this.articlesRecent = posts.slice(0).map(post => postToArticle(post))
 			})
-			const res = await listByTimeArticle(data)
-			if (res.data.code === 200 && res.data.data) {
-				const articles = res.data.data ?? []
-				this.articlesRecent = articles.slice(0)
-				return articles
-			} else {
-				return []
-			}
 		},
 		async GetArticlesHot(data: any) {
 			const res = await listByFavoArticle(data)
