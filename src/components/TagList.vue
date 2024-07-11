@@ -59,12 +59,8 @@ const handleAdd = () => {
 	usePrompt({
 		title: '请输入添加的标签名称',
 		content: '添加标签',
-		callback: async value => {
-			const tag = await tagStore.CreateTag({ name: value })
-			return {
-				success: !!tag,
-				msg: tag ? `${tag.name}已添加` : '添加失败'
-			}
+		callback: value => {
+			tagStore.CreateTag({ name: value })
 		}
 	})
 }

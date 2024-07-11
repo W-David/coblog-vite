@@ -6,7 +6,7 @@
 			:src="`${avatar}?x-oss-process=image/resize,m_fill,h_36,w_36`"
 			fit="cover"
 			@click.stop="tapAvatar">
-			<span>{{ adminInfo.nickname.substr(0, 1) }}</span>
+			<span>{{ adminInfo.nickname ? adminInfo.nickname.substr(0, 1) : '' }}</span>
 		</el-avatar>
 		<el-dropdown class="hidden-sm-and-down">
 			<span class="dropdown-link">
@@ -99,7 +99,14 @@ const router = useRouter()
 const adminStore = useAdmin()
 const appStore = useApp()
 const avatar = computed(() => adminStore.avatar)
-const adminInfo = computed(() => adminStore.adminInfo)
+const adminInfo = computed(
+	() =>
+		adminStore.adminInfo || {
+			id: 0,
+			nickname: '',
+			email: ''
+		}
+)
 const adminForm = reactive({
 	nickname: adminInfo.value.nickname,
 	email: adminInfo.value.email
@@ -123,7 +130,7 @@ const tapAvatar = () => {
 	openAdminInfo.value = true
 }
 const logout = async () => {
-	await adminStore.Logout()
+	adminStore.Logout()
 	router.push({ name: 'login' })
 }
 const handleCancel = () => {

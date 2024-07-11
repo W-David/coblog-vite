@@ -1,5 +1,4 @@
-import pinia from '~/modules/pinia'
-const adminStore = useAdmin(pinia)
+import { SortOrder } from '~/graphql/generated/graphql'
 
 export default defineStore('useArticle', {
 	state: (): {
@@ -7,17 +6,22 @@ export default defineStore('useArticle', {
 		articleArchive: ArticleArchive[]
 		articlesRecent: ArticleRecent[]
 		articlesHot: ArticleHot[]
+		articleCurList: Article[]
 		cataLog: TocItem[]
-		isArticleLoading: boolean
+		isArticleCurListLoading: boolean
+		isArticleDetailLoading: boolean
 	} => ({
 		articleMap: new Map(),
 		articleArchive: [],
 		articlesRecent: [],
 		articlesHot: [],
+		articleCurList: [],
 		cataLog: [],
-		isArticleLoading: true
+		isArticleCurListLoading: false,
+		isArticleDetailLoading: true
 	}),
 	getters: {
+		getArticleCurList: state => cloneLoop(state.articleCurList),
 		getArticleMap: state => () => cloneLoop(state.articleMap),
 		getArticleArchive: state => cloneLoop(state.articleArchive),
 		getArticleById: state => (id: number) => state.articleMap.get(id),
@@ -26,20 +30,43 @@ export default defineStore('useArticle', {
 		getArticlesHot: state => cloneLoop(state.articlesHot)
 	},
 	actions: {
-		async GetArticles(data: any): Promise<[Article[], number]> {
-			const res = await listArticle(data)
-			if (res.data.code === 200 && res.data.data) {
-				const articles = res.data.data.rows || []
-				const total = res.data.data.count || 0
-				articles.forEach(article => {
-					this.articleMap.set(article.id, cloneLoop(article))
+		GetArticles(data: { cursor?: Article; take: number }) {
+			const { cursor, take } = data
+			this.isArticleCurListLoading = true
+			const { onResult, onError } = useQuery(posts, {
+				cursor: cursor
+					? {
+							id: cursor.id
+					  }
+					: undefined,
+				take
+			})
+			onResult(result => {
+				const posts = result.data.posts
+				this.isArticleCurListLoading = false
+				this.articleCurList = posts.slice(0).map(post => postToArticle(post))
+				posts.forEach(article => {
+					const post = cloneLoop(article)
+					this.articleMap.set(article.id, postToArticle(post))
 				})
-				return [articles, total]
-			} else {
-				return [[], 0]
-			}
+			})
+			onError(() => {
+				this.isArticleCurListLoading = false
+			})
 		},
-		async GetArticlesRecent(data: any) {
+		async GetArticlesRecent(data: { take: number }) {
+			const { onResult } = useQuery(posts, {
+				take: 5,
+				orderBy: [
+					{
+						updatedAt: SortOrder.Desc
+					}
+				]
+			})
+			onResult(result => {
+				const posts = result.data.posts
+				this.articlesRecent = posts.slice(0).map(post => postToArticle(post))
+			})
 			const res = await listByTimeArticle(data)
 			if (res.data.code === 200 && res.data.data) {
 				const articles = res.data.data ?? []
@@ -78,26 +105,35 @@ export default defineStore('useArticle', {
 				return [[], 0]
 			}
 		},
-		async GetArticle(articleId: number) {
-			const isAdminLogin = adminStore.isLogin
-			const res = isAdminLogin ? await detailArticle(articleId) : await noAuthDetailArticle(articleId)
-			if (res.data.code === 200 && res.data.data) {
-				const article = res.data.data
-				this.articleMap.set(article.id, cloneLoop(article))
-				return article
-			} else {
-				return null
-			}
+		GetArticle(articleId: number) {
+			this.isArticleDetailLoading = true
+			const { onResult, onError } = useQuery(getPost, {
+				where: {
+					id: articleId
+				}
+			})
+			onResult(result => {
+				this.isArticleDetailLoading = false
+				const post = result.data.getPost
+				if (!post) {
+					return
+				}
+				this.articleMap.set(post.id, postToArticle(post))
+			})
+			onError(() => {
+				this.isArticleDetailLoading = false
+			})
 		},
-		async DelArticle(articleId: number) {
-			const res = await deleteArticle(articleId)
-			if (res.data.code === 200 && res.data.data) {
-				const article = res.data.data
-				this.articleMap.delete(article.id)
-				return article
-			} else {
-				return null
-			}
+		DelArticle(articleId: number) {
+			const { mutate, onDone } = useMutation(deleteOnePost)
+			mutate({
+				where: {
+					id: articleId
+				}
+			})
+			onDone(() => {
+				this.articleMap.delete(articleId)
+			})
 		}
 	}
 })

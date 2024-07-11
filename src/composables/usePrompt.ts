@@ -9,7 +9,7 @@ const usePrompt = async ({
 	title: string
 	confirmText?: string
 	cancelText?: string
-	callback: (v: string) => Promise<{ success: boolean; msg: string }>
+	callback: (v: string) => Promise<void> | void
 }) => {
 	const { value } = await ElMessageBox.prompt(content, title, {
 		confirmButtonText: confirmText,
@@ -19,13 +19,7 @@ const usePrompt = async ({
 		ElMessage({ message: title + '不可为空', type: 'warning', grouping: true })
 		return Promise.reject(new TypeError('input value is unvaliable!'))
 	}
-	const { success, msg } = await callback(value)
-	ElMessage({
-		type: success ? 'success' : 'error',
-		message: msg,
-		showClose: false,
-		grouping: true
-	})
+	callback(value)
 }
 
 export default usePrompt

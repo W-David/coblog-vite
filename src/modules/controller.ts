@@ -21,15 +21,15 @@ export default (router: RouterTyped) => {
 					return
 				}
 			} else {
-				const res = await adminStore.GetInfo()
-				if (res.data.code === 200 && res.data.data) {
+				try {
+					const adminInfo = await adminStore.GetInfo()
 					ElMessage({
 						type: 'success',
-						message: `欢迎回来，${res.data.data.nickname}`,
+						message: `欢迎回来，${adminInfo?.nickname || adminInfo.email}`,
 						showClose: false
 					})
 					return { name: '/' }
-				} else {
+				} catch (error) {
 					return { name: 'login' }
 				}
 			}

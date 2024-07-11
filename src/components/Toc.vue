@@ -37,7 +37,7 @@
 const activedArr = ref<string[]>([])
 const articleStore = useArticle()
 const tocArray = computed(() => articleStore.cataLog ?? [])
-const loading = computed(() => articleStore.isArticleLoading)
+const loading = computed(() => articleStore.isArticleDetailLoading)
 const isActived = (anchor: string) => {
 	const element = document.getElementById(anchor)
 	console.log('Anchor element is: ', element)

@@ -58,12 +58,8 @@ const handleAdd = () => {
 	usePrompt({
 		title: '请输入添加的种类名称',
 		content: '添加种类',
-		callback: async value => {
-			const category = await categoryStore.CreateCategory({ name: value })
-			return {
-				success: !!category,
-				msg: category ? `已添加${category.name}` : '添加失败'
-			}
+		callback: value => {
+			categoryStore.CreateCategory({ name: value })
 		}
 	})
 }

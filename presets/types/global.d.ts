@@ -53,7 +53,7 @@ type SearchType = {
 
 interface AdminInfo {
 	id: number
-	nickname: string
+	nickname?: string | null
 	email: string
 }
 

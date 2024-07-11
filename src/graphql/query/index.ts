@@ -56,12 +56,15 @@ export const getPost = graphql(`
 			updatedAt
 			createdAt
 			description
+			content
 			favoNum
 			authorId
 			author {
+				id
 				nickName
 				email
 				createdAt
+				avatar
 				role
 			}
 			id
@@ -70,8 +73,15 @@ export const getPost = graphql(`
 `)
 
 export const posts = graphql(`
-	query Posts($orderBy: [PostOrderByWithRelationInput!]) {
-		posts(orderBy: $orderBy) {
+	query Posts(
+		$where: PostWhereInput
+		$orderBy: [PostOrderByWithRelationInput!]
+		$cursor: PostWhereUniqueInput
+		$take: Int
+		$skip: Int
+		$distinct: [PostScalarFieldEnum!]
+	) {
+		posts(where: $where, orderBy: $orderBy, cursor: $cursor, take: $take, skip: $skip, distinct: $distinct) {
 			id
 			createdAt
 			updatedAt
@@ -82,6 +92,13 @@ export const posts = graphql(`
 			favoNum
 			browNum
 			authorId
+			author {
+				id
+				nickName
+				email
+				avatar
+				role
+			}
 		}
 	}
 `)

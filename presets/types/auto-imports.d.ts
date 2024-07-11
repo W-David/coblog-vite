@@ -145,6 +145,7 @@ declare global {
   const onUnmounted: typeof import('vue')['onUnmounted']
   const onUpdated: typeof import('vue')['onUpdated']
   const pausableWatch: typeof import('@vueuse/core')['pausableWatch']
+  const postToArticle: typeof import('../../src/utils/trans')['postToArticle']
   const posts: typeof import('../../src/graphql/query/index')['posts']
   const provide: typeof import('vue')['provide']
   const reactify: typeof import('@vueuse/core')['reactify']

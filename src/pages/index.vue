@@ -2,9 +2,9 @@
 	<div class="home-page">
 		<div class="main-content-list">
 			<el-skeleton
-				:loading="loading"
+				:loading="isLoading && !queryParams.cursor"
 				animated
-				:count="queryParams.pageSize || 5">
+				:count="queryParams.take || 5">
 				<template #template>
 					<div class="skeleton-item">
 						<el-skeleton-item
@@ -43,7 +43,7 @@
 				</template>
 				<template #default>
 					<div
-						v-for="article in articlesRef"
+						v-for="article in articles"
 						:key="article.id"
 						class="main-article-container">
 						<article-card :article="article"></article-card>
@@ -51,12 +51,11 @@
 				</template>
 			</el-skeleton>
 			<div class="main-pagination-container">
-				<pagination
-					v-show="totalRef > 0"
-					v-model:page="queryParams.pageNum"
-					v-model:limit="queryParams.pageSize"
-					:total="totalRef"
-					@pagination="getList" />
+				<page-load
+					v-show="articles && articles.length > 0"
+					:is-loading-more="isLoading"
+					:has-more="hasMore"
+					@on-load-more="onLoadMore"></page-load>
 			</div>
 		</div>
 	</div>
@@ -70,23 +69,26 @@ definePage({
 	}
 })
 const articleStore = useArticle()
-const articlesRef = ref<Article[]>([])
-const totalRef = ref(0)
+const articles = computed(() => articleStore.getArticleList())
+const curArticles = computed(() => articleStore.getArticleCurList)
+const isLoading = computed(() => articleStore.isArticleCurListLoading)
 const queryParams = reactive({
-	pageNum: 1,
-	pageSize: 5
+	take: 5,
+	cursor: articles.value.length ? articles.value.slice(-1)[0] : undefined
 })
-const loading = ref(true)
 
-const getList = async () => {
-	const [articles, total] = await articleStore.GetArticles(queryParams)
-	articlesRef.value = articles || []
-	totalRef.value = total || 0
-	loading.value = false
+const hasMore = computed(() => curArticles.value.length === queryParams.take)
+
+const onLoadMore = () => {
+	articleStore.GetArticles(queryParams)
 }
+
 const init = () => {
 	articleStore.articleMap.clear()
-	getList()
+	articleStore.GetArticles({
+		take: 2,
+		cursor: undefined
+	})
 }
 init()
 </script>

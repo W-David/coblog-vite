@@ -149,17 +149,10 @@ const router = useRouter()
 const loginInfo = computed(() => adminStore.adminInfo)
 const isLogin = computed(() => adminStore.isLogin)
 const article = computed(() => articleStore.getArticleById(articleId))
-const loading = ref(true)
-watch(loading, val => (articleStore.isArticleLoading = val), {
-	immediate: true
-})
+const loading = computed(() => articleStore.isArticleDetailLoading)
 const isCurAdmin = computed(() => article.value?.admin.id === loginInfo.value?.id)
 
-const getArticle = async () => {
-	loading.value = true
-	await articleStore.GetArticle(articleId)
-	loading.value = false
-}
+const getArticle = () => articleStore.GetArticle(articleId)
 const getCatalog = (catalog: HeadList[]) => {
 	articleStore.cataLog = catalog.map(({ text, level }) => ({ content: text, anchor: text, level })).slice(0)
 }
@@ -172,17 +165,9 @@ const handleDel = async () => {
 		cancelText: '取消',
 		callback: async value => {
 			if (value && value === article.value?.title) {
-				return {
-					success: false,
-					msg: '文章标题输入有误'
-				}
+				return
 			}
-			const res = await articleStore.DelArticle(articleId)
-			router.push({ path: '/' })
-			return {
-				success: !!res,
-				msg: res ? `已删除${article.value?.title}` : '删除失败'
-			}
+			articleStore.DelArticle(articleId)
 		}
 	})
 }

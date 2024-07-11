@@ -5,8 +5,8 @@ const appStore = useApp(pinia)
 
 export default defineStore('useAdmin', {
 	state: (): {
-		adminInfo: AdminInfo
-		avatar: string
+		adminInfo?: AdminInfo
+		avatar?: string
 		isLogin: boolean
 	} => ({
 		adminInfo: {
@@ -20,6 +20,9 @@ export default defineStore('useAdmin', {
 	getters: {},
 	actions: {
 		async SetAvatar(file: File) {
+			if (!this.adminInfo) {
+				return
+			}
 			const sts = aliossStore.sts
 			const client = getOssClient(sts)
 			const res = await client.put(this.adminInfo.email + '-avatar', file)
@@ -44,6 +47,9 @@ export default defineStore('useAdmin', {
 			})
 		},
 		DeleteAvatar() {
+			if (!this.adminInfo) {
+				return
+			}
 			const { mutate, onDone } = useMutation(updateOneUser)
 			mutate({
 				data: {
@@ -56,6 +62,9 @@ export default defineStore('useAdmin', {
 				}
 			})
 			onDone(async () => {
+				if (!this.adminInfo) {
+					return
+				}
 				const sts = aliossStore.sts
 				const client = getOssClient(sts)
 				try {
@@ -103,9 +112,9 @@ export default defineStore('useAdmin', {
 				const { onResult } = useQuery(graphqlAuth)
 				onResult(result => {
 					if (!result.data.auth) return
-					const { id, nickName, email, avatar } = result.data.auth
+					const { id, nickName: nickname, email, avatar } = result.data.auth
 					this.avatar = avatar || ''
-					this.adminInfo = { id, nickname: nickName || '', email }
+					this.adminInfo = { id, nickname, email }
 					router.push({ path: '/' })
 					ElMessage({
 						type: 'success',
@@ -135,9 +144,9 @@ export default defineStore('useAdmin', {
 				const { onResult } = useQuery(graphqlAuth)
 				onResult(result => {
 					if (!result.data.auth) return
-					const { id, nickName, email, avatar } = result.data.auth
+					const { id, nickName: nickname, email, avatar } = result.data.auth
 					this.avatar = avatar || ''
-					this.adminInfo = { id, nickname: nickName || '', email }
+					this.adminInfo = { id, nickname, email }
 					router.push({ path: '/' })
 					ElMessage({
 						type: 'success',
@@ -149,30 +158,26 @@ export default defineStore('useAdmin', {
 				this.Logout()
 			})
 		},
-		async GetInfo() {
-			const res = await auth()
-			if (res.data.code === 200 && res.data.data) {
-				const admin = res.data.data || {}
-				const { id, nickname, email, avatar } = admin
-				this.isLogin = true
-				this.avatar = avatar || ''
-				this.adminInfo = {
-					id,
-					nickname,
-					email
-				}
-			} else {
-				this.Logout()
-			}
-			return res
+		GetInfo(): Promise<AdminInfo> {
+			return new Promise((resolve, reject) => {
+				const { onResult, onError } = useQuery(graphqlAuth)
+				onResult(result => {
+					if (!result.data.auth) return
+					const { id, nickName: nickname, email, avatar } = result.data.auth
+					this.isLogin = true
+					this.avatar = avatar || ''
+					this.adminInfo = { id, nickname, email }
+					resolve({ ...this.adminInfo })
+				})
+				onError(error => {
+					this.Logout()
+					reject(error)
+				})
+			})
 		},
 		Logout() {
 			this.isLogin = false
-			this.adminInfo = {
-				id: 0,
-				nickname: '',
-				email: ''
-			}
+			this.adminInfo = undefined
 			this.avatar = ''
 			removeToken()
 			appStore.sidebarOpen = false

@@ -126,7 +126,7 @@ import DefaultLayout from './default.vue'
 const articleStore = useArticle()
 const route = useRoute<'article'>()
 const adminInfo = computed(() => articleStore.getArticleById(+route.params.id)?.admin)
-const loading = computed(() => articleStore.isArticleLoading)
+const loading = computed(() => articleStore.isArticleDetailLoading)
 </script>
 
 <style lang="scss" scoped>
