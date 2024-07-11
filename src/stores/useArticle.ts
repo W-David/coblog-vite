@@ -13,6 +13,7 @@ export default defineStore('useArticle', {
 		isArticleRecentLoading: boolean
 		isArticleHotLoading: boolean
 		isArticleArchiveLoading: boolean
+		isFavoriteLoading: boolean
 	} => ({
 		articleMap: new Map(),
 		articleArchive: [],
@@ -24,7 +25,8 @@ export default defineStore('useArticle', {
 		isArticleDetailLoading: false,
 		isArticleRecentLoading: false,
 		isArticleHotLoading: false,
-		isArticleArchiveLoading: false
+		isArticleArchiveLoading: false,
+		isFavoriteLoading: false
 	}),
 	getters: {
 		getArticleCurList: state => cloneLoop(state.articleCurList),
@@ -37,8 +39,8 @@ export default defineStore('useArticle', {
 	},
 	actions: {
 		GetArticles(data: { cursor?: Article; take: number }) {
-			const { cursor, take } = data
 			this.isArticleCurListLoading = true
+			const { cursor, take } = data
 			const { onResult, onError } = useQuery(posts, {
 				cursor: cursor
 					? {
@@ -48,8 +50,8 @@ export default defineStore('useArticle', {
 				take
 			})
 			onResult(result => {
-				const posts = result.data.posts
 				this.isArticleCurListLoading = false
+				const posts = result.data.posts
 				this.articleCurList = posts.slice(0).map(post => postToArticle(post))
 				posts.forEach(article => {
 					const post = cloneLoop(article)
@@ -61,8 +63,9 @@ export default defineStore('useArticle', {
 			})
 		},
 		GetArticlesRecent(data: { take: number }) {
+			this.isArticleRecentLoading = true
 			const { take } = data
-			const { onResult } = useQuery(posts, {
+			const { onResult, onError } = useQuery(posts, {
 				take,
 				orderBy: [
 					{
@@ -71,22 +74,58 @@ export default defineStore('useArticle', {
 				]
 			})
 			onResult(result => {
+				this.isArticleRecentLoading = false
 				const posts = result.data.posts
 				this.articlesRecent = posts.slice(0).map(post => postToArticle(post))
 			})
+			onError(() => {
+				this.isArticleRecentLoading = false
+			})
 		},
-		async GetArticlesHot(data: any) {
-			const res = await listByFavoArticle(data)
-			if (res.data.code === 200 && res.data.data) {
-				const articles = res.data.data ?? []
-				this.articlesHot = articles.slice(0)
-				return articles
-			} else {
-				return []
-			}
+		GetArticlesHot(data: { take: number }) {
+			this.isArticleHotLoading = true
+			const { take } = data
+			const { onResult, onError } = useQuery(posts, {
+				take,
+				orderBy: [
+					{
+						favoNum: SortOrder.Desc
+					}
+				]
+			})
+			onResult(result => {
+				this.isArticleHotLoading = false
+				const posts = result.data.posts
+				this.articlesHot = posts.slice(0).map(post => postToArticle(post))
+			})
+			onError(() => {
+				this.isArticleHotLoading = false
+			})
 		},
-		async FavoriteArticle(data: any) {
-			return favoriteArticle(data)
+		FavoriteArticle(data: { id: number; isFavorite: boolean }) {
+			this.isFavoriteLoading = true
+			const { id, isFavorite } = data
+			const { mutate, onDone, onError } = useMutation(updateOnePost)
+			mutate({
+				where: { id },
+				data: {
+					favoNum: {
+						increment: isFavorite ? 1 : undefined,
+						decrement: !isFavorite ? 1 : undefined
+					}
+				}
+			})
+			onDone(() => {
+				const article = this.articleMap.get(id)
+				if (!article) return
+				const beforeFavoritedNum = article.favoritedNum || 0
+				const afterFavoritedNum = isFavorite ? beforeFavoritedNum + 1 : Math.max(beforeFavoritedNum - 1, 0)
+				this.articleMap.set(id, { ...article, favoritedNum: afterFavoritedNum })
+				this.isFavoriteLoading = false
+			})
+			onError(() => {
+				this.isFavoriteLoading = false
+			})
 		},
 		async GetArticleArchive(data: any): Promise<[ArticleArchive[], number]> {
 			const res = await listArchive(data)

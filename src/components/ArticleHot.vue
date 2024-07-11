@@ -5,7 +5,7 @@
 			<el-skeleton
 				:loading="loading"
 				animated
-				:count="pageSize">
+				:count="take">
 				<template #template>
 					<div class="skeleton-item">
 						<el-skeleton-item
@@ -60,18 +60,17 @@
 </template>
 
 <script lang="ts" setup>
-const loading = ref(true)
 const router = useRouter()
 const articleStore = useArticle()
 const articles = computed(() => articleStore.getArticlesHot)
-const pageSize = 8
+const loading = computed(() => articleStore.isArticleHotLoading)
+const take = 8
 const toArticle = (id: number) => {
 	router.push({ name: 'article', params: { id } })
 }
-const init = async () => {
-	await articleStore.GetArticlesHot({ pageSize })
-	loading.value = false
-}
+
+const init = () => articleStore.GetArticlesHot({ take })
+
 init()
 </script>
 

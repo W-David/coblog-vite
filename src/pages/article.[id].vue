@@ -150,6 +150,7 @@ const loginInfo = computed(() => adminStore.adminInfo)
 const isLogin = computed(() => adminStore.isLogin)
 const article = computed(() => articleStore.getArticleById(articleId))
 const loading = computed(() => articleStore.isArticleDetailLoading)
+const favorating = computed(() => articleStore.isFavoriteLoading)
 const isCurAdmin = computed(() => article.value?.admin.id === loginInfo.value?.id)
 
 const getArticle = () => articleStore.GetArticle(articleId)
@@ -177,12 +178,10 @@ const handleEdit = () => {
 const toBack = () => {
 	router.back()
 }
-const handleFavorite = async () => {
-	const res = await articleStore.FavoriteArticle({ id: articleId })
-	if (res.data.code === 200 && article.value) {
-		article.value.isFavorited = !article.value.isFavorited
-		article.value.favoritedNum = res.data.data ?? 0
-	}
+const handleFavorite = () => {
+	if (favorating.value || !article.value) return
+	articleStore.FavoriteArticle({ id: articleId, isFavorite: !article.value?.isFavorited })
+	article.value.isFavorited = !article.value.isFavorited
 }
 
 const initPage = () => {

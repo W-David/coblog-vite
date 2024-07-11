@@ -56,19 +56,17 @@
 </template>
 
 <script lang="ts" setup>
-const loading = ref(true)
 const router = useRouter()
 const articleStore = useArticle()
 const articles = computed(() => articleStore.getArticlesRecent)
+const loading = computed(() => articleStore.isArticleRecentLoading)
 const take = 5
 
 const toArticle = (id: number) => {
 	router.push({ name: 'article', params: { id } })
 }
-const init = async () => {
-	await articleStore.GetArticlesRecent({ take })
-	loading.value = false
-}
+const init = () => articleStore.GetArticlesRecent({ take })
+
 init()
 </script>
 
