@@ -1,12 +1,18 @@
+import { SortOrder } from '~/graphql/generated/graphql'
+
 export default defineStore('useCategory', {
 	state: (): {
 		categoryMap: Map<number, Category>
 		categoryArticlesMap: Map<number, CategoryArticle>
 		checkedCateIds: number[]
+		isCategoryMapLoading: boolean
+		isCategoryArticlesMapLoading: boolean
 	} => ({
 		categoryMap: new Map(),
 		categoryArticlesMap: new Map(),
-		checkedCateIds: []
+		checkedCateIds: [],
+		isCategoryMapLoading: false,
+		isCategoryArticlesMapLoading: false
 	}),
 	getters: {
 		getCategoryById: state => (id: number) => state.categoryMap.get(id),
@@ -41,20 +47,36 @@ export default defineStore('useCategory', {
 				})
 			})
 		},
-		async GetCategories(params = {}): Promise<[Category[], number]> {
-			const res = await listCategory(params)
-			if (res.data.code === 200 && res.data.data) {
-				const categories = res.data.data.rows || []
-				const total = res.data.data.count || 0
+		GetCategories(data: { take: number; cursor?: { id: number } }) {
+			this.isCategoryMapLoading = true
+			const { take, cursor } = data
+			const { onResult, onError } = useQuery(categories, {
+				take,
+				skip: cursor ? 1 : undefined,
+				cursor: cursor
+					? {
+							id: cursor.id
+					  }
+					: undefined,
+				orderBy: {
+					id: SortOrder.Asc
+				}
+			})
+			onResult(result => {
+				this.isCategoryMapLoading = false
+				const categories = result.data?.categories || []
+				if (!categories.length) {
+					return
+				}
 				categories.forEach(item => {
 					this.categoryMap.set(item.id, cloneLoop(item))
 				})
-				return [categories, total]
-			} else {
-				return [[], 0]
-			}
+			})
+			onError(() => {
+				this.isCategoryMapLoading = false
+			})
 		},
-		async GetCategoryArticles(data = {}): Promise<[CategoryArticle[], number]> {
+		async GetCategoryWithArticles(data = {}): Promise<[CategoryArticle[], number]> {
 			const res = await listCategoryArticles(data)
 			if (res.data.code === 200 && res.data.data) {
 				const categories = res.data.data.rows || []
@@ -67,30 +89,21 @@ export default defineStore('useCategory', {
 				return [[], 0]
 			}
 		},
-		async GetCategory(categoryId: number) {
-			const curCategory = this.categoryMap.get(categoryId)
-			if (curCategory?.name) {
-				return Promise.resolve(curCategory)
-			}
-			const res = await detailCategory(categoryId)
-			if (res.data.code === 200 && res.data.data) {
-				const category = res.data.data
-				this.categoryMap.set(category.id, cloneLoop(category))
-				return category
-			} else {
-				return null
-			}
-		},
-		async DelCategory(categoryId: number) {
-			const res = await deleteCategory(categoryId)
-			if (res.data.code === 200 && res.data.data) {
-				const category = res.data.data
+		DelCategory(categoryId: number) {
+			const { mutate, onDone } = useMutation(deleteOneCategory)
+			mutate({
+				where: {
+					id: categoryId
+				}
+			})
+			onDone(result => {
+				const category = result.data?.deleteOneCategory
+				if (!category) {
+					return
+				}
 				this.categoryMap.delete(category.id)
 				this.categoryArticlesMap.delete(category.id)
-				return category
-			} else {
-				return null
-			}
+			})
 		}
 	}
 })

@@ -43,7 +43,7 @@ const adminStore = useAdmin()
 const tagList = computed(() => tagStore.getTagList())
 const checkedIds = computed(() => tagStore.getCheckedTagIds)
 const isChecked = (id: number) => checkedIds.value.includes(id)
-const loading = ref(true)
+const loading = computed(() => tagStore.isTagMapLoading)
 
 const isLogin = computed(() => adminStore.isLogin)
 
@@ -65,14 +65,9 @@ const handleAdd = () => {
 	})
 }
 
-// const handleDelete = (tag: Tag) => {
-// 	tagStore.DelTag(tag.id)
-// }
-//清空已选择的 tag
 const init = async () => {
 	tagStore.checkedTagIds.splice(0, tagStore.checkedTagIds.length)
-	await tagStore.GetTags()
-	loading.value = false
+	tagStore.GetTags({ take: 12, cursor: undefined })
 }
 const getRandomWidth = () => {
 	const widthList = [48, 64]

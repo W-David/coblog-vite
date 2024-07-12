@@ -75,7 +75,7 @@ const categoryArticles = computed(() => categoryStore.getCategoryArticles())
 const getCategoryArticles = async (queryParams: any) => {
 	if (!hasMore.value) return
 	isLoadingMore.value = true
-	const [list, total] = await categoryStore.GetCategoryArticles(queryParams)
+	const [list, total] = await categoryStore.GetCategoryWithArticles(queryParams)
 	isLoadingMore.value = false
 	hasMore.value = list && list.length > 0 && queryParams.pageNum * queryParams.pageSize < total
 	return list

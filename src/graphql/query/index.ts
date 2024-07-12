@@ -104,8 +104,15 @@ export const posts = graphql(`
 `)
 
 export const categories = graphql(`
-	query Categories($where: CategoryWhereInput) {
-		categories(where: $where) {
+	query Categories(
+		$where: CategoryWhereInput
+		$orderBy: [CategoryOrderByWithRelationInput!]
+		$cursor: CategoryWhereUniqueInput
+		$take: Int
+		$skip: Int
+		$distinct: [CategoryScalarFieldEnum!]
+	) {
+		categories(where: $where, orderBy: $orderBy, cursor: $cursor, take: $take, skip: $skip, distinct: $distinct) {
 			id
 			name
 		}
@@ -136,8 +143,15 @@ export const getCategory = graphql(`
 `)
 
 export const tags = graphql(`
-	query Tags {
-		tags {
+	query Tags(
+		$where: TagWhereInput
+		$orderBy: [TagOrderByWithRelationInput!]
+		$cursor: TagWhereUniqueInput
+		$take: Int
+		$skip: Int
+		$distinct: [TagScalarFieldEnum!]
+	) {
+		tags(where: $where, orderBy: $orderBy, cursor: $cursor, take: $take, skip: $skip, distinct: $distinct) {
 			id
 			name
 		}

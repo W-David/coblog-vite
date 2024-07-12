@@ -41,6 +41,7 @@ declare global {
   const createInjectionState: typeof import('@vueuse/core')['createInjectionState']
   const createOneCategory: typeof import('../../src/graphql/mutation/index')['createOneCategory']
   const createOnePost: typeof import('../../src/graphql/mutation/index')['createOnePost']
+  const createOneTag: typeof import('../../src/graphql/mutation/index')['createOneTag']
   const createPinia: typeof import('pinia')['createPinia']
   const createReactiveFn: typeof import('@vueuse/core')['createReactiveFn']
   const createSharedComposable: typeof import('@vueuse/core')['createSharedComposable']

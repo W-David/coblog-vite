@@ -75,6 +75,15 @@ export const deleteOneCategory = graphql(`
 	}
 `)
 
+export const createOneTag = graphql(`
+	mutation CreateOneTag($data: TagCreateInput!) {
+		createOneTag(data: $data) {
+			id
+			name
+		}
+	}
+`)
+
 export const updateOneTag = graphql(`
 	mutation UpdateOneTag($data: TagUpdateInput!, $where: TagWhereUniqueInput!) {
 		updateOneTag(data: $data, where: $where) {

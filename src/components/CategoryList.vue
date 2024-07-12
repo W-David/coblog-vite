@@ -41,7 +41,7 @@ const adminStore = useAdmin()
 const categoryList = computed(() => categoryStore.getCategoryList())
 const checkedIds = computed(() => categoryStore.checkedCateIds)
 const isChecked = (id: number) => checkedIds.value.includes(id)
-const loading = ref(true)
+const loading = computed(() => categoryStore.isCategoryMapLoading)
 
 const isLogin = computed(() => adminStore.isLogin)
 
@@ -72,8 +72,7 @@ const getRandomWidth = () => {
 const init = async () => {
 	// 清空已选择的category
 	categoryStore.checkedCateIds.splice(0, categoryStore.checkedCateIds.length)
-	await categoryStore.GetCategories()
-	loading.value = false
+	categoryStore.GetCategories({ take: 12, cursor: undefined })
 }
 init()
 </script>
