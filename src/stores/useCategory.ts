@@ -16,19 +16,30 @@ export default defineStore('useCategory', {
 		getCheckedCateIds: state => state.checkedCateIds
 	},
 	actions: {
-		async CreateCategory(params = {}) {
-			const res = await createCategory(params)
-			if (res.data.code === 200 && res.data.data) {
-				const category = res.data.data
-				this.categoryMap.set(category.id, cloneLoop(category))
-				this.categoryArticlesMap.set(category.id, {
-					...cloneLoop(category),
-					articles: []
+		CreateCategory(params: { name: string }) {
+			return new Promise<Category>((resolve, reject) => {
+				const { mutate, onDone, onError } = useMutation(createOneCategory)
+				mutate({
+					data: {
+						name: params.name
+					}
 				})
-				return category
-			} else {
-				return null
-			}
+				onDone(result => {
+					const category = result.data?.createOneCategory
+					if (!category) {
+						return
+					}
+					this.categoryMap.set(category.id, cloneLoop(category))
+					this.categoryArticlesMap.set(category.id, {
+						...cloneLoop(category),
+						articles: []
+					})
+					resolve(category)
+				})
+				onError(error => {
+					reject(error)
+				})
+			})
 		},
 		async GetCategories(params = {}): Promise<[Category[], number]> {
 			const res = await listCategory(params)

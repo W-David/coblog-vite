@@ -3,13 +3,16 @@
 		<div class="archive-timeline-container">
 			<div class="timeline-container">
 				<div class="archive-timeline-ctrl">
-					<el-radio-group
-						v-model="form.format"
-						@change="reGetArchive()">
+					<el-radio-group v-model="format">
 						<el-radio
-							label="month"
+							label="timeline"
 							border>
-							月份
+							时间线
+						</el-radio>
+						<el-radio
+							label="day"
+							border>
+							日期
 						</el-radio>
 						<el-radio
 							label="week"
@@ -17,16 +20,16 @@
 							每周
 						</el-radio>
 						<el-radio
-							label="day"
+							label="month"
 							border>
-							日期
+							月份
 						</el-radio>
 					</el-radio-group>
 				</div>
 				<el-skeleton
-					:loading="isLoadingMore"
+					:loading="isLoadingMore && !cursor"
 					animated
-					:count="form.pageSize">
+					:count="take">
 					<template #template>
 						<div class="skeleton-item">
 							<div class="timestamp-container">
@@ -120,6 +123,8 @@
 </template>
 
 <script lang="ts" setup>
+import { Format } from '~/utils/format'
+
 const router = useRouter()
 const articleStore = useArticle()
 definePage({
@@ -128,23 +133,14 @@ definePage({
 		transitionName: 'fade'
 	}
 })
-const form = reactive({
-	pageNum: 1,
-	pageSize: 5,
-	format: 'month'
-})
+const take = 10
+const format = ref<Format>('timeline')
 
-const archive = computed(() => articleStore.getArticleArchive)
+const archive = computed(() => articleStore.getArticleArchive(format.value))
+const cursor = computed(() => articleStore.getArticleArchiveCurList.slice(-1)[0])
+const isLoadingMore = computed(() => articleStore.isArticleArchiveLoading)
 const hasMore = ref(true)
-const isLoadingMore = ref(true)
-const getArchive = async (data: any) => {
-	if (!hasMore.value) return
-	isLoadingMore.value = true
-	const [list, total] = await articleStore.GetArticleArchive(data)
-	isLoadingMore.value = false
-	hasMore.value = list && list.length > 0 && form.pageNum * form.pageSize < total
-	return list
-}
+
 const generateArchiveTitles = (articles: ArticleTime[]) => {
 	if (articles && articles.length) {
 		const len = Math.min(articles.length, 3)
@@ -156,23 +152,13 @@ const generateArchiveTitles = (articles: ArticleTime[]) => {
 const toArticle = (id: number) => {
 	router.push({ name: 'article', params: { id } })
 }
-const onLoadMore = async () => {
-	const list = await getArchive(Object.assign(form, { pageNum: form.pageNum + 1 }))
-	if (list?.length) {
-		form.pageNum += 1
-	}
-}
-
-const reGetArchive = () => {
-	articleStore.articleArchive.splice(0, articleStore.articleArchive.length)
-	form.pageNum = 1
-	hasMore.value = true
-	isLoadingMore.value = true
-	getArchive(form)
+const onLoadMore = () => {
+	if (!hasMore.value) return
+	articleStore.GetArticleArchive({ take, cursor: cursor.value })
 }
 
 const initPage = () => {
-	getArchive(form)
+	articleStore.GetArticleArchive({ take, cursor: undefined })
 }
 
 initPage()
@@ -209,8 +195,9 @@ initPage()
 				margin-bottom: 16px;
 				&:deep {
 					@include custom-border-radio(1, var(--el-color-success));
-					@include custom-border-radio(2, var(--el-color-primary));
-					@include custom-border-radio(3, var(--el-color-danger));
+					@include custom-border-radio(2, var(--el-color-danger));
+					@include custom-border-radio(3, var(--el-color-primary));
+					@include custom-border-radio(4, var(--el-color-warning));
 				}
 			}
 			.skeleton-item {

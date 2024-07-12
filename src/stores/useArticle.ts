@@ -1,9 +1,11 @@
 import { SortOrder } from '~/graphql/generated/graphql'
+import { Format } from '~/utils/format'
 
 export default defineStore('useArticle', {
 	state: (): {
 		articleMap: Map<number, Article>
 		articleArchive: ArticleArchive[]
+		articleArchiveCurList: Article[]
 		articlesRecent: ArticleRecent[]
 		articlesHot: ArticleHot[]
 		articleCurList: Article[]
@@ -17,6 +19,7 @@ export default defineStore('useArticle', {
 	} => ({
 		articleMap: new Map(),
 		articleArchive: [],
+		articleArchiveCurList: [],
 		articlesRecent: [],
 		articlesHot: [],
 		articleCurList: [],
@@ -31,7 +34,14 @@ export default defineStore('useArticle', {
 	getters: {
 		getArticleCurList: state => cloneLoop(state.articleCurList),
 		getArticleMap: state => () => cloneLoop(state.articleMap),
-		getArticleArchive: state => cloneLoop(state.articleArchive),
+		getArticleArchive: state => (format: Format) => {
+			const articleArchiveCurList = state.articleArchiveCurList
+			const formatedArticles = timeLineArticles2FormatedArticles(articleArchiveCurList, format)
+			const articleArchive = articles2Archive(formatedArticles, format)
+			state.articleArchive = ([] as ArticleArchive[]).concat(articleArchive)
+			return cloneLoop(articleArchive)
+		},
+		getArticleArchiveCurList: state => cloneLoop(state.articleArchiveCurList),
 		getArticleById: state => (id: number) => state.articleMap.get(id),
 		getArticleList: state => () => [...state.articleMap.values()],
 		getArticlesRecent: state => cloneLoop(state.articlesRecent),
@@ -44,10 +54,18 @@ export default defineStore('useArticle', {
 			const { onResult, onError } = useQuery(posts, {
 				cursor: cursor
 					? {
-							id: cursor.id
+							updatedAt: {
+								equals: cursor.updatedAt
+							}
 					  }
 					: undefined,
-				take
+				skip: cursor ? 1 : undefined,
+				take,
+				orderBy: [
+					{
+						updatedAt: SortOrder.Desc
+					}
+				]
 			})
 			onResult(result => {
 				this.isArticleCurListLoading = false
@@ -127,21 +145,34 @@ export default defineStore('useArticle', {
 				this.isFavoriteLoading = false
 			})
 		},
-		async GetArticleArchive(data: any): Promise<[ArticleArchive[], number]> {
-			const res = await listArchive(data)
-			if (res.data.code === 200 && res.data.data) {
-				const rawArchive = res.data.data.rows || []
-				const total = res.data.data.count || 0
-				const articleArchive = articles2Archive(rawArchive)
-				if (this.articleArchive.length) {
-					this.articleArchive = concatArchive(this.articleArchive, articleArchive)
-				} else {
-					this.articleArchive = ([] as ArticleArchive[]).concat(articleArchive)
-				}
-				return [articleArchive, total]
-			} else {
-				return [[], 0]
-			}
+		GetArticleArchive(data: { cursor?: Article; take: number }) {
+			this.isArticleArchiveLoading = true
+			const { cursor, take } = data
+			const { onResult, onError } = useQuery(posts, {
+				cursor: cursor
+					? {
+							updatedAt: {
+								equals: cursor.updatedAt
+							}
+					  }
+					: undefined,
+				skip: cursor ? 1 : undefined,
+				take,
+				orderBy: [
+					{
+						updatedAt: SortOrder.Desc
+					}
+				]
+			})
+			onResult(result => {
+				this.isArticleArchiveLoading = false
+				const posts = result.data.posts
+				const newPosts = posts.slice(0).map(post => postToArticle(post))
+				this.articleArchiveCurList = this.articleArchiveCurList.concat(newPosts)
+			})
+			onError(() => {
+				this.isArticleArchiveLoading = false
+			})
 		},
 		GetArticle(articleId: number) {
 			this.isArticleDetailLoading = true

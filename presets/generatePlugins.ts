@@ -153,7 +153,6 @@ export default () => {
 					'@vueuse/core',
 					VueRouterAutoImports,
 					{
-						lodash: ['throttle', 'debounce'],
 						axios: [['default', 'axios']],
 						'@jsmini/clone': ['cloneLoop', 'cloneForce'],
 						'element-plus': ['ElMessage', 'ElMessageBox'],

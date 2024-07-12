@@ -69,10 +69,10 @@ interface ArticleTime {
 	id: number
 	title: string
 	description: string
-	browse: string
 	month?: string
 	week?: string
 	day?: string
+	timeline?: string
 	createdAt: string
 	categories: Array<{
 		id: number
