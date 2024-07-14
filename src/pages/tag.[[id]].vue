@@ -4,7 +4,7 @@
 			<el-skeleton
 				:loading="isLoadingMore"
 				animated
-				:count="queryParams.pageSize">
+				:count="take">
 				<template #template>
 					<div class="skeleton-item">
 						<div class="name-container">
@@ -67,35 +67,22 @@ const route = useRoute<'tag'>()
 const articleId = route.params.id ? +route.params.id : 0
 const checkedIds = computed(() => tagStore.getCheckedTagIds)
 const isChecked = (id: number) => checkedIds.value.includes(id)
-const hasMore = ref(true)
-const isLoadingMore = ref(true)
-const queryParams = reactive({ pageNum: 1, pageSize: 5 })
+const isLoadingMore = computed(() => tagStore.isTagArticlesMapLoading)
 const tagArticles = computed(() => tagStore.getTagArticles())
+const cursor = computed(() => tagStore.getTagArticlesCursor)
+const hasMore = ref(true)
+const take = 10
 
-const getTagArticles = async (queryParams: any) => {
+const onLoadMore = () => {
 	if (!hasMore.value) return
-	isLoadingMore.value = true
-	const [list, total] = await tagStore.GetTagArticles(queryParams)
-	isLoadingMore.value = false
-	hasMore.value = list && list.length > 0 && queryParams.pageNum * queryParams.pageSize < total
-	return list
+	tagStore.GetTagWithArticles({ take, cursor: cursor.value })
 }
 
-const onLoadMore = async () => {
-	const list = await getTagArticles({
-		...queryParams,
-		pageNum: queryParams.pageNum + 1
-	})
-	if (list?.length) {
-		queryParams.pageNum += 1
-	}
-}
-
-const initPage = async () => {
+const initPage = () => {
 	if (articleId) {
 		tagStore.checkedTagIds.splice(0, tagStore.checkedTagIds.length)
 	}
-	await getTagArticles(queryParams)
+	tagStore.GetTagWithArticles({ take, cursor: undefined })
 }
 
 initPage()

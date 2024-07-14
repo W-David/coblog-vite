@@ -10,7 +10,7 @@ import Components from 'unplugin-vue-components/vite'
 import { VueRouterAutoImports } from 'unplugin-vue-router'
 import VueRouter from 'unplugin-vue-router/vite'
 import viteCompression from 'vite-plugin-compression'
-import Inspect from 'vite-plugin-inspect'
+// import Inspect from 'vite-plugin-inspect'
 import { viteMockServe } from 'vite-plugin-mock'
 import Removelog from 'vite-plugin-removelog'
 import Layouts from 'vite-plugin-vue-meta-layouts'
@@ -68,9 +68,9 @@ export default () => {
 			defaultLayout: 'main'
 		}),
 		// 调试工具
-		Inspect({
-			enabled: env.VITE_APP_INSPECT
-		}),
+		// Inspect({
+		// 	enabled: env.VITE_APP_INSPECT
+		// }),
 		// windicss 插件
 		Windicss({
 			safelist: markdownWrapperClasses

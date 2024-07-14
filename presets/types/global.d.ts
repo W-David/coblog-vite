@@ -163,6 +163,7 @@ interface CategoryArticle extends Category {
 		id: number
 		title: string
 		createdAt: string
+		updatedAt: string
 	}>
 }
 
@@ -179,5 +180,6 @@ interface TagArticle extends Tag {
 		id: number
 		title: string
 		createdAt: string
+		updatedAt: string
 	}>
 }

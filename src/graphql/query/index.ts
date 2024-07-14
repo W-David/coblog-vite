@@ -119,22 +119,55 @@ export const categories = graphql(`
 	}
 `)
 
-export const getCategory = graphql(`
-	query GetCategory($where: CategoryWhereUniqueInput!) {
-		getCategory(where: $where) {
-			name
+export const getCategoriesWithPosts = graphql(`
+	query CategoriesWithPosts(
+		$orderBy: [CategoryOrderByWithRelationInput!]
+		$cursor: CategoryWhereUniqueInput
+		$take: Int
+		$skip: Int
+		$categoriesOnPostOrderBy: [CategoriesOnPostsOrderByWithRelationInput!]
+		$categoriesOnPostTake: Int
+	) {
+		categories(orderBy: $orderBy, cursor: $cursor, take: $take, skip: $skip) {
 			id
-			CategoriesOnPosts {
+			name
+			createdAt
+			updatedAt
+			CategoriesOnPosts(orderBy: $categoriesOnPostOrderBy, take: $categoriesOnPostTake) {
 				post {
 					id
+					title
 					createdAt
 					updatedAt
+				}
+			}
+		}
+	}
+`)
+
+export const getCategory = graphql(`
+	query GetCategory(
+		$where: CategoryWhereUniqueInput!
+		$orderBy: [CategoriesOnPostsOrderByWithRelationInput!]
+		$take: Int
+		$cursor: CategoriesOnPostsWhereUniqueInput
+		$skip: Int
+	) {
+		getCategory(where: $where) {
+			id
+			name
+			createdAt
+			updatedAt
+			CategoriesOnPosts(orderBy: $orderBy, take: $take, cursor: $cursor, skip: $skip) {
+				post {
+					id
 					title
-					description
-					content
-					published
+					updatedAt
 					favoNum
+					description
+					createdAt
 					browNum
+					published
 					authorId
 				}
 			}
@@ -158,22 +191,49 @@ export const tags = graphql(`
 	}
 `)
 
-export const getTag = graphql(`
-	query GetTag($where: TagWhereUniqueInput!) {
-		getTag(where: $where) {
-			name
+export const getTagsWithPosts = graphql(`
+	query TagsWithPosts(
+		$orderBy: [TagOrderByWithRelationInput!]
+		$cursor: TagWhereUniqueInput
+		$take: Int
+		$skip: Int
+		$tagsOnPostOrderBy: [TagsOnPostsOrderByWithRelationInput!]
+		$tagsOnPostTake: Int
+	) {
+		tags(orderBy: $orderBy, cursor: $cursor, take: $take, skip: $skip) {
 			id
-			TagsOnPosts {
+			name
+			createdAt
+			updatedAt
+			TagsOnPosts(orderBy: $tagsOnPostOrderBy, take: $tagsOnPostTake) {
 				post {
 					id
+					title
 					createdAt
 					updatedAt
+				}
+			}
+		}
+	}
+`)
+
+export const getTag = graphql(`
+	query GetTag($where: TagWhereUniqueInput!, $orderBy: [TagsOnPostsOrderByWithRelationInput!], $take: Int, $cursor: TagsOnPostsWhereUniqueInput, $skip: Int) {
+		getTag(where: $where) {
+			id
+			name
+			createdAt
+			updatedAt
+			TagsOnPosts(orderBy: $orderBy, take: $take, cursor: $cursor, skip: $skip) {
+				post {
+					id
 					title
-					description
-					content
-					published
+					updatedAt
 					favoNum
+					description
+					createdAt
 					browNum
+					published
 					authorId
 				}
 			}

@@ -19,6 +19,7 @@ export default defineStore('useTag', {
 		getTagArticleById: state => (id: number) => state.tagArticlesMap.get(id),
 		getTagList: state => () => [...state.tagMap.values()],
 		getTagArticles: state => () => [...state.tagArticlesMap.values()],
+		getTagArticlesCursor: state => Array.from(state.tagArticlesMap.values()).slice(-1)[0],
 		getCheckedTagIds: state => state.checkedTagIds
 	},
 	actions: {
@@ -76,18 +77,42 @@ export default defineStore('useTag', {
 				this.isTagMapLoading = false
 			})
 		},
-		async GetTagArticles(data: { pageNum: number; pageSize: number }): Promise<[TagArticle[], number]> {
-			const res = await listTagArticles(data)
-			if (res.data.code === 200 && res.data.data) {
-				const tags = res.data.data.rows || []
-				const total = res.data.data.count || 0
+		GetTagWithArticles(data: { take: number; cursor?: TagArticle }) {
+			this.isTagArticlesMapLoading = true
+			const { take, cursor } = data
+			const { onResult, onError } = useQuery(getTagsWithPosts, {
+				orderBy: [
+					{
+						id: SortOrder.Asc
+					}
+				],
+				cursor: cursor
+					? {
+							id: cursor.id
+					  }
+					: undefined,
+				skip: cursor ? 1 : undefined,
+				take,
+				tagsOnPostOrderBy: [
+					{
+						postId: SortOrder.Asc
+					}
+				],
+				tagsOnPostTake: 5
+			})
+			onResult(result => {
+				this.isTagArticlesMapLoading = false
+				const tags = result.data?.tags || []
+				if (!tags.length) {
+					return
+				}
 				tags.forEach(item => {
-					this.tagArticlesMap.set(item.id, cloneLoop(item))
+					this.tagArticlesMap.set(item.id, tagsToTagArticle(item))
 				})
-				return [tags, total]
-			} else {
-				return [[], 0]
-			}
+			})
+			onError(() => {
+				this.isTagArticlesMapLoading = false
+			})
 		},
 		DelTag(tagId: number) {
 			const { mutate, onDone } = useMutation(deleteOneTag)

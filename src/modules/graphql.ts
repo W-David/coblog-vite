@@ -1,11 +1,11 @@
 import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client/core'
 import { onError } from '@apollo/client/link/error'
-import { from } from '@apollo/client'
+import { from } from '@apollo/client/core'
 import { logErrorMessages } from '@vue/apollo-util'
 
 export function createApolloClient() {
 	const httpLink = createHttpLink({
-		uri: 'http://localhost:3000/graphql'
+		uri: import.meta.env.VITE_APP_BASE_URL + '/graphql'
 	})
 	const errorLink = onError(error => {
 		if (process.env.NODE_ENV === 'development') {

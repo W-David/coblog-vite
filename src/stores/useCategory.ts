@@ -19,6 +19,7 @@ export default defineStore('useCategory', {
 		getCategoryArticleById: state => (id: number) => state.categoryArticlesMap.get(id),
 		getCategoryList: state => () => [...state.categoryMap.values()],
 		getCategoryArticles: state => () => [...state.categoryArticlesMap.values()],
+		getCategoryArticlesCursor: state => Array.from(state.categoryArticlesMap.values()).slice(-1)[0],
 		getCheckedCateIds: state => state.checkedCateIds
 	},
 	actions: {
@@ -76,18 +77,42 @@ export default defineStore('useCategory', {
 				this.isCategoryMapLoading = false
 			})
 		},
-		async GetCategoryWithArticles(data = {}): Promise<[CategoryArticle[], number]> {
-			const res = await listCategoryArticles(data)
-			if (res.data.code === 200 && res.data.data) {
-				const categories = res.data.data.rows || []
-				const total = res.data.data.count || 0
+		GetCategoryWithArticles(data: { take: number; cursor?: { id: number } }) {
+			this.isCategoryArticlesMapLoading = true
+			const { take, cursor } = data
+			const { onResult, onError } = useQuery(getCategoriesWithPosts, {
+				orderBy: [
+					{
+						id: SortOrder.Asc
+					}
+				],
+				cursor: cursor
+					? {
+							id: cursor.id
+					  }
+					: undefined,
+				skip: cursor ? 1 : undefined,
+				take,
+				categoriesOnPostOrderBy: [
+					{
+						postId: SortOrder.Asc
+					}
+				],
+				categoriesOnPostTake: 5
+			})
+			onResult(result => {
+				this.isCategoryArticlesMapLoading = false
+				const categories = result.data?.categories || []
+				if (!categories.length) {
+					return
+				}
 				categories.forEach(item => {
-					this.categoryArticlesMap.set(item.id, cloneLoop(item))
+					this.categoryArticlesMap.set(item.id, categoriesToCategoryArticle(item))
 				})
-				return [categories, total]
-			} else {
-				return [[], 0]
-			}
+			})
+			onError(() => {
+				this.isCategoryArticlesMapLoading = false
+			})
 		},
 		DelCategory(categoryId: number) {
 			const { mutate, onDone } = useMutation(deleteOneCategory)

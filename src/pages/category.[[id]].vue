@@ -4,7 +4,7 @@
 			<el-skeleton
 				:loading="isLoadingMore"
 				animated
-				:count="queryParams.pageSize">
+				:count="take">
 				<template #template>
 					<div class="skeleton-item">
 						<div class="name-container">
@@ -67,33 +67,23 @@ const route = useRoute<'category'>()
 const articleId = route.params.id ? +route.params.id : 0
 const checkedIds = computed(() => categoryStore.getCheckedCateIds)
 const isChecked = (id: number) => checkedIds.value.includes(id)
-const hasMore = ref(true)
-const isLoadingMore = ref(true)
-const queryParams = reactive({ pageNum: 1, pageSize: 5 })
+const isLoadingMore = computed(() => categoryStore.isCategoryArticlesMapLoading)
 const categoryArticles = computed(() => categoryStore.getCategoryArticles())
-
-const getCategoryArticles = async (queryParams: any) => {
-	if (!hasMore.value) return
-	isLoadingMore.value = true
-	const [list, total] = await categoryStore.GetCategoryWithArticles(queryParams)
-	isLoadingMore.value = false
-	hasMore.value = list && list.length > 0 && queryParams.pageNum * queryParams.pageSize < total
-	return list
-}
+const cursor = computed(() => categoryStore.getCategoryArticlesCursor)
+const hasMore = ref(true)
+const take = 10
 
 // useReachBottom(onLoadMore)
-const onLoadMore = async () => {
-	const list = await getCategoryArticles(Object.assign(queryParams, { pageNum: queryParams.pageNum + 1 }))
-	if (list?.length) {
-		queryParams.pageNum += 1
-	}
+const onLoadMore = () => {
+	if (!hasMore.value) return
+	categoryStore.GetCategoryWithArticles({ take, cursor: cursor.value })
 }
 
-const initPage = async () => {
+const initPage = () => {
 	if (articleId) {
 		categoryStore.checkedCateIds.splice(0, categoryStore.checkedCateIds.length)
 	}
-	await getCategoryArticles(queryParams)
+	categoryStore.GetCategoryWithArticles({ take, cursor: undefined })
 }
 
 initPage()

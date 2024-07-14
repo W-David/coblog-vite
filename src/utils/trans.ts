@@ -19,3 +19,69 @@ export const postToArticle = (post: any) => {
 		status: 0
 	}
 }
+
+export const categoriesToCategoryArticle = (category: {
+	__typename?: 'Category'
+	createdAt: any
+	id: number
+	name: string
+	updatedAt: any
+	CategoriesOnPosts: Array<{
+		__typename?: 'CategoriesOnPosts'
+		post: {
+			__typename?: 'Post'
+			id: number
+			title: string
+			createdAt: any
+			updatedAt: any
+		}
+	}>
+}): CategoryArticle => {
+	return {
+		id: category.id,
+		name: category.name,
+		createdAt: category.createdAt,
+		updatedAt: category.updatedAt,
+		articles: category.CategoriesOnPosts.map(item => {
+			return {
+				id: item.post.id,
+				title: item.post.title,
+				createdAt: item.post.createdAt,
+				updatedAt: item.post.updatedAt
+			}
+		})
+	}
+}
+
+export const tagsToTagArticle = (tag: {
+	__typename?: 'Tag'
+	createdAt: any
+	name: string
+	id: number
+	updatedAt: any
+	TagsOnPosts: Array<{
+		__typename?: 'TagsOnPosts'
+		post: {
+			__typename?: 'Post'
+			id: number
+			title: string
+			createdAt: any
+			updatedAt: any
+		}
+	}>
+}): TagArticle => {
+	return {
+		id: tag.id,
+		name: tag.name,
+		createdAt: tag.createdAt,
+		updatedAt: tag.updatedAt,
+		articles: tag.TagsOnPosts.map(item => {
+			return {
+				id: item.post.id,
+				title: item.post.title,
+				createdAt: item.post.createdAt,
+				updatedAt: item.post.updatedAt
+			}
+		})
+	}
+}
