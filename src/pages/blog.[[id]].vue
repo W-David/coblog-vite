@@ -283,7 +283,7 @@ initPage()
 			}
 		}
 		.blog-toolbar {
-			&:deep .w-e-toolbar {
+			&:deep(.w-e-toolbar) {
 				background-color: var(--el-bg-color);
 				@include border(1px solid var(--el-border-color), 4px);
 				@include layout(100%, auto, 8px 0, 0);
@@ -324,7 +324,7 @@ initPage()
 			}
 		}
 		.blog-ctrl {
-			&:deep {
+			&:deep() {
 				.el-button {
 					@include layout(100%, auto, 8px 0 0 0, auto);
 					border-radius: 16px;

@@ -327,7 +327,7 @@ initForm()
 				}
 
 				.login-card-content {
-					&:deep {
+					&:deep() {
 						.el-form-item {
 							margin-bottom: 10px;
 						}
@@ -350,7 +350,7 @@ initForm()
 					.login-area {
 						width: 100%;
 
-						&:deep {
+						&:deep() {
 							.el-button {
 								margin: 0;
 								width: 100%;
@@ -376,7 +376,7 @@ initForm()
 						}
 					}
 
-					&:deep {
+					&:deep() {
 						.el-form-item:last-child {
 							margin-bottom: 0;
 						}

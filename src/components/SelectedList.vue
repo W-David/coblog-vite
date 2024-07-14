@@ -61,7 +61,7 @@ const handleCheckChange = (item: Category | Tag) => {
 .selected-list-container {
 	@include layout(auto, auto, 0, 0);
 	.checkbox-card {
-		&:deep {
+		&:deep() {
 			.el-card__body {
 				padding: 16px;
 				.el-check-tag {

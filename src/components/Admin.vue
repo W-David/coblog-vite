@@ -145,7 +145,7 @@ const handleDelete = () => adminStore.DeleteAvatar()
 .admin-container {
 	@include flex-box(row, center, center);
 
-	:deep .el-dropdown {
+	:deep(.el-dropdown) {
 		margin-left: 8px;
 		.dropdown-link {
 			cursor: pointer;

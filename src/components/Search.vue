@@ -58,7 +58,7 @@ const querySearch = async (qs: string, callback: (results: Record<string, any>[]
 
 <style lang="scss" scoped>
 .search-container {
-	&:deep {
+	&:deep() {
 		.el-input {
 			width: 180px;
 			.el-input__wrapper {

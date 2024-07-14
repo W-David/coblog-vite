@@ -104,7 +104,7 @@ aliossStore.FetchSTS()
 	@include position(relative);
 	.file-uploader {
 		@include layout(100%, 100%, 0, 0);
-		&:deep {
+		&:deep() {
 			.el-upload {
 				@include layout(100%, 100%, 0, 0);
 				.trigger-area {

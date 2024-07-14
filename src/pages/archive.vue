@@ -193,7 +193,7 @@ initPage()
 			@include bg-color(#fff, #1d1d1d);
 			.archive-timeline-ctrl {
 				margin-bottom: 16px;
-				&:deep {
+				&:deep() {
 					@include custom-border-radio(1, var(--el-color-success));
 					@include custom-border-radio(2, var(--el-color-danger));
 					@include custom-border-radio(3, var(--el-color-primary));
@@ -259,7 +259,7 @@ initPage()
 			ul {
 				padding-inline-start: 0;
 			}
-			&:deep {
+			&:deep() {
 				.el-timeline-item__timestamp {
 					@include font-kai;
 					font-weight: bolder;

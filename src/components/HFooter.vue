@@ -65,7 +65,7 @@
 		@include font-hei;
 		margin-bottom: 6px;
 		font-size: 12px;
-		&:deep {
+		&:deep() {
 			.el-link {
 				font-size: 12px;
 			}

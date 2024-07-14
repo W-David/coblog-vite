@@ -238,7 +238,7 @@ $descrip-mr: 12px;
 			@include flex-box(row, center, center);
 			color: var(--el-text-color-secondary);
 			font-size: 12px;
-			&:deep .el-icon {
+			&:deep(.el-icon) {
 				margin-right: 6px;
 			}
 		}
@@ -247,7 +247,7 @@ $descrip-mr: 12px;
 			@include transition(all 120ms ease);
 			@include pointer;
 			transition: all 220ms ease-out;
-			&:deep .el-button {
+			&:deep(.el-button) {
 				font-weight: bold;
 				&:hover {
 					color: var(--el-color-primary);

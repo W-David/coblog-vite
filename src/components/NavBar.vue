@@ -95,14 +95,14 @@ const toHome = () => {
 			cursor: pointer;
 		}
 
-		&:deep .el-icon {
+		&:deep() .el-icon {
 			--color: var(--el-color-primary) !important;
 			margin-right: 6px;
 		}
 	}
 	.nav-menu {
 		margin-left: 36px;
-		&:deep {
+		&:deep() {
 			.el-menu {
 				@include bg-color(#f4f4f4, #050505);
 				border-color: transparent;

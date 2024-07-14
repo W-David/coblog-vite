@@ -73,7 +73,7 @@ const links = ref<LinkType[]>([
 				background-color: transparent;
 				transition: all 300ms ease-out;
 			}
-			&:deep {
+			&:deep() {
 				.el-link {
 					z-index: 1000;
 				}
