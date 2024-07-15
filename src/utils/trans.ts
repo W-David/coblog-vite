@@ -28,13 +28,13 @@ export const categoriesToCategoryArticle = (category: {
 	updatedAt: any
 	CategoriesOnPosts: Array<{
 		__typename?: 'CategoriesOnPosts'
-		post: {
+		post?: {
 			__typename?: 'Post'
 			id: number
 			title: string
 			createdAt: any
 			updatedAt: any
-		}
+		} | null
 	}>
 }): CategoryArticle => {
 	return {
@@ -43,11 +43,19 @@ export const categoriesToCategoryArticle = (category: {
 		createdAt: category.createdAt,
 		updatedAt: category.updatedAt,
 		articles: category.CategoriesOnPosts.map(item => {
+			if (item.post) {
+				return {
+					id: item.post.id,
+					title: item.post.title,
+					createdAt: item.post.createdAt,
+					updatedAt: item.post.updatedAt
+				}
+			}
 			return {
-				id: item.post.id,
-				title: item.post.title,
-				createdAt: item.post.createdAt,
-				updatedAt: item.post.updatedAt
+				id: 0,
+				title: '',
+				createdAt: '',
+				updatedAt: ''
 			}
 		})
 	}
@@ -61,13 +69,13 @@ export const tagsToTagArticle = (tag: {
 	updatedAt: any
 	TagsOnPosts: Array<{
 		__typename?: 'TagsOnPosts'
-		post: {
+		post?: {
 			__typename?: 'Post'
 			id: number
 			title: string
 			createdAt: any
 			updatedAt: any
-		}
+		} | null
 	}>
 }): TagArticle => {
 	return {
@@ -76,11 +84,19 @@ export const tagsToTagArticle = (tag: {
 		createdAt: tag.createdAt,
 		updatedAt: tag.updatedAt,
 		articles: tag.TagsOnPosts.map(item => {
+			if (item.post) {
+				return {
+					id: item.post.id,
+					title: item.post.title,
+					createdAt: item.post.createdAt,
+					updatedAt: item.post.updatedAt
+				}
+			}
 			return {
-				id: item.post.id,
-				title: item.post.title,
-				createdAt: item.post.createdAt,
-				updatedAt: item.post.updatedAt
+				id: 0,
+				title: '',
+				createdAt: '',
+				updatedAt: ''
 			}
 		})
 	}
