@@ -154,6 +154,7 @@ export default () => {
 					VueRouterAutoImports,
 					{
 						axios: [['default', 'axios']],
+						'throttle-debounce': ['throttle', 'debounce'],
 						'@jsmini/clone': ['cloneLoop', 'cloneForce'],
 						'element-plus': ['ElMessage', 'ElMessageBox'],
 						'lru-cache': [['default', 'LRUCache']],

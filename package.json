@@ -48,6 +48,7 @@
 		"lru-cache": "^7.16.1",
 		"md-editor-v3": "^2.8.1",
 		"qs": "^6.11.0",
+		"throttle-debounce": "^5.0.2",
 		"vue": "^3.4.31"
 	},
 	"engines": {
