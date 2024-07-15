@@ -14,10 +14,7 @@
 		</div>
 	</div>
 </template>
-<script lang="ts" setup>
-useDevice()
-useWindowResize()
-</script>
+<script lang="ts" setup></script>
 
 <style lang="scss" scoped>
 .app-container {
