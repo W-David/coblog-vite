@@ -1,12 +1,7 @@
 <template>
 	<div
 		class="article-tag"
-		:style="{
-			fontSize: `${size}px`,
-			height: `${size * 2}px`,
-			lineHeight: `${size * 2}px`,
-			borderRadius: `${size}px`
-		}"
+		:style="style"
 		@click.stop="toTag(tag.id)">
 		<el-icon :size="size"><i-ep-collection-tag /></el-icon>
 		{{ tag.name }}
@@ -25,6 +20,12 @@ const props = withDefaults(
 	}
 )
 const { tag, size } = toRefs(props)
+const style = reactive({
+	fontSize: `${size.value}px`,
+	height: `${size.value * 2}px`,
+	lineHeight: `${size.value * 2}px`,
+	borderRadius: `${size.value}px`
+})
 const toTag = (id: number) => {
 	router.push({ name: 'tag', params: { id } })
 }
