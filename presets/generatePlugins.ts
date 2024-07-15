@@ -159,6 +159,7 @@ export default () => {
 						'element-plus': ['ElMessage', 'ElMessageBox'],
 						'lru-cache': [['default', 'LRUCache']],
 						qs: [['default', 'QS']],
+						'@apollo/client/core': ['NetworkStatus'],
 						'@vue/apollo-composable': ['DefaultApolloClient', 'useQuery', 'useMutation', 'useSubscription']
 					}
 				],

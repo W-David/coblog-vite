@@ -68,8 +68,11 @@ export default defineStore('useArticle', {
 				]
 			})
 			onResult(result => {
-				this.isArticleCurListLoading = false
+				if (result.networkStatus !== NetworkStatus.ready) {
+					return
+				}
 				const posts = result.data.posts
+				this.isArticleCurListLoading = false
 				this.articleCurList = posts.slice(0).map(post => postToArticle(post))
 				posts.forEach(article => {
 					const post = cloneLoop(article)
@@ -92,6 +95,9 @@ export default defineStore('useArticle', {
 				]
 			})
 			onResult(result => {
+				if (result.networkStatus !== NetworkStatus.ready) {
+					return
+				}
 				this.isArticleRecentLoading = false
 				const posts = result.data.posts
 				this.articlesRecent = posts.slice(0).map(post => postToArticle(post))
@@ -112,6 +118,9 @@ export default defineStore('useArticle', {
 				]
 			})
 			onResult(result => {
+				if (result.networkStatus !== NetworkStatus.ready) {
+					return
+				}
 				this.isArticleHotLoading = false
 				const posts = result.data.posts
 				this.articlesHot = posts.slice(0).map(post => postToArticle(post))
@@ -133,7 +142,10 @@ export default defineStore('useArticle', {
 					}
 				}
 			})
-			onDone(() => {
+			onDone(result => {
+				if (result.errors) {
+					return
+				}
 				const article = this.articleMap.get(id)
 				if (!article) return
 				const beforeFavoritedNum = article.favoritedNum || 0
@@ -165,6 +177,9 @@ export default defineStore('useArticle', {
 				]
 			})
 			onResult(result => {
+				if (result.networkStatus !== NetworkStatus.ready) {
+					return
+				}
 				this.isArticleArchiveLoading = false
 				const posts = result.data.posts
 				const newPosts = posts.slice(0).map(post => postToArticle(post))
@@ -182,6 +197,9 @@ export default defineStore('useArticle', {
 				}
 			})
 			onResult(result => {
+				if (result.networkStatus !== NetworkStatus.ready) {
+					return
+				}
 				this.isArticleDetailLoading = false
 				const post = result.data.getPost
 				if (!post) {
@@ -200,7 +218,10 @@ export default defineStore('useArticle', {
 					id: articleId
 				}
 			})
-			onDone(() => {
+			onDone(result => {
+				if (result.errors) {
+					return
+				}
 				this.articleMap.delete(articleId)
 			})
 		}

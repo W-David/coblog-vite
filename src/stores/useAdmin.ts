@@ -41,7 +41,10 @@ export default defineStore('useAdmin', {
 					id: this.adminInfo.id
 				}
 			})
-			onDone(() => {
+			onDone(result => {
+				if (result.errors) {
+					return
+				}
 				this.avatar = url
 				ElMessage({ message: '头像上传成功', type: 'success', grouping: true })
 			})
@@ -61,7 +64,10 @@ export default defineStore('useAdmin', {
 					id: this.adminInfo.id
 				}
 			})
-			onDone(async () => {
+			onDone(async result => {
+				if (result.errors) {
+					return
+				}
 				if (!this.adminInfo) {
 					return
 				}
@@ -93,7 +99,10 @@ export default defineStore('useAdmin', {
 					id: adminInfo.id
 				}
 			})
-			onDone(() => {
+			onDone(result => {
+				if (result.errors) {
+					return
+				}
 				this.adminInfo = { id, nickname, email }
 			})
 		},
@@ -104,6 +113,9 @@ export default defineStore('useAdmin', {
 				password: params.password
 			})
 			onResult(result => {
+				if (result.networkStatus !== NetworkStatus.ready) {
+					return
+				}
 				const token = result.data.login?.token
 				if (!token) return
 				this.isLogin = true
@@ -111,8 +123,12 @@ export default defineStore('useAdmin', {
 				setToken(token)
 				const { onResult } = useQuery(graphqlAuth)
 				onResult(result => {
-					if (!result.data.auth) return
-					const { id, nickName: nickname, email, avatar } = result.data.auth
+					if (result.networkStatus !== NetworkStatus.ready) {
+						return
+					}
+					const auth = result.data?.auth
+					if (!auth) return
+					const { id, nickName: nickname, email, avatar } = auth
 					this.avatar = avatar || ''
 					this.adminInfo = { id, nickname, email }
 					router.push({ path: '/' })
@@ -136,6 +152,9 @@ export default defineStore('useAdmin', {
 			})
 
 			onDone(result => {
+				if (result.errors) {
+					return
+				}
 				const token = result.data?.register.token
 				if (!token) return
 				this.isLogin = true
@@ -143,8 +162,12 @@ export default defineStore('useAdmin', {
 				setToken(token)
 				const { onResult } = useQuery(graphqlAuth)
 				onResult(result => {
-					if (!result.data.auth) return
-					const { id, nickName: nickname, email, avatar } = result.data.auth
+					if (result.networkStatus !== NetworkStatus.ready) {
+						return
+					}
+					const auth = result.data?.auth
+					if (!auth) return
+					const { id, nickName: nickname, email, avatar } = auth
 					this.avatar = avatar || ''
 					this.adminInfo = { id, nickname, email }
 					router.push({ path: '/' })
@@ -162,8 +185,12 @@ export default defineStore('useAdmin', {
 			return new Promise((resolve, reject) => {
 				const { onResult, onError } = useQuery(graphqlAuth)
 				onResult(result => {
-					if (!result.data.auth) return
-					const { id, nickName: nickname, email, avatar } = result.data.auth
+					if (result.networkStatus !== NetworkStatus.ready) {
+						return
+					}
+					const auth = result.data?.auth
+					if (!auth) return
+					const { id, nickName: nickname, email, avatar } = auth
 					this.isLogin = true
 					this.avatar = avatar || ''
 					this.adminInfo = { id, nickname, email }

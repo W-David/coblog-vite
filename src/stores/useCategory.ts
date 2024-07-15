@@ -1,4 +1,4 @@
-import { SortOrder } from '~/graphql/generated/graphql'
+import { NullsOrder, SortOrder } from '~/graphql/generated/graphql'
 
 export default defineStore('useCategory', {
 	state: (): {
@@ -32,6 +32,9 @@ export default defineStore('useCategory', {
 					}
 				})
 				onDone(result => {
+					if (result.errors) {
+						return
+					}
 					const category = result.data?.createOneCategory
 					if (!category) {
 						return
@@ -64,6 +67,9 @@ export default defineStore('useCategory', {
 				}
 			})
 			onResult(result => {
+				if (result.networkStatus !== NetworkStatus.ready) {
+					return
+				}
 				this.isCategoryMapLoading = false
 				const categories = result.data?.categories || []
 				if (!categories.length) {
@@ -95,12 +101,18 @@ export default defineStore('useCategory', {
 				take,
 				categoriesOnPostOrderBy: [
 					{
-						postId: SortOrder.Asc
+						postId: {
+							nulls: NullsOrder.Last,
+							sort: SortOrder.Desc
+						}
 					}
 				],
 				categoriesOnPostTake: 5
 			})
 			onResult(result => {
+				if (result.networkStatus !== NetworkStatus.ready) {
+					return
+				}
 				this.isCategoryArticlesMapLoading = false
 				const categories = result.data?.categories || []
 				if (!categories.length) {
@@ -122,6 +134,9 @@ export default defineStore('useCategory', {
 				}
 			})
 			onDone(result => {
+				if (result.errors) {
+					return
+				}
 				const category = result.data?.deleteOneCategory
 				if (!category) {
 					return

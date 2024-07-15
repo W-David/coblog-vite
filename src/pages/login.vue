@@ -16,10 +16,7 @@
 			v-LazyLoad="getImageUrl(imgUrl)"
 			class="bg-fade"
 			alt="noImg"
-			:style="{
-				animationDelay: (animationDuration / bgImgs.length) * index + 's',
-				animationDuration: animationDuration + 's'
-			}" />
+			:style="getBgImgsStyle(index)" />
 		<div
 			class="bult-btn"
 			@click="toggleDark()">
@@ -144,11 +141,19 @@ definePage({
 		layout: 'login'
 	}
 })
+const animationDuration = ref(48)
+const bgImgs = reactive(['bg-01', 'bg-02', 'bg-03', 'bg-04'])
 const adminStore = useAdmin()
 const router = useRouter()
 const needRegister = ref(false)
 const formRef = ref(null)
 const { isDark, toggleDark } = useDarks()
+
+const getBgImgsStyle = (index: number) => ({
+	animationDelay: (animationDuration.value / bgImgs.length) * index + 's',
+	animationDuration: animationDuration.value + 's'
+})
+
 const form = reactive({
 	email: '',
 	password: '',
@@ -192,11 +197,9 @@ const handleSwitch = () => {
 	form.nickName = ''
 	needRegister.value = !needRegister.value
 }
-const animationDuration = ref(48)
 const getImageUrl = (name: string) => {
 	return new URL(`../assets/image/${name}.webp`, import.meta.url).href
 }
-const bgImgs = reactive(['bg-01', 'bg-02', 'bg-03', 'bg-04'])
 const initForm = () => {
 	const rememberMeCache = !!localCache.get('remember-me') ?? false
 	rememberMe.value = rememberMeCache

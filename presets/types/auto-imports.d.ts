@@ -11,6 +11,7 @@ declare global {
   const JSONStringify: typeof import('../../src/utils/format')['JSONStringify']
   const LRU: typeof import('../../src/utils/cache')['LRU']
   const LRUCache: typeof import('lru-cache')['default']
+  const NetworkStatus: typeof import('@apollo/client/core')['NetworkStatus']
   const PATCH: typeof import('../../src/utils/http')['PATCH']
   const POST: typeof import('../../src/utils/http')['POST']
   const PUT: typeof import('../../src/utils/http')['PUT']

@@ -1,4 +1,4 @@
-import { SortOrder } from '~/graphql/generated/graphql'
+import { NullsOrder, SortOrder } from '~/graphql/generated/graphql'
 
 export default defineStore('useTag', {
 	state: (): {
@@ -32,6 +32,9 @@ export default defineStore('useTag', {
 					}
 				})
 				onDone(result => {
+					if (result.errors) {
+						return
+					}
 					const tag = result.data?.createOneTag
 					if (!tag) {
 						return
@@ -64,6 +67,9 @@ export default defineStore('useTag', {
 				}
 			})
 			onResult(result => {
+				if (result.networkStatus !== NetworkStatus.ready) {
+					return
+				}
 				this.isTagMapLoading = false
 				const tags = result.data?.tags || []
 				if (!tags.length) {
@@ -95,12 +101,18 @@ export default defineStore('useTag', {
 				take,
 				tagsOnPostOrderBy: [
 					{
-						postId: SortOrder.Asc
+						postId: {
+							nulls: NullsOrder.Last,
+							sort: SortOrder.Desc
+						}
 					}
 				],
 				tagsOnPostTake: 5
 			})
 			onResult(result => {
+				if (result.networkStatus !== NetworkStatus.ready) {
+					return
+				}
 				this.isTagArticlesMapLoading = false
 				const tags = result.data?.tags || []
 				if (!tags.length) {
@@ -122,6 +134,9 @@ export default defineStore('useTag', {
 				}
 			})
 			onDone(result => {
+				if (result.errors) {
+					return
+				}
 				const tag = result.data?.deleteOneTag
 				if (!tag) {
 					return

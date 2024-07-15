@@ -10,6 +10,7 @@
     "JSONStringify": true,
     "LRU": true,
     "LRUCache": true,
+    "NetworkStatus": true,
     "PATCH": true,
     "POST": true,
     "PUT": true,
