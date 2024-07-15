@@ -5,7 +5,7 @@
 			<el-skeleton
 				:loading="loading"
 				animated
-				:count="take">
+				:count="5">
 				<template #template>
 					<div class="skeleton-item">
 						<el-skeleton-item
@@ -60,14 +60,9 @@ const router = useRouter()
 const articleStore = useArticle()
 const articles = computed(() => articleStore.getArticlesRecent)
 const loading = computed(() => articleStore.isArticleRecentLoading)
-const take = 5
-
 const toArticle = (id: number) => {
 	router.push({ name: 'article', params: { id } })
 }
-const init = () => articleStore.GetArticlesRecent({ take })
-
-init()
 </script>
 
 <style lang="scss" scoped>

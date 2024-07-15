@@ -68,13 +68,6 @@ const getRandomWidth = () => {
 	const widthList = [48, 64]
 	return getRandomItem(widthList)
 }
-
-const init = async () => {
-	// 清空已选择的category
-	categoryStore.checkedCateIds.splice(0, categoryStore.checkedCateIds.length)
-	categoryStore.GetCategories({ take: 12, cursor: undefined })
-}
-init()
 </script>
 
 <style lang="scss" scoped>

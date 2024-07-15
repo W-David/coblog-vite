@@ -65,15 +65,10 @@ const handleAdd = () => {
 	})
 }
 
-const init = async () => {
-	tagStore.checkedTagIds.splice(0, tagStore.checkedTagIds.length)
-	tagStore.GetTags({ take: 12, cursor: undefined })
-}
 const getRandomWidth = () => {
 	const widthList = [48, 64]
 	return getRandomItem(widthList)
 }
-init()
 </script>
 
 <style lang="scss" scoped>
