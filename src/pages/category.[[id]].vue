@@ -70,7 +70,7 @@ const isChecked = (id: number) => checkedIds.value.includes(id)
 const isLoadingMore = computed(() => categoryStore.isCategoryArticlesMapLoading)
 const categoryArticles = computed(() => categoryStore.getCategoryArticles())
 const cursor = computed(() => categoryStore.getCategoryArticlesCursor)
-const hasMore = ref(true)
+const hasMore = computed(() => categoryStore.isCategoryArticlesHasMore)
 const take = 10
 
 // useReachBottom(onLoadMore)

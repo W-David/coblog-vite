@@ -7,12 +7,14 @@ export default defineStore('useCategory', {
 		checkedCateIds: number[]
 		isCategoryMapLoading: boolean
 		isCategoryArticlesMapLoading: boolean
+		isCategoryArticlesHasMore: boolean
 	} => ({
 		categoryMap: new Map(),
 		categoryArticlesMap: new Map(),
 		checkedCateIds: [],
 		isCategoryMapLoading: false,
-		isCategoryArticlesMapLoading: false
+		isCategoryArticlesMapLoading: false,
+		isCategoryArticlesHasMore: true
 	}),
 	getters: {
 		getCategoryById: state => (id: number) => state.categoryMap.get(id),
@@ -85,46 +87,93 @@ export default defineStore('useCategory', {
 		},
 		GetCategoryWithArticles(data: { take: number; cursor?: { id: number } }) {
 			this.isCategoryArticlesMapLoading = true
+			this.isCategoryArticlesHasMore = true
 			const { take, cursor } = data
-			const { onResult, onError } = useQuery(getCategoriesWithPosts, {
-				orderBy: [
-					{
-						id: SortOrder.Asc
-					}
-				],
-				cursor: cursor
-					? {
-							id: cursor.id
-					  }
-					: undefined,
-				skip: cursor ? 1 : undefined,
-				take,
-				categoriesOnPostOrderBy: [
-					{
-						postId: {
-							nulls: NullsOrder.Last,
-							sort: SortOrder.Desc
+			if (cursor) {
+				const { fetchMore, onError } = useQuery(getMoreCategoriesWithPosts, {
+					orderBy: [
+						{
+							id: SortOrder.Asc
+						}
+					],
+					cursor: {
+						id: cursor.id
+					},
+					skip: 1,
+					take: take + 1,
+					categoriesOnPostOrderBy: [
+						{
+							postId: {
+								nulls: NullsOrder.Last,
+								sort: SortOrder.Desc
+							}
+						}
+					],
+					categoriesOnPostTake: 5
+				})
+				fetchMore({
+					updateQuery: (prev, { fetchMoreResult }) => {
+						if (!fetchMoreResult) {
+							return prev
+						}
+						const categories = fetchMoreResult.categories || []
+						if (!categories.length) {
+							return prev
+						}
+						const hasMore = categories.length === take + 1
+						this.isCategoryArticlesHasMore = hasMore
+						categories.slice(0, hasMore ? -1 : undefined).forEach(item => {
+							this.categoryArticlesMap.set(item.id, categoriesToCategoryArticle(item))
+						})
+						return {
+							...prev,
+							categories: prev.categories.concat(categories)
 						}
 					}
-				],
-				categoriesOnPostTake: 5
-			})
-			onResult(result => {
-				if (result.networkStatus !== NetworkStatus.ready) {
-					return
-				}
-				this.isCategoryArticlesMapLoading = false
-				const categories = result.data?.categories || []
-				if (!categories.length) {
-					return
-				}
-				categories.forEach(item => {
-					this.categoryArticlesMap.set(item.id, categoriesToCategoryArticle(item))
 				})
-			})
-			onError(() => {
-				this.isCategoryArticlesMapLoading = false
-			})
+				onError(() => {
+					this.isCategoryArticlesMapLoading = false
+					this.isCategoryArticlesHasMore = true
+				})
+			} else {
+				const { onResult, onError } = useQuery(getCategoriesWithPosts, {
+					orderBy: [
+						{
+							id: SortOrder.Asc
+						}
+					],
+					take: take + 1,
+					categoriesOnPostOrderBy: [
+						{
+							postId: {
+								nulls: NullsOrder.Last,
+								sort: SortOrder.Desc
+							}
+						}
+					],
+					categoriesOnPostTake: 5
+				})
+				onResult(result => {
+					if (result.networkStatus !== NetworkStatus.ready) {
+						return
+					}
+					this.isCategoryArticlesMapLoading = false
+					const categories = result.data?.categories || []
+					if (!categories.length) {
+						this.isCategoryArticlesHasMore = false
+						return
+					}
+					const hasMore = categories.length === take + 1
+					this.isCategoryArticlesHasMore = hasMore
+					categories.slice(0, hasMore ? -1 : undefined).forEach(item => {
+						this.categoryArticlesMap.set(item.id, categoriesToCategoryArticle(item))
+					})
+				})
+				onError(() => {
+					this.isCategoryArticlesMapLoading = false
+					this.isCategoryArticlesHasMore = true
+				})
+			}
 		},
 		DelCategory(categoryId: number) {
 			const { mutate, onDone } = useMutation(deleteOneCategory)
