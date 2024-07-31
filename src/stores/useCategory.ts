@@ -1,4 +1,4 @@
-import { NullsOrder, SortOrder } from '~/graphql/generated/graphql'
+import { SortOrder } from '~/graphql/generated/graphql'
 
 export default defineStore('useCategory', {
 	state: (): {

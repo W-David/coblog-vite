@@ -1,4 +1,4 @@
-import { NullsOrder, SortOrder } from '~/graphql/generated/graphql'
+import { SortOrder } from '~/graphql/generated/graphql'
 
 export default defineStore('useTag', {
 	state: (): {
@@ -101,10 +101,7 @@ export default defineStore('useTag', {
 				take,
 				tagsOnPostOrderBy: [
 					{
-						postId: {
-							nulls: NullsOrder.Last,
-							sort: SortOrder.Desc
-						}
+						postId: SortOrder.Asc
 					}
 				],
 				tagsOnPostTake: 5
