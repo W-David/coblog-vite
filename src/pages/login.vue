@@ -201,7 +201,7 @@ const getImageUrl = (name: string) => {
 	return new URL(`../assets/image/${name}.webp`, import.meta.url).href
 }
 const initForm = () => {
-	const rememberMeCache = !!localCache.get('remember-me') ?? false
+	const rememberMeCache = !!localCache.get('remember-me') || false
 	rememberMe.value = rememberMeCache
 	if (rememberMe.value) {
 		// debugger

@@ -43,3 +43,9 @@ export function createApolloClient() {
 		cache
 	})
 }
+
+export function onApolloContext(fn: () => any) {
+	const apolloClient = createApolloClient()
+	const onApolloContext = provideApolloClient(apolloClient)
+	onApolloContext(() => fn())
+}

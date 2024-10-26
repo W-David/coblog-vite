@@ -14,7 +14,31 @@
 		</div>
 	</div>
 </template>
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+const categoryStore = useCategory()
+const tagStore = useTag()
+const articleStore = useArticle()
+
+const init = () => {
+	articleStore.articleMap.clear()
+	articleStore.GetArticles({
+		take: 2,
+		cursor: undefined
+	})
+	articleStore.GetArticlesRecent({ take: 5 })
+	articleStore.GetArticlesHot({ take: 8 })
+
+	// 加载分类列表[无关联文章数据]
+	categoryStore.checkedCateIds.splice(0, categoryStore.checkedCateIds.length)
+	categoryStore.GetCategories({ take: 12, cursor: undefined })
+
+	// 加载标签列表[无关联文章数据]
+	tagStore.checkedTagIds.splice(0, tagStore.checkedTagIds.length)
+	tagStore.GetTags({ take: 12, cursor: undefined })
+}
+
+init()
+</script>
 
 <style lang="scss" scoped>
 .app-container {

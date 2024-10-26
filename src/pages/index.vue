@@ -68,8 +68,6 @@ definePage({
 		transitionName: 'fade'
 	}
 })
-const categoryStore = useCategory()
-const tagStore = useTag()
 const articleStore = useArticle()
 const articles = computed(() => articleStore.getArticleList())
 const curArticles = computed(() => articleStore.getArticleCurList)
@@ -84,25 +82,6 @@ const hasMore = computed(() => curArticles.value.length === queryParams.take)
 const onLoadMore = () => {
 	articleStore.GetArticles(queryParams)
 }
-
-const init = () => {
-	articleStore.articleMap.clear()
-	articleStore.GetArticles({
-		take: 2,
-		cursor: undefined
-	})
-	articleStore.GetArticlesRecent({ take: 5 })
-	articleStore.GetArticlesHot({ take: 8 })
-
-	// 加载分类列表[无关联文章数据]
-	categoryStore.checkedCateIds.splice(0, categoryStore.checkedCateIds.length)
-	categoryStore.GetCategories({ take: 12, cursor: undefined })
-
-	// 加载标签列表[无关联文章数据]
-	tagStore.checkedTagIds.splice(0, tagStore.checkedTagIds.length)
-	tagStore.GetTags({ take: 12, cursor: undefined })
-}
-init()
 </script>
 
 <style lang="scss" scoped>
