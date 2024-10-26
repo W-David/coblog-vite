@@ -83,6 +83,7 @@
     "getCurrentInstance": true,
     "getCurrentScope": true,
     "getFile": true,
+    "getMoreCategoriesWithPosts": true,
     "getOssClient": true,
     "getPost": true,
     "getRandomIntInclusive": true,

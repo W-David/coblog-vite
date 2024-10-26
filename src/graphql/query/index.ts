@@ -122,6 +122,31 @@ export const categories = graphql(`
 export const getCategoriesWithPosts = graphql(`
 	query CategoriesWithPosts(
 		$orderBy: [CategoryOrderByWithRelationInput!]
+		$take: Int
+		$skip: Int
+		$categoriesOnPostOrderBy: [CategoriesOnPostsOrderByWithRelationInput!]
+		$categoriesOnPostTake: Int
+	) {
+		categories(orderBy: $orderBy, take: $take, skip: $skip) {
+			id
+			name
+			createdAt
+			updatedAt
+			CategoriesOnPosts(orderBy: $categoriesOnPostOrderBy, take: $categoriesOnPostTake) {
+				post {
+					id
+					title
+					createdAt
+					updatedAt
+				}
+			}
+		}
+	}
+`)
+
+export const getMoreCategoriesWithPosts = graphql(`
+	query MoreCategoriesWithPosts(
+		$orderBy: [CategoryOrderByWithRelationInput!]
 		$cursor: CategoryWhereUniqueInput
 		$take: Int
 		$skip: Int
