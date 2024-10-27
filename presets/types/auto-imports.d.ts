@@ -84,7 +84,6 @@ declare global {
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
   const getFile: typeof import('../../src/api/file')['getFile']
-  const getMoreCategoriesWithPosts: typeof import('../../src/graphql/query/index')['getMoreCategoriesWithPosts']
   const getOssClient: typeof import('../../src/utils/alioss')['getOssClient']
   const getPost: typeof import('../../src/graphql/query/index')['getPost']
   const getRandomIntInclusive: typeof import('../../src/utils/format')['getRandomIntInclusive']

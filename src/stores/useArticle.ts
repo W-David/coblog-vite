@@ -51,178 +51,192 @@ export default defineStore('useArticle', {
 		GetArticles(data: { cursor?: Article; take: number }) {
 			this.isArticleCurListLoading = true
 			const { cursor, take } = data
-			const { onResult, onError } = useQuery(posts, {
-				cursor: cursor
-					? {
-							updatedAt: {
-								equals: cursor.updatedAt
-							}
-					  }
-					: undefined,
-				skip: cursor ? 1 : undefined,
-				take,
-				orderBy: [
-					{
-						updatedAt: SortOrder.Desc
-					}
-				]
-			})
-			onResult(result => {
-				if (result.networkStatus !== NetworkStatus.ready) {
-					return
-				}
-				const posts = result.data.posts
-				this.isArticleCurListLoading = false
-				this.articleCurList = posts.slice(0).map(post => postToArticle(post))
-				posts.forEach(article => {
-					const post = cloneLoop(article)
-					this.articleMap.set(article.id, postToArticle(post))
+			onApolloContext(() => {
+				const { onResult, onError } = useQuery(posts, {
+					cursor: cursor
+						? {
+								updatedAt: {
+									equals: cursor.updatedAt
+								}
+						  }
+						: undefined,
+					skip: cursor ? 1 : undefined,
+					take,
+					orderBy: [
+						{
+							updatedAt: SortOrder.Desc
+						}
+					]
 				})
-			})
-			onError(() => {
-				this.isArticleCurListLoading = false
+				onResult(result => {
+					if (result.networkStatus !== NetworkStatus.ready) {
+						return
+					}
+					const posts = result.data.posts
+					this.isArticleCurListLoading = false
+					this.articleCurList = posts.slice(0).map(post => postToArticle(post))
+					posts.forEach(article => {
+						const post = cloneLoop(article)
+						this.articleMap.set(article.id, postToArticle(post))
+					})
+				})
+				onError(() => {
+					this.isArticleCurListLoading = false
+				})
 			})
 		},
 		GetArticlesRecent(data: { take: number }) {
 			this.isArticleRecentLoading = true
 			const { take } = data
-			const { onResult, onError } = useQuery(posts, {
-				take,
-				orderBy: [
-					{
-						updatedAt: SortOrder.Desc
+			onApolloContext(() => {
+				const { onResult, onError } = useQuery(posts, {
+					take,
+					orderBy: [
+						{
+							updatedAt: SortOrder.Desc
+						}
+					]
+				})
+				onResult(result => {
+					if (result.networkStatus !== NetworkStatus.ready) {
+						return
 					}
-				]
-			})
-			onResult(result => {
-				if (result.networkStatus !== NetworkStatus.ready) {
-					return
-				}
-				this.isArticleRecentLoading = false
-				const posts = result.data.posts
-				this.articlesRecent = posts.slice(0).map(post => postToArticle(post))
-			})
-			onError(() => {
-				this.isArticleRecentLoading = false
+					this.isArticleRecentLoading = false
+					const posts = result.data.posts
+					this.articlesRecent = posts.slice(0).map(post => postToArticle(post))
+				})
+				onError(() => {
+					this.isArticleRecentLoading = false
+				})
 			})
 		},
 		GetArticlesHot(data: { take: number }) {
 			this.isArticleHotLoading = true
 			const { take } = data
-			const { onResult, onError } = useQuery(posts, {
-				take,
-				orderBy: [
-					{
-						favoNum: SortOrder.Desc
+			onApolloContext(() => {
+				const { onResult, onError } = useQuery(posts, {
+					take,
+					orderBy: [
+						{
+							favoNum: SortOrder.Desc
+						}
+					]
+				})
+				onResult(result => {
+					if (result.networkStatus !== NetworkStatus.ready) {
+						return
 					}
-				]
-			})
-			onResult(result => {
-				if (result.networkStatus !== NetworkStatus.ready) {
-					return
-				}
-				this.isArticleHotLoading = false
-				const posts = result.data.posts
-				this.articlesHot = posts.slice(0).map(post => postToArticle(post))
-			})
-			onError(() => {
-				this.isArticleHotLoading = false
+					this.isArticleHotLoading = false
+					const posts = result.data.posts
+					this.articlesHot = posts.slice(0).map(post => postToArticle(post))
+				})
+				onError(() => {
+					this.isArticleHotLoading = false
+				})
 			})
 		},
 		FavoriteArticle(data: { id: number; isFavorite: boolean }) {
 			this.isFavoriteLoading = true
 			const { id, isFavorite } = data
-			const { mutate, onDone, onError } = useMutation(updateOnePost)
-			mutate({
-				where: { id },
-				data: {
-					favoNum: {
-						increment: isFavorite ? 1 : undefined,
-						decrement: !isFavorite ? 1 : undefined
+			onApolloContext(() => {
+				const { mutate, onDone, onError } = useMutation(updateOnePost)
+				mutate({
+					where: { id },
+					data: {
+						favoNum: {
+							increment: isFavorite ? 1 : undefined,
+							decrement: !isFavorite ? 1 : undefined
+						}
 					}
-				}
-			})
-			onDone(result => {
-				if (result.errors) {
-					return
-				}
-				const article = this.articleMap.get(id)
-				if (!article) return
-				const beforeFavoritedNum = article.favoritedNum || 0
-				const afterFavoritedNum = isFavorite ? beforeFavoritedNum + 1 : Math.max(beforeFavoritedNum - 1, 0)
-				this.articleMap.set(id, { ...article, favoritedNum: afterFavoritedNum })
-				this.isFavoriteLoading = false
-			})
-			onError(() => {
-				this.isFavoriteLoading = false
+				})
+				onDone(result => {
+					if (result.errors) {
+						return
+					}
+					const article = this.articleMap.get(id)
+					if (!article) return
+					const beforeFavoritedNum = article.favoritedNum || 0
+					const afterFavoritedNum = isFavorite ? beforeFavoritedNum + 1 : Math.max(beforeFavoritedNum - 1, 0)
+					this.articleMap.set(id, { ...article, favoritedNum: afterFavoritedNum })
+					this.isFavoriteLoading = false
+				})
+				onError(() => {
+					this.isFavoriteLoading = false
+				})
 			})
 		},
 		GetArticleArchive(data: { cursor?: Article; take: number }) {
 			this.isArticleArchiveLoading = true
 			const { cursor, take } = data
-			const { onResult, onError } = useQuery(posts, {
-				cursor: cursor
-					? {
-							updatedAt: {
-								equals: cursor.updatedAt
-							}
-					  }
-					: undefined,
-				skip: cursor ? 1 : undefined,
-				take,
-				orderBy: [
-					{
-						updatedAt: SortOrder.Desc
+			onApolloContext(() => {
+				const { onResult, onError } = useQuery(posts, {
+					cursor: cursor
+						? {
+								updatedAt: {
+									equals: cursor.updatedAt
+								}
+						  }
+						: undefined,
+					skip: cursor ? 1 : undefined,
+					take,
+					orderBy: [
+						{
+							updatedAt: SortOrder.Desc
+						}
+					]
+				})
+				onResult(result => {
+					if (result.networkStatus !== NetworkStatus.ready) {
+						return
 					}
-				]
-			})
-			onResult(result => {
-				if (result.networkStatus !== NetworkStatus.ready) {
-					return
-				}
-				this.isArticleArchiveLoading = false
-				const posts = result.data.posts
-				const newPosts = posts.slice(0).map(post => postToArticle(post))
-				this.articleArchiveCurList = this.articleArchiveCurList.concat(newPosts)
-			})
-			onError(() => {
-				this.isArticleArchiveLoading = false
+					this.isArticleArchiveLoading = false
+					const posts = result.data.posts
+					const newPosts = posts.slice(0).map(post => postToArticle(post))
+					this.articleArchiveCurList = this.articleArchiveCurList.concat(newPosts)
+				})
+				onError(() => {
+					this.isArticleArchiveLoading = false
+				})
 			})
 		},
 		GetArticle(articleId: number) {
 			this.isArticleDetailLoading = true
-			const { onResult, onError } = useQuery(getPost, {
-				where: {
-					id: articleId
-				}
-			})
-			onResult(result => {
-				if (result.networkStatus !== NetworkStatus.ready) {
-					return
-				}
-				this.isArticleDetailLoading = false
-				const post = result.data.getPost
-				if (!post) {
-					return
-				}
-				this.articleMap.set(post.id, postToArticle(post))
-			})
-			onError(() => {
-				this.isArticleDetailLoading = false
+			onApolloContext(() => {
+				const { onResult, onError } = useQuery(getPost, {
+					where: {
+						id: articleId
+					}
+				})
+				onResult(result => {
+					if (result.networkStatus !== NetworkStatus.ready) {
+						return
+					}
+					this.isArticleDetailLoading = false
+					const post = result.data.getPost
+					if (!post) {
+						return
+					}
+					this.articleMap.set(post.id, postToArticle(post))
+				})
+				onError(() => {
+					this.isArticleDetailLoading = false
+				})
 			})
 		},
 		DelArticle(articleId: number) {
-			const { mutate, onDone } = useMutation(deleteOnePost)
-			mutate({
-				where: {
-					id: articleId
-				}
-			})
-			onDone(result => {
-				if (result.errors) {
-					return
-				}
-				this.articleMap.delete(articleId)
+			onApolloContext(() => {
+				const { mutate, onDone } = useMutation(deleteOnePost)
+				mutate({
+					where: {
+						id: articleId
+					}
+				})
+				onDone(result => {
+					if (result.errors) {
+						return
+					}
+					this.articleMap.delete(articleId)
+				})
 			})
 		}
 	}

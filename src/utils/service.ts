@@ -78,7 +78,7 @@ class Request {
 		this.instance.interceptors.request.use(
 			(config: CustomAxiosRequestConfig) => {
 				console.log(`request ${config.url} config:`, config)
-				const isToken = !config.headers.unToken ?? true
+				const isToken = !config.headers.unToken || true
 				const token = encodeToken()
 				if (token && isToken) {
 					config.headers['Authorization'] = token

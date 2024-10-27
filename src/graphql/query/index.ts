@@ -120,50 +120,25 @@ export const categories = graphql(`
 `)
 
 export const getCategoriesWithPosts = graphql(`
-	query CategoriesWithPosts(
-		$orderBy: [CategoryOrderByWithRelationInput!]
-		$take: Int
-		$skip: Int
-		$categoriesOnPostOrderBy: [CategoriesOnPostsOrderByWithRelationInput!]
-		$categoriesOnPostTake: Int
-	) {
-		categories(orderBy: $orderBy, take: $take, skip: $skip) {
-			id
-			name
-			createdAt
-			updatedAt
-			CategoriesOnPosts(orderBy: $categoriesOnPostOrderBy, take: $categoriesOnPostTake) {
-				post {
-					id
-					title
-					createdAt
-					updatedAt
-				}
-			}
-		}
-	}
-`)
-
-export const getMoreCategoriesWithPosts = graphql(`
-	query MoreCategoriesWithPosts(
+	query CategoriesWithPost(
 		$orderBy: [CategoryOrderByWithRelationInput!]
 		$cursor: CategoryWhereUniqueInput
 		$take: Int
 		$skip: Int
-		$categoriesOnPostOrderBy: [CategoriesOnPostsOrderByWithRelationInput!]
-		$categoriesOnPostTake: Int
+		$categoriesOnPostsOrderBy: [CategoriesOnPostsOrderByWithRelationInput!]
+		$categoriesOnPostsTake: Int
 	) {
 		categories(orderBy: $orderBy, cursor: $cursor, take: $take, skip: $skip) {
 			id
 			name
 			createdAt
 			updatedAt
-			CategoriesOnPosts(orderBy: $categoriesOnPostOrderBy, take: $categoriesOnPostTake) {
+			CategoriesOnPosts(orderBy: $categoriesOnPostsOrderBy, take: $categoriesOnPostsTake) {
 				post {
 					id
 					title
-					createdAt
 					updatedAt
+					createdAt
 				}
 			}
 		}

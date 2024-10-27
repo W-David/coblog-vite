@@ -30,175 +30,192 @@ export default defineStore('useAdmin', {
 				return
 			}
 			const url = res.url
-			const { mutate, onDone } = useMutation(updateOneUser)
-			mutate({
-				data: {
-					avatar: {
-						set: url
+			const adminId = this.adminInfo.id
+			onApolloContext(() => {
+				const { mutate, onDone } = useMutation(updateOneUser)
+				mutate({
+					data: {
+						avatar: {
+							set: url
+						}
+					},
+					where: {
+						id: adminId
 					}
-				},
-				where: {
-					id: this.adminInfo.id
-				}
-			})
-			onDone(result => {
-				if (result.errors) {
-					return
-				}
-				this.avatar = url
-				ElMessage({ message: '头像上传成功', type: 'success', grouping: true })
+				})
+				onDone(result => {
+					if (result.errors) {
+						return
+					}
+					this.avatar = url
+					ElMessage({ message: '头像上传成功', type: 'success', grouping: true })
+				})
 			})
 		},
 		DeleteAvatar() {
 			if (!this.adminInfo) {
 				return
 			}
-			const { mutate, onDone } = useMutation(updateOneUser)
-			mutate({
-				data: {
-					avatar: {
-						set: ''
+			const adminId = this.adminInfo.id
+			onApolloContext(() => {
+				const { mutate, onDone } = useMutation(updateOneUser)
+				mutate({
+					data: {
+						avatar: {
+							set: ''
+						}
+					},
+					where: {
+						id: adminId
 					}
-				},
-				where: {
-					id: this.adminInfo.id
-				}
-			})
-			onDone(async result => {
-				if (result.errors) {
-					return
-				}
-				if (!this.adminInfo) {
-					return
-				}
-				const sts = aliossStore.sts
-				const client = getOssClient(sts)
-				try {
-					await client.delete(this.adminInfo.email + '-avatar')
-					this.avatar = ''
-					ElMessage({ message: '已删除', type: 'success', grouping: true })
-				} catch (error) {
-					console.error(error)
-					ElMessage({ message: '删除失败', type: 'error', grouping: true })
-				}
+				})
+				onDone(async result => {
+					if (result.errors) {
+						return
+					}
+					if (!this.adminInfo) {
+						return
+					}
+					const sts = aliossStore.sts
+					const client = getOssClient(sts)
+					try {
+						await client.delete(this.adminInfo.email + '-avatar')
+						this.avatar = ''
+						ElMessage({ message: '已删除', type: 'success', grouping: true })
+					} catch (error) {
+						console.error(error)
+						ElMessage({ message: '删除失败', type: 'error', grouping: true })
+					}
+				})
 			})
 		},
 		SetAdminInfo(adminInfo: AdminInfo) {
 			const { id, nickname, email } = adminInfo
-			const { mutate, onDone } = useMutation(updateOneUser)
-			mutate({
-				data: {
-					nickName: {
-						set: nickname
+			onApolloContext(() => {
+				const { mutate, onDone } = useMutation(updateOneUser)
+				mutate({
+					data: {
+						nickName: {
+							set: nickname
+						},
+						email: {
+							set: email
+						}
 					},
-					email: {
-						set: email
+					where: {
+						id
 					}
-				},
-				where: {
-					id: adminInfo.id
-				}
-			})
-			onDone(result => {
-				if (result.errors) {
-					return
-				}
-				this.adminInfo = { id, nickname, email }
+				})
+				onDone(result => {
+					if (result.errors) {
+						return
+					}
+					this.adminInfo = { id, nickname, email }
+				})
 			})
 		},
 		Login(params: { email: string; password: string }) {
 			const router = useRouter()
-			const { onResult, onError } = useQuery(graphqlLogin, {
-				email: params.email,
-				password: params.password
-			})
-			onResult(result => {
-				if (result.networkStatus !== NetworkStatus.ready) {
-					return
-				}
-				const token = result.data.login?.token
-				if (!token) return
-				this.isLogin = true
-				appStore.sidebarOpen = false
-				setToken(token)
-				const { onResult } = useQuery(graphqlAuth)
+			onApolloContext(() => {
+				const { onResult, onError } = useQuery(graphqlLogin, {
+					email: params.email,
+					password: params.password
+				})
 				onResult(result => {
 					if (result.networkStatus !== NetworkStatus.ready) {
 						return
 					}
-					const auth = result.data?.auth
-					if (!auth) return
-					const { id, nickName: nickname, email, avatar } = auth
-					this.avatar = avatar || ''
-					this.adminInfo = { id, nickname, email }
-					router.push({ path: '/' })
-					ElMessage({
-						type: 'success',
-						message: `${this.adminInfo.nickname || this.adminInfo.email}, 欢迎来到Cody's Blog`
+					const token = result.data.login?.token
+					if (!token) return
+					setToken(token)
+					onApolloContext(() => {
+						const { onResult } = useQuery(graphqlAuth)
+						onResult(result => {
+							if (result.networkStatus !== NetworkStatus.ready) {
+								return
+							}
+							const auth = result.data?.auth
+							if (!auth) return
+							const { id, nickName: nickname, email, avatar } = auth
+							this.avatar = avatar || ''
+							this.adminInfo = { id, nickname, email }
+							this.isLogin = true
+							appStore.sidebarOpen = false
+							router.push({ path: '/' })
+							ElMessage({
+								type: 'success',
+								message: `${this.adminInfo.nickname || this.adminInfo.email}, 欢迎来到Cody's Blog`
+							})
+						})
 					})
 				})
-			})
-			onError(() => {
-				this.Logout()
+				onError(() => {
+					this.Logout()
+				})
 			})
 		},
 		Register(params: { email: string; password: string; role: Role.Admin }) {
 			const router = useRouter()
-			const { mutate, onDone, onError } = useMutation(graphqlRegister)
-			mutate({
-				email: params.email,
-				password: params.password,
-				role: params.role
-			})
-
-			onDone(result => {
-				if (result.errors) {
-					return
-				}
-				const token = result.data?.register.token
-				if (!token) return
-				this.isLogin = true
-				appStore.sidebarOpen = false
-				setToken(token)
-				const { onResult } = useQuery(graphqlAuth)
-				onResult(result => {
-					if (result.networkStatus !== NetworkStatus.ready) {
+			onApolloContext(() => {
+				const { mutate, onDone, onError } = useMutation(graphqlRegister)
+				mutate({
+					email: params.email,
+					password: params.password,
+					role: params.role
+				})
+				onDone(result => {
+					if (result.errors) {
 						return
 					}
-					const auth = result.data?.auth
-					if (!auth) return
-					const { id, nickName: nickname, email, avatar } = auth
-					this.avatar = avatar || ''
-					this.adminInfo = { id, nickname, email }
-					router.push({ path: '/' })
-					ElMessage({
-						type: 'success',
-						message: `${this.adminInfo.nickname || this.adminInfo.email}, 欢迎来到Cody's Blog`
+					const token = result.data?.register.token
+					if (!token) return
+					setToken(token)
+					onApolloContext(() => {
+						const { onResult } = useQuery(graphqlAuth)
+						onResult(result => {
+							if (result.networkStatus !== NetworkStatus.ready) {
+								return
+							}
+							const auth = result.data?.auth
+							if (!auth) return
+							const { id, nickName: nickname, email, avatar } = auth
+							this.avatar = avatar || ''
+							this.adminInfo = { id, nickname, email }
+							this.isLogin = true
+							appStore.sidebarOpen = false
+							router.push({ path: '/' })
+							ElMessage({
+								type: 'success',
+								message: `${this.adminInfo.nickname || this.adminInfo.email}, 欢迎来到Cody's Blog`
+							})
+						})
 					})
 				})
-			})
-			onError(() => {
-				this.Logout()
+				onError(() => {
+					this.Logout()
+				})
 			})
 		},
 		GetInfo(): Promise<AdminInfo> {
 			return new Promise((resolve, reject) => {
-				const { onResult, onError } = useQuery(graphqlAuth)
-				onResult(result => {
-					if (result.networkStatus !== NetworkStatus.ready) {
-						return
-					}
-					const auth = result.data?.auth
-					if (!auth) return
-					const { id, nickName: nickname, email, avatar } = auth
-					this.isLogin = true
-					this.avatar = avatar || ''
-					this.adminInfo = { id, nickname, email }
-					resolve({ ...this.adminInfo })
-				})
-				onError(error => {
-					this.Logout()
-					reject(error)
+				onApolloContext(() => {
+					const { onResult, onError } = useQuery(graphqlAuth)
+					onResult(result => {
+						if (result.networkStatus !== NetworkStatus.ready) {
+							return
+						}
+						const auth = result.data?.auth
+						if (!auth) return
+						const { id, nickName: nickname, email, avatar } = auth
+						this.isLogin = true
+						this.avatar = avatar || ''
+						this.adminInfo = { id, nickname, email }
+						resolve({ ...this.adminInfo })
+					})
+					onError(error => {
+						this.Logout()
+						reject(error)
+					})
 				})
 			})
 		},

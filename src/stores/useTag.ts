@@ -54,92 +54,98 @@ export default defineStore('useTag', {
 		GetTags(data: { take: number; cursor?: Tag }) {
 			this.isTagMapLoading = true
 			const { take, cursor } = data
-			const { onResult, onError } = useQuery(tags, {
-				take,
-				skip: cursor ? 1 : undefined,
-				cursor: cursor
-					? {
-							id: cursor.id
-					  }
-					: undefined,
-				orderBy: {
-					id: SortOrder.Asc
-				}
-			})
-			onResult(result => {
-				if (result.networkStatus !== NetworkStatus.ready) {
-					return
-				}
-				this.isTagMapLoading = false
-				const tags = result.data?.tags || []
-				if (!tags.length) {
-					return
-				}
-				tags.forEach(item => {
-					this.tagMap.set(item.id, cloneLoop(item))
+			onApolloContext(() => {
+				const { onResult, onError } = useQuery(tags, {
+					take,
+					skip: cursor ? 1 : undefined,
+					cursor: cursor
+						? {
+								id: cursor.id
+						  }
+						: undefined,
+					orderBy: {
+						id: SortOrder.Asc
+					}
 				})
-			})
-			onError(() => {
-				this.isTagMapLoading = false
+				onResult(result => {
+					if (result.networkStatus !== NetworkStatus.ready) {
+						return
+					}
+					this.isTagMapLoading = false
+					const tags = result.data?.tags || []
+					if (!tags.length) {
+						return
+					}
+					tags.forEach(item => {
+						this.tagMap.set(item.id, cloneLoop(item))
+					})
+				})
+				onError(() => {
+					this.isTagMapLoading = false
+				})
 			})
 		},
 		GetTagWithArticles(data: { take: number; cursor?: TagArticle }) {
 			this.isTagArticlesMapLoading = true
 			const { take, cursor } = data
-			const { onResult, onError } = useQuery(getTagsWithPosts, {
-				orderBy: [
-					{
-						id: SortOrder.Asc
-					}
-				],
-				cursor: cursor
-					? {
-							id: cursor.id
-					  }
-					: undefined,
-				skip: cursor ? 1 : undefined,
-				take,
-				tagsOnPostOrderBy: [
-					{
-						postId: SortOrder.Asc
-					}
-				],
-				tagsOnPostTake: 5
-			})
-			onResult(result => {
-				if (result.networkStatus !== NetworkStatus.ready) {
-					return
-				}
-				this.isTagArticlesMapLoading = false
-				const tags = result.data?.tags || []
-				if (!tags.length) {
-					return
-				}
-				tags.forEach(item => {
-					this.tagArticlesMap.set(item.id, tagsToTagArticle(item))
+			onApolloContext(() => {
+				const { onResult, onError } = useQuery(getTagsWithPosts, {
+					orderBy: [
+						{
+							id: SortOrder.Asc
+						}
+					],
+					cursor: cursor
+						? {
+								id: cursor.id
+						  }
+						: undefined,
+					skip: cursor ? 1 : undefined,
+					take,
+					tagsOnPostOrderBy: [
+						{
+							postId: SortOrder.Asc
+						}
+					],
+					tagsOnPostTake: 5
 				})
-			})
-			onError(() => {
-				this.isTagArticlesMapLoading = false
+				onResult(result => {
+					if (result.networkStatus !== NetworkStatus.ready) {
+						return
+					}
+					this.isTagArticlesMapLoading = false
+					const tags = result.data?.tags || []
+					if (!tags.length) {
+						return
+					}
+					tags.forEach(item => {
+						this.tagArticlesMap.set(item.id, tagsToTagArticle(item))
+					})
+				})
+				onError(() => {
+					this.isTagArticlesMapLoading = false
+				})
 			})
 		},
 		DelTag(tagId: number) {
-			const { mutate, onDone } = useMutation(deleteOneTag)
-			mutate({
-				where: {
-					id: tagId
-				}
-			})
-			onDone(result => {
-				if (result.errors) {
-					return
-				}
-				const tag = result.data?.deleteOneTag
-				if (!tag) {
-					return
-				}
-				this.tagMap.delete(tag.id)
-				this.tagArticlesMap.delete(tag.id)
+			onApolloContext(() => {
+				const { mutate, onDone } = useMutation(deleteOneTag)
+				mutate({
+					where: {
+						id: tagId
+					}
+				})
+				onDone(result => {
+					if (result.errors) {
+						return
+					}
+					const tag = result.data?.deleteOneTag
+					if (!tag) {
+						return
+					}
+					this.tagMap.delete(tag.id)
+					this.tagArticlesMap.delete(tag.id)
+				})
 			})
 		}
 	}
