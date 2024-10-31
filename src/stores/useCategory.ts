@@ -7,14 +7,17 @@ export default defineStore('useCategory', {
 		checkedCateIds: number[]
 		isCategoryMapLoading: boolean
 		isCategoryArticlesMapLoading: boolean
+		curCategoryArticleList: CategoryArticle[]
 	} => ({
 		categoryMap: new Map(),
 		categoryArticlesMap: new Map(),
 		checkedCateIds: [],
 		isCategoryMapLoading: false,
-		isCategoryArticlesMapLoading: false
+		isCategoryArticlesMapLoading: false,
+		curCategoryArticleList: []
 	}),
 	getters: {
+		getCurCategoryArticleList: state => cloneLoop(state.curCategoryArticleList),
 		getCategoryById: state => (id: number) => state.categoryMap.get(id),
 		getCategoryArticleById: state => (id: number) => state.categoryArticlesMap.get(id),
 		getCategoryList: state => () => [...state.categoryMap.values()],
@@ -103,7 +106,7 @@ export default defineStore('useCategory', {
 						  }
 						: undefined,
 					skip: cursor ? 1 : undefined,
-					take,
+					take: take + 1,
 					categoriesOnPostsOrderBy: [
 						{
 							postId: SortOrder.Asc
@@ -120,7 +123,8 @@ export default defineStore('useCategory', {
 					if (!categories.length) {
 						return
 					}
-					categories.forEach(item => {
+					this.curCategoryArticleList = categories.map(item => categoriesToCategoryArticle(item))
+					categories.slice(0, take).forEach(item => {
 						this.categoryArticlesMap.set(item.id, categoriesToCategoryArticle(item))
 					})
 				})

@@ -7,14 +7,17 @@ export default defineStore('useTag', {
 		checkedTagIds: number[]
 		isTagMapLoading: boolean
 		isTagArticlesMapLoading: boolean
+		curTagArticleList: TagArticle[]
 	} => ({
 		tagMap: new Map(),
 		tagArticlesMap: new Map(),
 		checkedTagIds: [],
 		isTagMapLoading: false,
-		isTagArticlesMapLoading: false
+		isTagArticlesMapLoading: false,
+		curTagArticleList: []
 	}),
 	getters: {
+		getCurTagArticleList: state => cloneLoop(state.curTagArticleList),
 		getTagById: state => (id: number) => state.tagMap.get(id),
 		getTagArticleById: state => (id: number) => state.tagArticlesMap.get(id),
 		getTagList: state => () => [...state.tagMap.values()],
@@ -101,7 +104,7 @@ export default defineStore('useTag', {
 						  }
 						: undefined,
 					skip: cursor ? 1 : undefined,
-					take,
+					take: take + 1,
 					tagsOnPostOrderBy: [
 						{
 							postId: SortOrder.Asc
@@ -118,7 +121,8 @@ export default defineStore('useTag', {
 					if (!tags.length) {
 						return
 					}
-					tags.forEach(item => {
+					this.curTagArticleList = tags.map(item => tagsToTagArticle(item))
+					tags.slice(0, take).forEach(item => {
 						this.tagArticlesMap.set(item.id, tagsToTagArticle(item))
 					})
 				})

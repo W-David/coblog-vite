@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-const apolloClient = createApolloClient()
+const apolloClient = singletonApolloClient()
 provide(DefaultApolloClient, apolloClient)
 useDevice()
 useWindowResize()

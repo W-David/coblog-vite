@@ -62,6 +62,7 @@ definePage({
 		transitionName: 'fade'
 	}
 })
+const take = ref(6)
 const categoryStore = useCategory()
 const route = useRoute<'category'>()
 const articleId = route.params.id ? +route.params.id : 0
@@ -70,20 +71,19 @@ const isChecked = (id: number) => checkedIds.value.includes(id)
 const isLoadingMore = computed(() => categoryStore.isCategoryArticlesMapLoading)
 const categoryArticles = computed(() => categoryStore.getCategoryArticles())
 const cursor = computed(() => categoryStore.getCategoryArticlesCursor)
-const hasMore = ref(true)
-const take = 10
+const hasMore = computed(() => categoryStore.getCurCategoryArticleList.length > take.value)
 
 // useReachBottom(onLoadMore)
 const onLoadMore = () => {
 	if (!hasMore.value) return
-	categoryStore.GetCategoryWithArticles({ take, cursor: cursor.value })
+	categoryStore.GetCategoryWithArticles({ take: take.value, cursor: cursor.value })
 }
 
 const initPage = () => {
 	if (articleId) {
 		categoryStore.checkedCateIds.splice(0, categoryStore.checkedCateIds.length)
 	}
-	categoryStore.GetCategoryWithArticles({ take, cursor: undefined })
+	categoryStore.GetCategoryWithArticles({ take: take.value, cursor: undefined })
 }
 
 initPage()

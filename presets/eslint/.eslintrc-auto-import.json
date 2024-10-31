@@ -187,6 +187,7 @@
     "shallowReactive": true,
     "shallowReadonly": true,
     "shallowRef": true,
+    "singletonApolloClient": true,
     "storeToRefs": true,
     "syncRef": true,
     "syncRefs": true,

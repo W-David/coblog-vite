@@ -61,7 +61,7 @@ export default defineStore('useArticle', {
 						  }
 						: undefined,
 					skip: cursor ? 1 : undefined,
-					take,
+					take: take + 1,
 					orderBy: [
 						{
 							updatedAt: SortOrder.Desc
@@ -74,10 +74,9 @@ export default defineStore('useArticle', {
 					}
 					const posts = result.data.posts
 					this.isArticleCurListLoading = false
-					this.articleCurList = posts.slice(0).map(post => postToArticle(post))
-					posts.forEach(article => {
-						const post = cloneLoop(article)
-						this.articleMap.set(article.id, postToArticle(post))
+					this.articleCurList = posts.map(post => postToArticle(post))
+					posts.slice(0, take).forEach(post => {
+						this.articleMap.set(post.id, postToArticle(post))
 					})
 				})
 				onError(() => {

@@ -50,8 +50,18 @@ export function createApolloClient() {
 	})
 }
 
+export const singletonApolloClient = (function () {
+	let instance: ApolloClient<any> | null = null
+	return function () {
+		if (!instance) {
+			instance = createApolloClient()
+		}
+		return instance
+	}
+})()
+
 export function onApolloContext(fn: () => any) {
-	const apolloClient = createApolloClient()
+	const apolloClient = singletonApolloClient()
 	const onApolloContext = provideApolloClient(apolloClient)
 	onApolloContext(() => fn())
 }

@@ -77,7 +77,7 @@ const queryParams = reactive({
 	cursor: articles.value.length ? articles.value.slice(-1)[0] : undefined
 })
 
-const hasMore = computed(() => curArticles.value.length === queryParams.take)
+const hasMore = computed(() => curArticles.value.length > queryParams.take)
 
 const onLoadMore = () => {
 	articleStore.GetArticles(queryParams)

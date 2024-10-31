@@ -62,6 +62,7 @@ definePage({
 		transitionName: 'fade'
 	}
 })
+const take = ref(6)
 const tagStore = useTag()
 const route = useRoute<'tag'>()
 const articleId = route.params.id ? +route.params.id : 0
@@ -70,19 +71,18 @@ const isChecked = (id: number) => checkedIds.value.includes(id)
 const isLoadingMore = computed(() => tagStore.isTagArticlesMapLoading)
 const tagArticles = computed(() => tagStore.getTagArticles())
 const cursor = computed(() => tagStore.getTagArticlesCursor)
-const hasMore = ref(true)
-const take = 10
+const hasMore = computed(() => tagStore.getCurTagArticleList.length > take.value)
 
 const onLoadMore = () => {
 	if (!hasMore.value) return
-	tagStore.GetTagWithArticles({ take, cursor: cursor.value })
+	tagStore.GetTagWithArticles({ take: take.value, cursor: cursor.value })
 }
 
 const initPage = () => {
 	if (articleId) {
 		tagStore.checkedTagIds.splice(0, tagStore.checkedTagIds.length)
 	}
-	tagStore.GetTagWithArticles({ take, cursor: undefined })
+	tagStore.GetTagWithArticles({ take: take.value, cursor: undefined })
 }
 
 initPage()
