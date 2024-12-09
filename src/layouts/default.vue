@@ -20,11 +20,6 @@ const tagStore = useTag()
 const articleStore = useArticle()
 
 const init = () => {
-	articleStore.articleMap.clear()
-	articleStore.GetArticles({
-		take: 2,
-		cursor: undefined
-	})
 	articleStore.GetArticlesRecent({ take: 5 })
 	articleStore.GetArticlesHot({ take: 8 })
 

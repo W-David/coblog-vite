@@ -2,9 +2,9 @@
 	<div class="home-page">
 		<div class="main-content-list">
 			<el-skeleton
-				:loading="isLoading && !queryParams.cursor"
+				:loading="isLoading && !cursor"
 				animated
-				:count="queryParams.take || 5">
+				:count="take">
 				<template #template>
 					<div class="skeleton-item">
 						<el-skeleton-item
@@ -70,18 +70,20 @@ definePage({
 })
 const articleStore = useArticle()
 const articles = computed(() => articleStore.getArticleList())
-const curArticles = computed(() => articleStore.getArticleCurList)
 const isLoading = computed(() => articleStore.isArticleCurListLoading)
-const queryParams = reactive({
-	take: 5,
-	cursor: articles.value.length ? articles.value.slice(-1)[0] : undefined
-})
+const cursor = computed(() => articleStore.getArticlesCursor)
+const take = 5
 
-const hasMore = computed(() => curArticles.value.length > queryParams.take)
+const hasMore = computed(() => articleStore.getArticleCurList.length > take)
 
 const onLoadMore = () => {
-	articleStore.GetArticles(queryParams)
+	articleStore.GetArticles({ take, cursor: cursor.value })
 }
+const init = () => {
+	articleStore.articleMap.clear()
+	articleStore.GetArticles({ take })
+}
+init()
 </script>
 
 <style lang="scss" scoped>

@@ -42,8 +42,9 @@ export default defineStore('useArticle', {
 			return cloneLoop(articleArchive)
 		},
 		getArticleArchiveCurList: state => cloneLoop(state.articleArchiveCurList),
-		getArticleById: state => (id: number) => state.articleMap.get(id),
-		getArticleList: state => () => [...state.articleMap.values()],
+		getArticlesCursor: state => cloneLoop(Array.from(state.articleMap.values()).slice(-1)[0]),
+		getArticleById: state => (id: number) => cloneLoop(state.articleMap.get(id)),
+		getArticleList: state => () => cloneLoop(Array.from(state.articleMap.values())),
 		getArticlesRecent: state => cloneLoop(state.articlesRecent),
 		getArticlesHot: state => cloneLoop(state.articlesHot)
 	},

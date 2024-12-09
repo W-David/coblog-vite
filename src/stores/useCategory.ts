@@ -18,12 +18,12 @@ export default defineStore('useCategory', {
 	}),
 	getters: {
 		getCurCategoryArticleList: state => cloneLoop(state.curCategoryArticleList),
-		getCategoryById: state => (id: number) => state.categoryMap.get(id),
-		getCategoryArticleById: state => (id: number) => state.categoryArticlesMap.get(id),
-		getCategoryList: state => () => [...state.categoryMap.values()],
-		getCategoryArticles: state => () => [...state.categoryArticlesMap.values()],
-		getCategoryArticlesCursor: state => Array.from(state.categoryArticlesMap.values()).slice(-1)[0],
-		getCheckedCateIds: state => state.checkedCateIds
+		getCategoryById: state => (id: number) => cloneLoop(state.categoryMap.get(id)),
+		getCategoryArticleById: state => (id: number) => cloneLoop(state.categoryArticlesMap.get(id)),
+		getCategoryList: state => () => cloneLoop(Array.from(state.categoryMap.values())),
+		getCategoryArticles: state => () => cloneLoop(Array.from(state.categoryArticlesMap.values())),
+		getCategoryArticlesCursor: state => cloneLoop(Array.from(state.categoryArticlesMap.values()).slice(-1)[0]),
+		getCheckedCateIds: state => cloneLoop(state.checkedCateIds)
 	},
 	actions: {
 		CreateCategory(params: { name: string }) {

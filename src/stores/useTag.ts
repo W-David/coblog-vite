@@ -18,12 +18,12 @@ export default defineStore('useTag', {
 	}),
 	getters: {
 		getCurTagArticleList: state => cloneLoop(state.curTagArticleList),
-		getTagById: state => (id: number) => state.tagMap.get(id),
-		getTagArticleById: state => (id: number) => state.tagArticlesMap.get(id),
-		getTagList: state => () => [...state.tagMap.values()],
-		getTagArticles: state => () => [...state.tagArticlesMap.values()],
-		getTagArticlesCursor: state => Array.from(state.tagArticlesMap.values()).slice(-1)[0],
-		getCheckedTagIds: state => state.checkedTagIds
+		getTagById: state => (id: number) => cloneLoop(state.tagMap.get(id)),
+		getTagArticleById: state => (id: number) => cloneLoop(state.tagArticlesMap.get(id)),
+		getTagList: state => () => cloneLoop(Array.from(state.tagMap.values())),
+		getTagArticles: state => () => cloneLoop(Array.from(state.tagArticlesMap.values())),
+		getTagArticlesCursor: state => cloneLoop(Array.from(state.tagArticlesMap.values()).slice(-1)[0]),
+		getCheckedTagIds: state => cloneLoop(state.checkedTagIds)
 	},
 	actions: {
 		async CreateTag(params: { name: string }) {
