@@ -3,3 +3,4 @@ node_modules
 .eslintcache
 vite.config.ts.timestamp*
 src/graphql/generated
+.env.development.local

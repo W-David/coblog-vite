@@ -1,11 +1,9 @@
-import { Base64 } from 'js-base64'
 import Cookies from 'js-cookie'
 const userToken = 'COBLOG_TOKEN'
 
 export function encodeToken() {
 	const token = getToken()
-	const base64 = Base64.encode(token + ':')
-	return 'Basic ' + base64
+	return 'Basic ' + token
 }
 
 export function getToken() {
