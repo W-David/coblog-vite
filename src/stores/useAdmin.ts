@@ -114,8 +114,7 @@ export default defineStore('useAdmin', {
 				})
 			})
 		},
-		Login(params: { email: string; password: string }) {
-			const router = useRouter()
+		Login(params: { email: string; password: string }, afterCallback?: () => void) {
 			onApolloContext(() => {
 				const { onResult, onError } = useQuery(graphqlLogin, {
 					email: params.email,
@@ -141,7 +140,7 @@ export default defineStore('useAdmin', {
 							this.adminInfo = { id, nickname, email }
 							this.isLogin = true
 							appStore.sidebarOpen = false
-							router.push({ path: '/' })
+							afterCallback?.()
 							ElMessage({
 								type: 'success',
 								message: `${this.adminInfo.nickname || this.adminInfo.email}, 欢迎来到Cody's Blog`
@@ -154,8 +153,7 @@ export default defineStore('useAdmin', {
 				})
 			})
 		},
-		Register(params: { email: string; password: string; role: Role.Admin }) {
-			const router = useRouter()
+		Register(params: { email: string; password: string; role: Role.Admin }, afterCallback?: () => void) {
 			onApolloContext(() => {
 				const { mutate, onDone, onError } = useMutation(graphqlRegister)
 				mutate({
@@ -183,7 +181,7 @@ export default defineStore('useAdmin', {
 							this.adminInfo = { id, nickname, email }
 							this.isLogin = true
 							appStore.sidebarOpen = false
-							router.push({ path: '/' })
+							afterCallback?.()
 							ElMessage({
 								type: 'success',
 								message: `${this.adminInfo.nickname || this.adminInfo.email}, 欢迎来到Cody's Blog`

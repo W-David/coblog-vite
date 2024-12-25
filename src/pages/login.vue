@@ -178,17 +178,27 @@ const rules = reactive({
 })
 
 const handleLogin = () => {
-	adminStore.Login({
-		email: form.email,
-		password: form.password
-	})
+	adminStore.Login(
+		{
+			email: form.email,
+			password: form.password
+		},
+		() => {
+			router.push({ path: '/' })
+		}
+	)
 }
 const handleRegister = () => {
-	adminStore.Register({
-		email: form.email,
-		password: form.password,
-		role: Role.Admin
-	})
+	adminStore.Register(
+		{
+			email: form.email,
+			password: form.password,
+			role: Role.Admin
+		},
+		() => {
+			router.push({ path: '/' })
+		}
+	)
 }
 const handleSwitch = () => {
 	form.email = ''
