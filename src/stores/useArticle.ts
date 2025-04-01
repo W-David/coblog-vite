@@ -1,10 +1,11 @@
+import dayjs from 'dayjs'
 import { SortOrder } from '~/graphql/generated/graphql'
-import { Format } from '~/utils/format'
 
 export default defineStore('useArticle', {
 	state: (): {
 		articleMap: Map<number, Article>
 		articleArchive: ArticleArchive[]
+		articleArchiveAllList: Article[]
 		articleArchiveCurList: Article[]
 		articlesRecent: ArticleRecent[]
 		articlesHot: ArticleHot[]
@@ -19,6 +20,7 @@ export default defineStore('useArticle', {
 	} => ({
 		articleMap: new Map(),
 		articleArchive: [],
+		articleArchiveAllList: [],
 		articleArchiveCurList: [],
 		articlesRecent: [],
 		articlesHot: [],
@@ -34,14 +36,8 @@ export default defineStore('useArticle', {
 	getters: {
 		getArticleCurList: state => cloneLoop(state.articleCurList),
 		getArticleMap: state => () => cloneLoop(state.articleMap),
-		getArticleArchive: state => (format: Format) => {
-			const articleArchiveCurList = state.articleArchiveCurList
-			const formatedArticles = timeLineArticles2FormatedArticles(articleArchiveCurList, format)
-			const articleArchive = articles2Archive(formatedArticles, format)
-			state.articleArchive = ([] as ArticleArchive[]).concat(articleArchive)
-			return cloneLoop(articleArchive)
-		},
 		getArticleArchiveCurList: state => cloneLoop(state.articleArchiveCurList),
+		getArticleArchiveCursor: state => cloneLoop(state.articleArchiveCurList.slice(-1)[0]),
 		getArticlesCursor: state => cloneLoop(Array.from(state.articleMap.values()).slice(-1)[0]),
 		getArticleById: state => (id: number) => cloneLoop(state.articleMap.get(id)),
 		getArticleList: state => () => cloneLoop(Array.from(state.articleMap.values())),
@@ -56,8 +52,8 @@ export default defineStore('useArticle', {
 				const { onResult, onError } = useQuery(posts, {
 					cursor: cursor
 						? {
-								updatedAt: {
-									equals: cursor.updatedAt
+								createdAt: {
+									equals: dayjs(cursor.createdAt).utc(true).format()
 								}
 						  }
 						: undefined,
@@ -172,16 +168,16 @@ export default defineStore('useArticle', {
 				const { onResult, onError } = useQuery(posts, {
 					cursor: cursor
 						? {
-								updatedAt: {
-									equals: cursor.updatedAt
+								createdAt: {
+									equals: dayjs(cursor.createdAt).utc(true).format()
 								}
 						  }
 						: undefined,
 					skip: cursor ? 1 : undefined,
-					take,
+					take: take + 1,
 					orderBy: [
 						{
-							updatedAt: SortOrder.Desc
+							createdAt: SortOrder.Desc
 						}
 					]
 				})
@@ -192,7 +188,8 @@ export default defineStore('useArticle', {
 					this.isArticleArchiveLoading = false
 					const posts = result.data.posts
 					const newPosts = posts.slice(0).map(post => postToArticle(post))
-					this.articleArchiveCurList = this.articleArchiveCurList.concat(newPosts)
+					this.articleArchiveCurList = newPosts
+					this.articleArchiveAllList = this.articleArchiveAllList.concat(newPosts)
 				})
 				onError(() => {
 					this.isArticleArchiveLoading = false

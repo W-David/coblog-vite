@@ -133,13 +133,27 @@ definePage({
 		transitionName: 'fade'
 	}
 })
-const take = 10
+const take = 2
 const format = ref<Format>('timeline')
 
-const archive = computed(() => articleStore.getArticleArchive(format.value))
-const cursor = computed(() => articleStore.getArticleArchiveCurList.slice(-1)[0])
+const archive = ref<ArticleArchive[]>([])
+const cursor = computed(() => articleStore.getArticleArchiveCursor)
 const isLoadingMore = computed(() => articleStore.isArticleArchiveLoading)
-const hasMore = ref(true)
+const hasMore = computed(() => articleStore.getArticleArchiveCurList.length > take)
+
+const getArticleArchive = (articleArchiveList: Article[], format: Format) => {
+	const formatedArticles = timeLineArticles2FormatedArticles(articleArchiveList, format)
+	const articleArchive = articles2Archive(formatedArticles, format)
+	return cloneLoop(articleArchive)
+}
+
+watch(
+	format,
+	() => {
+		archive.value = getArticleArchive(articleStore.articleArchiveAllList, format.value)
+	},
+	{ immediate: true }
+)
 
 const generateArchiveTitles = (articles: ArticleTime[]) => {
 	if (articles && articles.length) {
@@ -158,7 +172,7 @@ const onLoadMore = () => {
 }
 
 const initPage = () => {
-	articleStore.GetArticleArchive({ take, cursor: undefined })
+	articleStore.GetArticleArchive({ take })
 }
 
 initPage()

@@ -78,6 +78,7 @@ declare global {
   const encodeToken: typeof import('../../src/utils/auth')['encodeToken']
   const extendRef: typeof import('@vueuse/core')['extendRef']
   const favoriteArticle: typeof import('../../src/api/article')['favoriteArticle']
+  const formatDate: typeof import('../../src/utils/trans')['formatDate']
   const getActivePinia: typeof import('pinia')['getActivePinia']
   const getCategoriesWithPosts: typeof import('../../src/graphql/query/index')['getCategoriesWithPosts']
   const getCategory: typeof import('../../src/graphql/query/index')['getCategory']

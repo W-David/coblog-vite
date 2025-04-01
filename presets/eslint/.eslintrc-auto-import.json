@@ -77,6 +77,7 @@
     "encodeToken": true,
     "extendRef": true,
     "favoriteArticle": true,
+    "formatDate": true,
     "getActivePinia": true,
     "getCategoriesWithPosts": true,
     "getCategory": true,

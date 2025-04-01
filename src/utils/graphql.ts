@@ -28,8 +28,9 @@ export function createApolloClient() {
 				showClose: false,
 				duration: 3000,
 				grouping: true,
-				message: `出错啦(＃°Д°), [${operation.operationName}]: ${graphQLErrors.slice(-1)[0].message}`
+				message: `出错啦(＃°Д°)`
 			})
+			console.error(`[${operation.operationName}]: ${graphQLErrors.slice(-1)[0].message}`)
 		}
 		if (networkError) {
 			console.error(`[Network error]: ${networkError}`)
@@ -38,8 +39,9 @@ export function createApolloClient() {
 				showClose: false,
 				duration: 3000,
 				grouping: true,
-				message: `出错啦w(ﾟДﾟ)w, [${operation.operationName}]: ${networkError.message}`
+				message: `出错啦w(ﾟДﾟ)w`
 			})
+			console.error(`[${operation.operationName}]: ${networkError.message}`)
 		}
 	})
 	const link = from([errorLink, authLink, httpLink])

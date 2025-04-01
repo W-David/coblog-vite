@@ -107,7 +107,9 @@ export default defineStore('useTag', {
 					take: take + 1,
 					tagsOnPostOrderBy: [
 						{
-							postId: SortOrder.Asc
+							postId: {
+								sort: SortOrder.Asc
+							}
 						}
 					],
 					tagsOnPostTake: 5

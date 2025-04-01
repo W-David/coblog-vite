@@ -60,6 +60,9 @@ const handleAdd = () => {
 		content: '添加种类',
 		callback: value => {
 			categoryStore.CreateCategory({ name: value })
+		},
+		errorback: err => {
+			console.error(err)
 		}
 	})
 }

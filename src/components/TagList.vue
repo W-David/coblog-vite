@@ -61,6 +61,9 @@ const handleAdd = () => {
 		content: '添加标签',
 		callback: value => {
 			tagStore.CreateTag({ name: value })
+		},
+		errorback: error => {
+			console.error(error)
 		}
 	})
 }

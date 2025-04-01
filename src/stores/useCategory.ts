@@ -109,7 +109,9 @@ export default defineStore('useCategory', {
 					take: take + 1,
 					categoriesOnPostsOrderBy: [
 						{
-							postId: SortOrder.Asc
+							postId: {
+								sort: SortOrder.Asc
+							}
 						}
 					],
 					categoriesOnPostsTake: 5

@@ -1,3 +1,9 @@
+import dayjs from './day'
+
+export const formatDate = (date: string, format = 'YYYY-MM-DD HH:mm:ss') => {
+	return dayjs(date).format(format)
+}
+
 export const postToArticle = (post: any) => {
 	return {
 		id: post.id,
@@ -15,7 +21,7 @@ export const postToArticle = (post: any) => {
 			email: post.author.email
 		},
 		browse: post.browNum,
-		createdAt: post.createdAt,
+		createdAt: formatDate(post.createdAt),
 		status: 0
 	}
 }
@@ -40,15 +46,15 @@ export const categoriesToCategoryArticle = (category: {
 	return {
 		id: category.id,
 		name: category.name,
-		createdAt: category.createdAt,
-		updatedAt: category.updatedAt,
+		createdAt: formatDate(category.createdAt),
+		updatedAt: formatDate(category.updatedAt),
 		articles: category.CategoriesOnPosts.map(item => {
 			if (item.post) {
 				return {
 					id: item.post.id,
 					title: item.post.title,
-					createdAt: item.post.createdAt,
-					updatedAt: item.post.updatedAt
+					createdAt: formatDate(item.post.createdAt),
+					updatedAt: formatDate(item.post.updatedAt)
 				}
 			}
 			return {
@@ -81,15 +87,15 @@ export const tagsToTagArticle = (tag: {
 	return {
 		id: tag.id,
 		name: tag.name,
-		createdAt: tag.createdAt,
-		updatedAt: tag.updatedAt,
+		createdAt: formatDate(tag.createdAt),
+		updatedAt: formatDate(tag.updatedAt),
 		articles: tag.TagsOnPosts.map(item => {
 			if (item.post) {
 				return {
 					id: item.post.id,
 					title: item.post.title,
-					createdAt: item.post.createdAt,
-					updatedAt: item.post.updatedAt
+					createdAt: formatDate(item.post.createdAt),
+					updatedAt: formatDate(item.post.updatedAt)
 				}
 			}
 			return {
