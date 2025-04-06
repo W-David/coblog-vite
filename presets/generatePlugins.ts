@@ -1,4 +1,4 @@
-import I18n from '@intlify/vite-plugin-vue-i18n'
+import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import Vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import { resolve } from 'path'
@@ -171,11 +171,12 @@ export default () => {
 				}
 			}),
 		// i18n 国际化支持
-		I18n({
+    VueI18nPlugin({
+      /* options */
 			runtimeOnly: false,
 			compositionOnly: true,
 			include: [resolve(__dirname, '../locales/**')]
-		}),
+    }),
 		// tsx 支持
 		vueJsx(),
 		// 生产环境资源压缩

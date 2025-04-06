@@ -16,6 +16,8 @@ export default defineConfig({
 	css: {
 		preprocessorOptions: {
 			scss: {
+				api: "modern-compiler",
+				quietDeps: true,
 				additionalData: `
 					@use "~/styles/element/index.scss" as *;
 					@use "~/styles/index.scss" as *;
