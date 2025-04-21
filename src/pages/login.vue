@@ -320,12 +320,12 @@ initForm()
 						svg {
 							@include layout(200px, 100px, 0, 0);
 							text {
-								@include svg-text-stroke-animation;
 								//文本居中
 								text-anchor: middle;
 								dominant-baseline: middle;
 								letter-spacing: 8px;
 								font-size: 50px;
+								@include svg-text-stroke-animation;
 							}
 						}
 					}

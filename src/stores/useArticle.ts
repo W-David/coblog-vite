@@ -52,9 +52,7 @@ export default defineStore('useArticle', {
 				const { onResult, onError } = useQuery(posts, {
 					cursor: cursor
 						? {
-								createdAt: {
-									equals: dayjs(cursor.createdAt).utc(true).format()
-								}
+								id: cursor.id
 						  }
 						: undefined,
 					skip: cursor ? 1 : undefined,
@@ -168,11 +166,8 @@ export default defineStore('useArticle', {
 				const { onResult, onError } = useQuery(posts, {
 					cursor: cursor
 						? {
-								createdAt: {
-									equals: dayjs(cursor.createdAt).utc(true).format()
-								}
-						  }
-						: undefined,
+							id: cursor.id,
+						} : undefined,
 					skip: cursor ? 1 : undefined,
 					take: take + 1,
 					orderBy: [
