@@ -169,6 +169,9 @@ const handleDel = async () => {
 				return
 			}
 			articleStore.DelArticle(articleId)
+		},
+		errorback: (err: Error) => {
+			console.error('Delete article error:', err)
 		}
 	})
 }

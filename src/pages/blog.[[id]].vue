@@ -60,7 +60,7 @@
 			v-model="showAll"
 			title="请选择">
 			<selected-list
-				v-model:checkedArr="checkedArr"
+				v-model:checked-arr="checkedArr"
 				:loading="isListLoading"
 				:is-show="showAll"
 				:list="list"></selected-list>

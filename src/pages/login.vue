@@ -48,42 +48,59 @@
 								<text
 									x="100"
 									y="60">
-									Coblog
+									{{ logoText }}
 								</text>
 							</svg>
 						</div>
 					</div>
 					<el-form
 						ref="formRef"
-						v-model="form"
+						:model="form"
 						class="login-card-content"
 						label-position="right"
 						:rules="rules"
-						status-icon
-						inline-message>
-						<el-form-item prop="email">
+						:status-icon="false"
+						:show-message="true"
+						:inline-message="true">
+						<el-form-item
+							prop="email"
+							required>
 							<el-input
+								ref="emailInput"
 								v-model="form.email"
-								placeholder="邮箱"></el-input>
-						</el-form-item>
-						<el-form-item prop="password">
-							<el-input
-								v-model="form.password"
-								placeholder="密码"></el-input>
+								placeholder="邮箱"
+								@keyup.enter="nextFocus(formRef, passwordInput)"></el-input>
 						</el-form-item>
 						<el-form-item
-							v-show="needRegister"
+							prop="password"
+							required>
+							<el-input
+								ref="passwordInput"
+								v-model="form.password"
+								show-password
+								placeholder="密码"
+								@keyup.enter="needRegister ? nextFocus(formRef, rPasswordInput) : handleLogin(formRef)"></el-input>
+						</el-form-item>
+						<el-form-item
+							v-if="needRegister"
+							required
 							prop="rPassword">
 							<el-input
+								ref="rPasswordInput"
 								v-model="form.rPassword"
-								placeholder="再次输入密码"></el-input>
+								show-password
+								placeholder="再次输入密码"
+								@keyup.enter="needRegister && nextFocus(formRef, nickNameInput)"></el-input>
 						</el-form-item>
 						<el-form-item
-							v-show="needRegister"
+							v-if="needRegister"
+							required
 							prop="nickName">
 							<el-input
+								ref="nickNameInput"
 								v-model="form.nickName"
-								placeholder="昵称"></el-input>
+								placeholder="昵称"
+								@keyup.enter="needRegister && handleRegister(formRef)"></el-input>
 						</el-form-item>
 						<el-form-item>
 							<div class="hint-area">
@@ -96,7 +113,7 @@
 								<div class="remember-hint">
 									<el-checkbox
 										v-model="rememberMe"
-										label="保存密码"
+										label="自动填充"
 										size="small"
 										border />
 								</div>
@@ -108,7 +125,7 @@
 								class="login-area">
 								<el-button
 									type="primary"
-									@click="handleLogin()">
+									@click="handleLogin(formRef)">
 									登录
 								</el-button>
 							</div>
@@ -117,7 +134,7 @@
 								class="register-area">
 								<el-button
 									type="success"
-									@click="handleRegister()">
+									@click="handleRegister(formRef)">
 									注册
 								</el-button>
 							</div>
@@ -133,6 +150,7 @@
 </template>
 
 <script lang="ts" setup>
+import { FormInstance, FormRules, InputInstance } from 'element-plus'
 import { Role } from '~/graphql/generated/graphql'
 
 definePage({
@@ -146,8 +164,13 @@ const bgImgs = reactive(['bg-01', 'bg-02', 'bg-03', 'bg-04'])
 const adminStore = useAdmin()
 const router = useRouter()
 const needRegister = ref(false)
-const formRef = ref(null)
+const formRef = ref<FormInstance>()
 const { isDark, toggleDark } = useDarks()
+
+const emailInput = ref<InputInstance>()
+const passwordInput = ref<InputInstance>()
+const rPasswordInput = ref<InputInstance>()
+const nickNameInput = ref<InputInstance>()
 
 const getBgImgsStyle = (index: number) => ({
 	animationDelay: (animationDuration.value / bgImgs.length) * index + 's',
@@ -155,50 +178,98 @@ const getBgImgsStyle = (index: number) => ({
 })
 
 const form = reactive({
-	email: '',
-	password: '',
+	email: 'admin@root.com',
+	password: 'admin',
 	rPassword: '',
 	nickName: ''
 })
 const rememberMe = ref(false)
-watch(rememberMe, (nv, ov) => {
-	if (!nv && ov) {
-		localCache.remove('login-form')
-		localCache.remove('remember-me')
+const REMEMBER_KEY = 'remember-me'
+const REMEMBER_FORM_KEY = 'login-form'
+const logoText = ref('Coblog')
+
+watch(rememberMe, val => {
+	if (!val) {
+		localCache.remove(REMEMBER_FORM_KEY)
+		localCache.remove(REMEMBER_KEY)
 	} else {
-		localCache.set('remeber-me', 'remember-me')
-		localCache.setJSON('login-form', form)
+		formRef.value?.validate(valid => {
+			if (valid) {
+				localCache.set(REMEMBER_KEY, 'is_remembered')
+				localCache.setJSON(REMEMBER_FORM_KEY, form)
+			} else {
+				localCache.remove(REMEMBER_KEY)
+				localCache.remove(REMEMBER_FORM_KEY)
+			}
+		})
 	}
 })
-const rules = reactive({
-	email: [],
-	password: [],
-	rPassword: [],
-	nickName: []
+const rules = reactive<FormRules<typeof form>>({
+	email: [
+		{ required: true, message: '请输入邮箱地址', trigger: 'blur' },
+		{
+			pattern: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
+			message: '请输入正确的邮箱格式',
+			trigger: 'blur'
+		}
+	],
+	password: [
+		{ required: true, message: '请输入密码', trigger: 'blur' },
+		{
+			min: 4,
+			message: '密码长度不能少于4个字符',
+			trigger: 'blur'
+		}
+	],
+	rPassword: [
+		{ required: true, message: '请再次输入密码', trigger: 'blur' },
+		{
+			validator: (rule, value, callback) => {
+				if (value !== form.password) {
+					callback(new Error('两次输入密码不一致'))
+				} else {
+					callback()
+				}
+			},
+			trigger: 'blur'
+		}
+	],
+	nickName: [
+		{ required: true, message: '请输入昵称', trigger: 'blur' },
+		{ min: 2, max: 20, message: '昵称长度在2到20个字符之间', trigger: 'blur' }
+	]
 })
 
-const handleLogin = () => {
-	adminStore.Login(
-		{
-			email: form.email,
-			password: form.password
-		},
-		() => {
-			router.push({ path: '/' })
+const handleLogin = (formRef: FormInstance) => {
+	formRef.validate(valid => {
+		if (valid) {
+			adminStore.Login(
+				{
+					email: form.email,
+					password: form.password
+				},
+				() => {
+					router.push({ path: '/' })
+				}
+			)
 		}
-	)
+	})
 }
-const handleRegister = () => {
-	adminStore.Register(
-		{
-			email: form.email,
-			password: form.password,
-			role: Role.Admin
-		},
-		() => {
-			router.push({ path: '/' })
+const handleRegister = (formRef: FormInstance) => {
+	formRef.validate(valid => {
+		if (valid) {
+			adminStore.Register(
+				{
+					email: form.email,
+					password: form.password,
+					role: Role.Admin
+				},
+				() => {
+					router.push({ path: '/' })
+				}
+			)
 		}
-	)
+	})
 }
 const handleSwitch = () => {
 	form.email = ''
@@ -207,26 +278,32 @@ const handleSwitch = () => {
 	form.nickName = ''
 	needRegister.value = !needRegister.value
 }
+
 const getImageUrl = (name: string) => {
 	return new URL(`../assets/image/${name}.webp`, import.meta.url).href
 }
+
+const nextFocus = (formRef: FormInstance, nextInput: InputInstance) => {
+	nextInput.focus()
+}
+
 const initForm = () => {
-	const rememberMeCache = !!localCache.get('remember-me') || false
-	rememberMe.value = rememberMeCache
-	if (rememberMe.value) {
-		// debugger
-		const formCache = localCache.getJSON('login-form')
-		form.email = formCache?.email ?? ''
-		form.password = formCache?.password ?? ''
-		form.rPassword = formCache?.rPassword ?? ''
-		form.nickName = formCache?.nickName ?? ''
+	const isRemembered = !!localCache.get(REMEMBER_KEY) || false
+	const formCache = localCache.getJSON(REMEMBER_FORM_KEY)
+	if (isRemembered && formCache) {
+		rememberMe.value = true
+		form.email = formCache.email
+		form.password = formCache.password
 	} else {
-		// debugger
+		rememberMe.value = false
 		form.email = ''
 		form.password = ''
-		form.rPassword = ''
-		form.nickName = ''
+		// 没有缓存的数据，表单自动聚焦
+		emailInput.value?.focus()
 	}
+	onMounted(() => {
+		initForm()
+	})
 }
 initForm()
 </script>
