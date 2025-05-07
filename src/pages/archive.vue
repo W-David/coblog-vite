@@ -5,24 +5,11 @@
 				<div class="archive-timeline-ctrl">
 					<el-radio-group v-model="format">
 						<el-radio
-							label="timeline"
+							v-for="item in formatList"
+							:key="item.value"
+							:label="item.value"
 							border>
-							时间线
-						</el-radio>
-						<el-radio
-							label="day"
-							border>
-							日期
-						</el-radio>
-						<el-radio
-							label="week"
-							border>
-							每周
-						</el-radio>
-						<el-radio
-							label="month"
-							border>
-							月份
+							{{ item.label }}
 						</el-radio>
 					</el-radio-group>
 				</div>
@@ -70,7 +57,7 @@
 										<template #title>
 											<div class="display-title-container">
 												<div
-													v-for="(title, index) in generateArchiveTitles(a.articles)"
+													v-for="(title, index) in a.title"
 													:key="index"
 													class="display-title">
 													<div class="display-title-content">{{ title }}</div>
@@ -125,6 +112,11 @@
 <script lang="ts" setup>
 import { Format } from '~/utils/format'
 
+interface FormatItem {
+	label: string
+	value: Format
+}
+
 const router = useRouter()
 const articleStore = useArticle()
 definePage({
@@ -134,45 +126,33 @@ definePage({
 	}
 })
 const take = 2
-const format = ref<Format>('timeline')
+const format = ref<Format>('day')
+const formatList: FormatItem[] = [
+	{ label: '日・时间线', value: 'day' },
+	{ label: '周・时间线', value: 'week' },
+	{ label: '月・时间线', value: 'month' },
+	{ label: '年・时间线', value: 'year' }
+]
 
-const archive = ref<ArticleArchive[]>([])
+const archive = computed(() => articleStore.articleArchiveAllList)
 const cursor = computed(() => articleStore.getArticleArchiveCursor)
 const isLoadingMore = computed(() => articleStore.isArticleArchiveLoading)
-const hasMore = computed(() => articleStore.getArticleArchiveCurList.length > take)
+const hasMore = computed(() => articleStore.getArticleArchiveCurList.length > 0)
 
-const getArticleArchive = (articleArchiveList: Article[], format: Format) => {
-	const formatedArticles = timeLineArticles2FormatedArticles(articleArchiveList, format)
-	const articleArchive = articles2Archive(formatedArticles, format)
-	return cloneLoop(articleArchive)
-}
+watch(format, val => {
+	articleStore.GetArticleArchive({ take, type: val })
+})
 
-watch(
-	format,
-	() => {
-		archive.value = getArticleArchive(articleStore.articleArchiveAllList, format.value)
-	},
-	{ immediate: true }
-)
-
-const generateArchiveTitles = (articles: ArticleTime[]) => {
-	if (articles && articles.length) {
-		const len = Math.min(articles.length, 3)
-		return articles.slice(0, len).map(article => article.title)
-	} else {
-		return ['暂无文章']
-	}
-}
 const toArticle = (id: number) => {
 	router.push({ name: 'article', params: { id } })
 }
 const onLoadMore = () => {
 	if (!hasMore.value) return
-	articleStore.GetArticleArchive({ take, cursor: cursor.value })
+	articleStore.GetArticleArchive({ take, cursor: cursor.value ? cursor.value : undefined, type: format.value })
 }
 
 const initPage = () => {
-	articleStore.GetArticleArchive({ take })
+	articleStore.GetArticleArchive({ take, type: format.value })
 }
 
 initPage()

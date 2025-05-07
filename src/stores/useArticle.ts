@@ -1,12 +1,12 @@
-import dayjs from 'dayjs'
 import { SortOrder } from '~/graphql/generated/graphql'
+import { Format } from '~/utils/format'
 
 export default defineStore('useArticle', {
 	state: (): {
 		articleMap: Map<number, Article>
 		articleArchive: ArticleArchive[]
-		articleArchiveAllList: Article[]
-		articleArchiveCurList: Article[]
+		articleArchiveAllList: ArticleArchive[]
+		articleArchiveCurList: ArticleArchive[]
 		articlesRecent: ArticleRecent[]
 		articlesHot: ArticleHot[]
 		articleCurList: Article[]
@@ -37,7 +37,10 @@ export default defineStore('useArticle', {
 		getArticleCurList: state => cloneLoop(state.articleCurList),
 		getArticleMap: state => () => cloneLoop(state.articleMap),
 		getArticleArchiveCurList: state => cloneLoop(state.articleArchiveCurList),
-		getArticleArchiveCursor: state => cloneLoop(state.articleArchiveCurList.slice(-1)[0]),
+		getArticleArchiveCursor: state => {
+			if (state.articleArchiveCurList.length === 0) return null
+			return cloneLoop(state.articleArchiveCurList.slice(-1)[0].articles.slice(-1)[0])
+		},
 		getArticlesCursor: state => cloneLoop(Array.from(state.articleMap.values()).slice(-1)[0]),
 		getArticleById: state => (id: number) => cloneLoop(state.articleMap.get(id)),
 		getArticleList: state => () => cloneLoop(Array.from(state.articleMap.values())),
@@ -159,32 +162,33 @@ export default defineStore('useArticle', {
 				})
 			})
 		},
-		GetArticleArchive(data: { cursor?: Article; take: number }) {
+		GetArticleArchive(data: { cursor?: { id: number }; take: number; type: Format }) {
 			this.isArticleArchiveLoading = true
-			const { cursor, take } = data
+			const { cursor, take, type } = data
 			onApolloContext(() => {
-				const { onResult, onError } = useQuery(posts, {
-					cursor: cursor
-						? {
-							id: cursor.id,
-						} : undefined,
-					skip: cursor ? 1 : undefined,
-					take: take + 1,
-					orderBy: [
-						{
-							createdAt: SortOrder.Desc
-						}
-					]
+				const { onResult, onError } = useQuery(getArchivePost, {
+					cursor: cursor ? { id: cursor.id } : undefined,
+					take,
+					type
 				})
 				onResult(result => {
 					if (result.networkStatus !== NetworkStatus.ready) {
 						return
 					}
 					this.isArticleArchiveLoading = false
-					const posts = result.data.posts
-					const newPosts = posts.slice(0).map(post => postToArticle(post))
+					const posts = result.data.archivePosts
+					const newPosts = posts.slice(0).map(item => ({
+						time: item.time,
+						title: item.title,
+						articles: item.articles.map(post => ({
+							...postToArticle(post),
+							categories: [],
+							tags: []
+						}))
+					}))
 					this.articleArchiveCurList = newPosts
-					this.articleArchiveAllList = this.articleArchiveAllList.concat(newPosts)
+					// 没有cursor,归档类型发生改变或者是第一次加载,此时重置归档列表
+					this.articleArchiveAllList = cursor ? this.articleArchiveAllList.concat(newPosts) : newPosts
 				})
 				onError(() => {
 					this.isArticleArchiveLoading = false

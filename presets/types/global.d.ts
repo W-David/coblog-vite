@@ -87,6 +87,7 @@ interface ArticleTime {
 
 interface ArticleArchive {
 	time: string,
+	title: string[],
 	articles: Array<ArticleTime>
 }
 

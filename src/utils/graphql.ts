@@ -23,25 +23,26 @@ export function createApolloClient() {
 			logErrorMessages(error)
 		}
 		if (graphQLErrors) {
+			const errMessage = graphQLErrors.slice(-1)[0].message
 			ElMessage({
 				type: 'error',
 				showClose: false,
 				duration: 3000,
 				grouping: true,
-				message: `出错啦(＃°Д°)`
+				message: `${errMessage}`
 			})
 			console.error(`[${operation.operationName}]: ${graphQLErrors.slice(-1)[0].message}`)
 		}
 		if (networkError) {
-			console.error(`[Network error]: ${networkError}`)
+			const errMessage = networkError.message
 			ElMessage({
 				type: 'error',
 				showClose: false,
 				duration: 3000,
 				grouping: true,
-				message: `出错啦w(ﾟДﾟ)w`
+				message: `${errMessage}`
 			})
-			console.error(`[${operation.operationName}]: ${networkError.message}`)
+			console.error(`[${operation.operationName}]: ${errMessage}`)
 		}
 	})
 	const link = from([errorLink, authLink, httpLink])

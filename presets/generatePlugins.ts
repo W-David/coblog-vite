@@ -171,12 +171,12 @@ export default () => {
 				}
 			}),
 		// i18n 国际化支持
-    VueI18nPlugin({
-      /* options */
+		VueI18nPlugin({
+			/* options */
 			runtimeOnly: false,
 			compositionOnly: true,
 			include: [resolve(__dirname, '../locales/**')]
-    }),
+		}),
 		// tsx 支持
 		vueJsx(),
 		// 生产环境资源压缩

@@ -72,6 +72,29 @@ export const getPost = graphql(`
 	}
 `)
 
+export const getArchivePost = graphql(`
+	query ArchivePosts($take: Int!, $type: String!, $cursor: PostWhereUniqueInput) {
+		archivePosts(take: $take, type: $type, cursor: $cursor) {
+			articles {
+				id
+				title
+				authorId
+				author {
+					nickName
+					id
+				}
+				browNum
+				description
+				createdAt
+				updatedAt
+				published
+			}
+			time
+			title
+		}
+	}
+`)
+
 export const posts = graphql(`
 	query Posts(
 		$where: PostWhereInput

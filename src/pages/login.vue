@@ -69,7 +69,7 @@
 								ref="emailInput"
 								v-model="form.email"
 								placeholder="邮箱"
-								@keyup.enter="nextFocus(formRef, passwordInput)"></el-input>
+								@keyup.enter="nextFocus(formRef, passwordInput, 'email')"></el-input>
 						</el-form-item>
 						<el-form-item
 							prop="password"
@@ -79,7 +79,7 @@
 								v-model="form.password"
 								show-password
 								placeholder="密码"
-								@keyup.enter="needRegister ? nextFocus(formRef, rPasswordInput) : handleLogin(formRef)"></el-input>
+								@keyup.enter="needRegister ? nextFocus(formRef, rPasswordInput, 'password') : handleLogin(formRef)"></el-input>
 						</el-form-item>
 						<el-form-item
 							v-if="needRegister"
@@ -90,7 +90,7 @@
 								v-model="form.rPassword"
 								show-password
 								placeholder="再次输入密码"
-								@keyup.enter="needRegister && nextFocus(formRef, nickNameInput)"></el-input>
+								@keyup.enter="needRegister && nextFocus(formRef, nickNameInput, 'rPassword')"></el-input>
 						</el-form-item>
 						<el-form-item
 							v-if="needRegister"
@@ -272,19 +272,24 @@ const handleRegister = (formRef: FormInstance) => {
 	})
 }
 const handleSwitch = () => {
+	needRegister.value = !needRegister.value
 	form.email = ''
 	form.password = ''
 	form.rPassword = ''
 	form.nickName = ''
-	needRegister.value = !needRegister.value
+	formRef.value?.clearValidate()
 }
 
 const getImageUrl = (name: string) => {
 	return new URL(`../assets/image/${name}.webp`, import.meta.url).href
 }
 
-const nextFocus = (formRef: FormInstance, nextInput: InputInstance) => {
-	nextInput.focus()
+const nextFocus = (formRef: FormInstance, nextInput: InputInstance, propName: string) => {
+	formRef.validateField(propName, valid => {
+		if (valid) {
+			nextInput.focus()
+		}
+	})
 }
 
 const initForm = () => {
@@ -426,6 +431,7 @@ initForm()
 					.hint-area {
 						@include layout(100%, auto, 0, 0 2px);
 						@include flex-box(row, space-between, center);
+						font-size: 12px;
 
 						.register-hint {
 							user-select: none !important;
