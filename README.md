@@ -7,7 +7,7 @@
 
 - 站点：[https://coblog.fun](https://coblog.fun)
 - 后端 API：[W-David/coblog](https://github.com/W-David/coblog)（默认 `https://coblog.fun:8990/api/v1`）
-- 评论：[W-David/coblog-waline](https://github.com/W-David/coblog-waline)（Vercel Waline）
+- 评论：[W-David/coblog-waline](https://github.com/W-David/coblog-waline)（`https://coblog-waline.vercel.app`）
 
 本仓是从旧前端迁移到 **Vue3 + Vite + Pinia + TypeScript** 的版本（基于 [tov-template](https://github.com/dishait/tov-template)），不是后端仓的 fork。
 
@@ -19,7 +19,7 @@
 |------|------|
 | `VITE_APP_TITLE` | 站点标题 |
 | `VITE_APP_BASE_URL` | 后端 API 根路径，如 `https://coblog.fun:8990/api/v1` |
-| `VITE_APP_WALINE_API` | Waline 服务地址（当前仓库仍配置为自建 `:8360`；若已切 Vercel 需另行改 env，本轮未改） |
+| `VITE_APP_WALINE_API` | Waline 服务地址，现为 `https://coblog-waline.vercel.app` |
 
 ## 开发
 
