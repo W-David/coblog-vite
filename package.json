@@ -1,8 +1,8 @@
 {
-	"name": "coblog",
+	"name": "coblog-vite",
 	"version": "1.10.0",
 	"author": "cody",
-	"description": "coblog-vite",
+	"description": "coblog frontend (vue3 + vite)",
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
