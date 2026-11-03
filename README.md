@@ -11,6 +11,30 @@
 
 本仓是从旧前端迁移到 **Vue3 + Vite + Pinia + TypeScript** 的版本（基于 [tov-template](https://github.com/dishait/tov-template)），不是后端仓的 fork。
 
+## 三仓架构（勿合并成 monorepo）
+
+```
+浏览器
+  │
+  ├─ coblog-vite          本仓 · 前端 SPA（Vue3 + Vite）
+  │     │
+  │     ├─ VITE_APP_BASE_URL ──► coblog          后端 API  :8990  /api/v1
+  │     │                         MySQL + JWT + OSS
+  │     │
+  │     └─ VITE_APP_WALINE_API ► coblog-waline   Vercel Waline
+  │                               LeanCloud 存评论
+  │
+  └─ https://coblog.fun
+```
+
+| 仓库 | 职责 | 运行 / 部署 |
+|------|------|-------------|
+| [coblog](https://github.com/W-David/coblog) | 博客后端 API | 自建机，默认 **:8990** |
+| [coblog-vite](https://github.com/W-David/coblog-vite) | 博客前端（本仓） | 静态站 / 现网 coblog.fun |
+| [coblog-waline](https://github.com/W-David/coblog-waline) | 评论 | **Vercel**（`coblog-waline.vercel.app`） |
+
+旧仓 [coblog-frontend](https://github.com/W-David/coblog-frontend) 已被本仓取代，勿再基于它开发。
+
 ## 环境变量
 
 见 `.env` / `.env.development` / `.env.production`：
@@ -32,16 +56,6 @@ pnpm dev
 pnpm build
 pnpm preview
 ```
-
-## 仓库关系
-
-```
-coblog-vite   ← 本仓（前端 SPA）
-coblog        ← 后端 Koa API
-coblog-waline ← 评论（Waline on Vercel）
-```
-
-旧仓 [coblog-frontend](https://github.com/W-David/coblog-frontend) 已被本仓取代。
 
 ## License
 
